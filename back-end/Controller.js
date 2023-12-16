@@ -20,12 +20,15 @@ const db = mysql.createConnection({
   password: process.env.database_Password,
   database: process.env.database_Name
 });
-
-  if(db){
-    console.log('conectado...')
-  }else{
-    console.error(db)
+// Connect to the database
+db.connect((error) => {
+  if (error) {
+    console.error('Erro ao conectar ao banco de dados:', error.message);
+  } else {
+    console.log('Conexão bem-sucedida ao banco de dados!');
+    // Agora você pode realizar operações no banco de dados
   }
+});
 
 
 /*Send rest to Api-Distance-Matrix-Google
