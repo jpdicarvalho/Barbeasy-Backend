@@ -21,6 +21,13 @@ const db = mysql.createConnection({
   database: process.env.database_Name
 });
 
+  if(db){
+    console.log('conectado...')
+  }else{
+    console.error(db)
+  }
+
+
 /*Send rest to Api-Distance-Matrix-Google
 app.post('/reqApiGoogle', async (req, res) => {
     try {
