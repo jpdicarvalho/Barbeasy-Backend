@@ -13,7 +13,7 @@ app.use(bodyParser.json());
 app.use(cors());
 
 //Create conection with BD MySQL
-const urlDB = `mysql://${process.env.database_User}:${process.env.database_Password}@${process.env.database_Host}:${process.env.database_Port}/${process.env.database_Name}`
+const urlDB = `mysql://${process.env.MYSQLUSER}:${process.env.MYSQLPASSWORD}@${process.env.MYSQLHOST}:${process.env.MYSQLPORT}/${process.env.MYSQLDATABASE}`
 
 const db = mysql.createConnection(urlDB);
 // Connect to the database
@@ -25,6 +25,7 @@ db.connect((error) => {
     // Agora você pode realizar operações no banco de dados
   }
 });
+mysql://root:a6EhF-6H2fAC63hbb463b12ffhB5DHbD@mysql.railway.internal:3306/railway
 
 
 /*Send rest to Api-Distance-Matrix-Google
