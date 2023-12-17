@@ -6,7 +6,6 @@ import mysql from "mysql";
 import jwt  from 'jsonwebtoken';
 import MercadoPago from "mercadopago";
 
-
 const app = express();
 
 app.use(express.json());
@@ -14,13 +13,9 @@ app.use(bodyParser.json());
 app.use(cors());
 
 //Create conection with BD MySQL
-const db = mysql.createConnection({
-  database: process.env.database_Name,
-  host: process.env.database_Host,
-  password: process.env.database_Password,
-  port: process.env.database_Port,
-  user: process.env.database_User,
-});
+const urlDB = `mysql://root:a6EhF-6H2fAC63hbb463b12ffhB5DHbD@mysql.railway.internal:3306/railway`
+
+const db = mysql.createConnection(urlDB);
 // Connect to the database
 db.connect((error) => {
   if (error) {
