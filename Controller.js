@@ -11,19 +11,16 @@ const app = express();
 app.use(express.json());
 app.use(bodyParser.json());
 
-const corsOptions = {
-  origin: 'https://657f954957cc630008ad3b76--barbeasy.netlify.app',
-  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-  credentials: true,  // Permite incluir cookies
-  optionsSuccessStatus: 204,  // Algumas versões de navegadores enviam status 204
-};
 
-app.use(cors(corsOptions));
+app.use(cors);
 
 //Create conection with BD MySQL
-const urlDB = `mysql://${process.env.MYSQLUSER}:${process.env.MYSQLPASSWORD}@${process.env.MYSQLHOST}:${process.env.MYSQLPORT}/${process.env.MYSQLDATABASE}`
-
-const db = mysql.createConnection(urlDB);
+const db = mysql.createConnection({
+  host: process.env.database_Host,
+  user: process.env.database_User,
+  password: process.env.database_Password,
+  database: process.env.database_Name
+});
 // Connect to the database
 db.connect((error) => {
   if (error) {
