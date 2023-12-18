@@ -25,8 +25,6 @@ db.connect((error) => {
     // Agora você pode realizar operações no banco de dados
   }
 });
-mysql://root:a6EhF-6H2fAC63hbb463b12ffhB5DHbD@mysql.railway.internal:3306/railway
-
 
 /*Send rest to Api-Distance-Matrix-Google
 app.post('/reqApiGoogle', async (req, res) => {
@@ -61,7 +59,7 @@ app.post("/SingUp", async (req, res) => {
     senha
   };
 
-  db.query('INSERT INTO user SET ?', user, (error, results) => {
+  db.query('INSERT INTO user__client SET ?', user, (error, results) => {
     if (results) {
       res.status(201).send('Usuário registrado com sucesso');
     } else {
@@ -77,7 +75,7 @@ app.post('/SignIn', async (req, res) => {
   const password = req.body.password;
 
   // Buscar usuário pelo email
-  db.query('SELECT * FROM user WHERE email = ? AND senha = ?', [email, password],
+  db.query('SELECT * FROM user__client WHERE email = ? AND senha = ?', [email, password],
   (err, result) => {
     if(err){
       res.send({err: err});
