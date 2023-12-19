@@ -210,7 +210,7 @@ app.post('/Checkout', async (req, res) => {
    });
  });
 
-/ Inicia o servidor na porta especificada
+// Inicia o servidor na porta especificada
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`Servidor rodando na porta ${PORT}`);
 });
