@@ -5,6 +5,7 @@ import cors from "cors";
 import mysql from "mysql2";
 import jwt  from 'jsonwebtoken';
 import MercadoPago from "mercadopago";
+
 const PORT = process.env.PORT || 3000;
 const app = express();
 
@@ -209,6 +210,7 @@ app.post('/Checkout', async (req, res) => {
    });
  });
 
- app.listen(PORT, () => {
+/ Inicia o servidor na porta especificada
+app.listen(PORT, '0.0.0.0', () => {
   console.log(`Servidor rodando na porta ${PORT}`);
 });
