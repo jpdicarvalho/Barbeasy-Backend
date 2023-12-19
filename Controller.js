@@ -1,5 +1,6 @@
 // index.js
 import express from 'express';
+import cors from 'cors';
 import 'dotenv/config'
 import bodyParser from "body-parser";
 import mysql from "mysql2";
@@ -8,6 +9,14 @@ import MercadoPago from "mercadopago";
 
 const app = express();
 const port = process.env.PORT || 3000;
+
+// Configuração do CORS para permitir apenas o domínio do frontend (substitua pelo seu domínio Netlify)
+const corsOptions = {
+  origin: 'https://barbeasy.netlify.app',
+  optionsSuccessStatus: 200, // Algumas versões do navegador podem precisar desse código
+};
+app.use(cors(corsOptions));
+app.use(cors());
 
 app.use(express.json());
 app.use(bodyParser.json());
