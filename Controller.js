@@ -127,6 +127,7 @@ app.post("/avaliacao", (req, res) => {
   ]
   db.query(sql, [values], (err, result) => {
     if (err) {
+      console.error(err);
       res.status(500).json({ success: false, message: 'Erro ao registrar avaliação' });
     } else {
       res.status(201).json({ success: true, message: 'Avaliação registrada com sucesso' });
