@@ -10,10 +10,10 @@ import MercadoPago from "mercadopago";
 const app = express();
 const port = process.env.PORT || 3000;
 
-// Configuração do CORS para permitir apenas o domínio do frontend (substitua pelo seu domínio Netlify)
+// CORS Settings to Only Allow Frontend Deployment to Netlify
 const corsOptions = {
   origin: 'https://barbeasy.netlify.app',
-  optionsSuccessStatus: 200, // Algumas versões do navegador podem precisar desse código
+  optionsSuccessStatus: 200, // Some browser versions may need this code
 };
 app.use(cors(corsOptions));
 app.use(cors());
@@ -21,27 +21,19 @@ app.use(cors());
 app.use(express.json());
 app.use(bodyParser.json());
 
-// Create the connection to the database
+// Create the connection to the database mysql on PlanetScale
 const db = mysql.createConnection(process.env.DATABASE_URL)
 
-/*/Create conection with BD MySQL
-const db = mysql.createConnection({
-  host: process.env.MYSQLHOST,
-  user: process.env.MYSQLUSER,
-  password: process.env.MYSQLPASSWORD,
-  database: process.env.MYSQLDATABASE
-});*/
-// Connect to the database
+// Verify connection to the database
 db.connect((error) => {
   if (error) {
     console.error('Erro ao conectar ao banco de dados:', error.message);
   } else {
     console.log('Conexão bem-sucedida ao banco de dados!');
-    // Agora você pode realizar operações no banco de dados
   }
 });
 
-// Rota principal que exibe "API running" na tela
+//Route show "API running"
 app.get('/', (req, res) => {
   console.log('API running');
   res.send('API running');
