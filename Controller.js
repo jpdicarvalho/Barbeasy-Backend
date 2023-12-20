@@ -21,13 +21,16 @@ app.use(cors());
 app.use(express.json());
 app.use(bodyParser.json());
 
-//Create conection with BD MySQL
+// Create the connection to the database
+const db = mysql.createConnection(process.env.DATABASE_URL)
+
+/*/Create conection with BD MySQL
 const db = mysql.createConnection({
   host: process.env.MYSQLHOST,
   user: process.env.MYSQLUSER,
   password: process.env.MYSQLPASSWORD,
   database: process.env.MYSQLDATABASE
-});
+});*/
 // Connect to the database
 db.connect((error) => {
   if (error) {
