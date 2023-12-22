@@ -41,12 +41,13 @@ app.get('/', (req, res) => {
 
 //Cadastro de ususário com senha criptografada
 app.post("/SignUp", async (req, res) => {
-  const {name, email, senha} = req.body;
+  const {user_name, email,  phone_number, senha} = req.body;
 
   // Hash da senha antes de salvar no banco de dados
   const user = {
-    name,
+    user_name,
     email,
+    phone_number,
     senha
   };
 
@@ -62,11 +63,10 @@ app.post("/SignUp", async (req, res) => {
 
 //Realizando Login e Gerando Token de autenticação
 app.post('/SignIn', async (req, res) => {
-  const email = req.body.email;
-  const password = req.body.password;
+  const {email, senha} = req.body;
 
   // Buscar usuário pelo email
-  db.query('SELECT * FROM user WHERE email = ? AND senha = ?', [email, password],
+  db.query('SELECT * FROM user WHERE email = ? AND senha = ?', [email, senha],
   (err, result) => {
     if(err){
       res.send({err: err});
