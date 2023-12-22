@@ -51,10 +51,14 @@ app.post("/SignUp", async (req, res) => {
     celular
   };
 
+console.log(user);
+
   db.query('INSERT INTO user SET ?', user, (error, results) => {
     if (results) {
+      console.log(user);
       res.status(201).send('Usuário registrado com sucesso');
     } else {
+      console.log(user);
       console.error(error);
       res.status(500).send('Erro ao registrar usuário');
     }
