@@ -39,39 +39,45 @@ app.get('/', (req, res) => {
   res.send('API running');
 });
 //ROTAS USER-CLIENT-BARBEARIA
-//Cadastro de ususário com senha criptografada
+// Cadastro de usuário com senha criptografada
 app.post("/SignUp", async (req, res) => {
-    const {name, email, senha, celular } = req.body;
-  
-    // Verificação se o e-mail já está cadastrado
-    db.query('SELECT * FROM user WHERE email = ?', [email], (error, results) => {
-      if (error) {
-        console.error(error);
-        return res.status(500).send('Erro ao verificar o e-mail');
-      }
+  const { name, email, senha, celular } = req.body;
 
-      // Se já houver resultados, significa que o e-mail já está cadastrado
-      if (results.length > 0) {
+  // Verificação se o e-mail ou o número de celular já estão cadastrado
+  db.query('SELECT * FROM user WHERE email = ? OR celular = ?', [email, celular], (error, results) => {
+    if (error) {
+      console.error(error);
+      return res.status(500).send('Erro ao verificar o e-mail ou o número de celular');
+    }
+
+    // Se houver resultados, significa que o e-mail ou o número de celular já estão cadastrado
+    if (results.length > 0) {
+      const existingUser = results[0];
+      if (existingUser.email === email) {
         return res.status(400).send('E-mail já cadastrado. Por favor, escolha outro e-mail.');
+      } else if (existingUser.celular === celular) {
+        return res.status(400).send('Número de celular já cadastrado. Por favor, escolha outro número.');
       }
-     
-      const user = {
-        name,
-        email,
-        senha,
-        celular
-      };
+    }
+   
+    const user = {
+      name,
+      email,
+      senha,
+      celular
+    };
 
-      db.query('INSERT INTO user SET ?', user, (error, results) => {
-        if (results) {
-          res.status(201).send('Usuário registrado com sucesso');
-        } else {
-          console.error(error);
-          res.status(500).send('Erro ao registrar usuário');
-        }
-      });
+    db.query('INSERT INTO user SET ?', user, (error, results) => {
+      if (results) {
+        res.status(201).send('Usuário registrado com sucesso');
+      } else {
+        console.error(error);
+        res.status(500).send('Erro ao registrar usuário');
+      }
     });
+  });
 });
+
 
 //Realizando Login e Gerando Token de autenticação
 app.post('/SignIn', async (req, res) => {
