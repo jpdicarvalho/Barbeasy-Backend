@@ -199,11 +199,11 @@ app.post('/Checkout', async (req, res) => {
 //ROTAS USER-BARBEARIA
 //Cadastro de ususário Barbearia
 app.post("/SignUp_Barbearia", async (req, res) => {
-  const { barbearia_name, email, usuario, senha, endereco} = req.body;
+  const { name, email, usuario, senha, endereco} = req.body;
 
   // Hash da senha antes de salvar no banco de dados
   const barbearia = {
-    barbearia_name,
+    name,
     email,
     usuario,
     senha,
