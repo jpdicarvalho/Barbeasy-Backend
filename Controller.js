@@ -41,13 +41,13 @@ app.get('/', (req, res) => {
 
 //Cadastro de ususário com senha criptografada
 app.post("/SignUp", async (req, res) => {
-  const {user_name, email,  phone_number, senha} = req.body;
+  const {name, email, celular, senha} = req.body;
 
   // Hash da senha antes de salvar no banco de dados
   const user = {
-    user_name,
+    name,
     email,
-    phone_number,
+    celular,
     senha
   };
 
