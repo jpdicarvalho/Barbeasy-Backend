@@ -41,14 +41,14 @@ app.get('/', (req, res) => {
 
 //Cadastro de ususário com senha criptografada
 app.post("/SignUp", async (req, res) => {
-  const {name, email, celular, senha} = req.body;
+  const {name, email, senha, celular } = req.body;
 
   // Hash da senha antes de salvar no banco de dados
   const user = {
     name,
     email,
-    celular,
-    senha
+    senha,
+    celular
   };
 
   db.query('INSERT INTO user SET ?', user, (error, results) => {
