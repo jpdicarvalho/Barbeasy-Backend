@@ -199,27 +199,42 @@ app.post('/Checkout', async (req, res) => {
 //ROTAS USER-BARBEARIA
 //Cadastro de ususário Barbearia
 app.post("/SignUp_Barbearia", async (req, res) => {
-  const { name, email, usuario, senha, endereco} = req.body;
+  const { name, email, usuario, senha, endereco } = req.body;
 
-  // Hash da senha antes de salvar no banco de dados
-  const barbearia = {
-    name,
-    email,
-    usuario,
-    senha,
-    status: 'Fechado',
-    endereco
-  };
-
-  db.query('INSERT INTO barbearia SET ?', barbearia, (error, results) => {
-    if (results) {
-      res.status(201).send('Usuário registrado com sucesso');
-    } else {
+  // Verificação se o e-mail já está cadastrado
+  db.query('SELECT * FROM barbearia WHERE email = ?', [email], (error, results) => {
+    if (error) {
       console.error(error);
-      res.status(500).send('Erro ao registrar usuário');
+      return res.status(500).send('Erro ao verificar o e-mail');
     }
+
+    // Se já houver resultados, significa que o e-mail já está cadastrado
+    if (results.length > 0) {
+      return res.status(400).send('E-mail já cadastrado. Por favor, escolha outro e-mail.');
+    }
+
+    // Hash da senha antes de salvar no banco de dados
+    const barbearia = {
+      name,
+      email,
+      usuario,
+      senha,
+      status: 'Fechado',
+      endereco
+    };
+
+    // Inserção no banco de dados
+    db.query('INSERT INTO barbearia SET ?', barbearia, (error, results) => {
+      if (error) {
+        console.error(error);
+        return res.status(500).send('Erro ao registrar usuário');
+      }
+
+      res.status(201).send('Usuário registrado com sucesso');
+    });
   });
 });
+
 
 // Inicia o servidor na porta especificada
 app.listen(port, () => {
