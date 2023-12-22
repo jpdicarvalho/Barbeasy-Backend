@@ -38,7 +38,7 @@ app.get('/', (req, res) => {
   console.log('API running');
   res.send('API running');
 });
-
+//ROTAS USER-CLIENT-BARBEARIA
 //Cadastro de ususário com senha criptografada
 app.post("/SignUp", async (req, res) => {
   const {name, email, senha, celular } = req.body;
@@ -195,8 +195,33 @@ app.post('/Checkout', async (req, res) => {
      console.log(error);
    });
  });
- 
+
+//ROTAS USER-BARBEARIA
+//Cadastro de ususário Barbearia
+app.post("/SignUp_Barbearia", async (req, res) => {
+  const { barbearia_name, email, usuario, senha, endereco} = req.body;
+
+  // Hash da senha antes de salvar no banco de dados
+  const barbearia = {
+    barbearia_name,
+    email,
+    usuario,
+    senha,
+    status: 'Fechado',
+    endereco
+  };
+
+  db.query('INSERT INTO barbearia SET ?', barbearia, (error, results) => {
+    if (results) {
+      res.status(201).send('Usuário registrado com sucesso');
+    } else {
+      console.error(error);
+      res.status(500).send('Erro ao registrar usuário');
+    }
+  });
+});
+
 // Inicia o servidor na porta especificada
 app.listen(port, () => {
-    console.log(`Servidor rodando em http://localhost:${port}`);
+    console.log("Servidor rodando");
   });
