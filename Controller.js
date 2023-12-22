@@ -41,24 +41,36 @@ app.get('/', (req, res) => {
 //ROTAS USER-CLIENT-BARBEARIA
 //Cadastro de ususário com senha criptografada
 app.post("/SignUp", async (req, res) => {
-  const {name, email, senha, celular } = req.body;
+    const {name, email, senha, celular } = req.body;
+  
+    // Verificação se o e-mail já está cadastrado
+    db.query('SELECT * FROM user WHERE email = ?', [email], (error, results) => {
+      if (error) {
+        console.error(error);
+        return res.status(500).send('Erro ao verificar o e-mail');
+      }
 
-  // Hash da senha antes de salvar no banco de dados
-  const user = {
-    name,
-    email,
-    senha,
-    celular
-  };
+      // Se já houver resultados, significa que o e-mail já está cadastrado
+      if (results.length > 0) {
+        return res.status(400).send('E-mail já cadastrado. Por favor, escolha outro e-mail.');
+      }
+     
+      const user = {
+        name,
+        email,
+        senha,
+        celular
+      };
 
-  db.query('INSERT INTO user SET ?', user, (error, results) => {
-    if (results) {
-      res.status(201).send('Usuário registrado com sucesso');
-    } else {
-      console.error(error);
-      res.status(500).send('Erro ao registrar usuário');
-    }
-  });
+      db.query('INSERT INTO user SET ?', user, (error, results) => {
+        if (results) {
+          res.status(201).send('Usuário registrado com sucesso');
+        } else {
+          console.error(error);
+          res.status(500).send('Erro ao registrar usuário');
+        }
+      });
+    });
 });
 
 //Realizando Login e Gerando Token de autenticação
