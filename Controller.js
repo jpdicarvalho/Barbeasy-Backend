@@ -78,7 +78,6 @@ app.post("/SignUp", async (req, res) => {
   });
 });
 
-
 //Realizando Login e Gerando Token de autenticação
 app.post('/SignIn', async (req, res) => {
   const {email, senha} = req.body;
@@ -215,6 +214,7 @@ app.post('/Checkout', async (req, res) => {
  });
 
 //ROTAS USER-BARBEARIA
+
 //Cadastro de ususário Barbearia
 app.post("/SignUp_Barbearia", async (req, res) => {
   const { name, email, usuario, senha, endereco } = req.body;
@@ -253,6 +253,29 @@ app.post("/SignUp_Barbearia", async (req, res) => {
   });
 });
 
+//Realizando Login e Gerando Token de autenticação
+app.post('/SignIn_Barbearia', async (req, res) => {
+  const {email, senha} = req.body;
+
+  // Buscar usuário pelo email
+  db.query('SELECT * FROM barbearia WHERE email = ? AND senha = ?', [email, senha],
+  (err, result) => {
+    if(err){
+      res.send({err: err});
+    }
+    if (result.length > 0) {
+      const barbearia = result[0];
+      // Criação do token
+      const token = jwt.sign({ barbeariaId: barbearia.id, barbeariaEmail: barbearia.email }, process.env.tokenWordSecret, { expiresIn: "1h" });
+      // Envie o token no corpo da resposta
+      res.status(200).json({ success: true, token: token, barbearia: result });
+      
+    } else {
+      // Usuário não encontrado
+      res.status(404).json({success: false, message: 'Usuário não encontrado'});
+    }
+  });
+});
 
 // Inicia o servidor na porta especificada
 app.listen(port, () => {
