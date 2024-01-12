@@ -5,7 +5,7 @@ import 'dotenv/config'
 import bodyParser from "body-parser";
 import mysql from "mysql2";
 import multer from 'multer';
-import { path } from 'path';
+import path from 'path';
 import jwt  from 'jsonwebtoken';
 import MercadoPago from "mercadopago";
 
