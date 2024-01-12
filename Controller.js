@@ -293,7 +293,7 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 // Endpoint for uploading user image
-app.post('/upload', upload.single('userImage'), (req, res) => {
+app.post('/uploadImageUser', upload.single('userImage'), (req, res) => {
   if (!req.file) {
     return res.status(400).json({ error: 'No file uploaded' });
   }
