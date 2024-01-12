@@ -4,6 +4,8 @@ import cors from 'cors';
 import 'dotenv/config'
 import bodyParser from "body-parser";
 import mysql from "mysql2";
+import multer from 'multer';
+import { path } from 'express/lib/application';
 import jwt  from 'jsonwebtoken';
 import MercadoPago from "mercadopago";
 
@@ -276,6 +278,45 @@ app.post('/SignIn_Barbearia', async (req, res) => {
     }
   });
 });
+
+//Upload de Imagem de Usuário
+// Configuração do Multer para armazenar as imagens no diretório 'uploads'
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, 'uploads/'); // The directory where uploaded files will be stored
+  },
+  filename: (req, file, cb) => {
+    cb(null, `${file.fieldname}-${Date.now()}${path.extname(file.originalname)}`);
+  },
+});
+
+const upload = multer({ storage });
+
+// Endpoint for uploading user image
+app.post('/upload', upload.single('userImage'), (req, res) => {
+  if (!req.file) {
+    return res.status(400).json({ error: 'No file uploaded' });
+  }
+
+  const imageUrl = `/uploads/${req.file.filename}`;
+
+  // Assume you have a 'users' table in your database
+  const userId = 1; // Replace with the actual user ID
+
+  // Update the 'profile_image' column with the file path in the 'users' table
+  const updateQuery = 'UPDATE images SET profile_img = ? WHERE id = ?';
+
+  db.query(updateQuery, [imageUrl, userId], (updateErr, updateResults) => {
+    if (updateErr) {
+      console.error('Error updating user image in the database:', updateErr);
+      return res.status(500).json({ error: 'Internal Server Error' });
+    }
+
+    return res.json({ imageUrl });
+  });
+});
+
+
 
 // Inicia o servidor na porta especificada
 app.listen(port, () => {
