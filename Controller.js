@@ -299,6 +299,7 @@ app.post('/uploadImageUser', upload.single('userImage'), (req, res) => {
   }
 
   const imageUrl = `/uploads/${req.file.filename}`;
+  const imagePath = path.join(__dirname, 'uploads', req.file.filename);
 
   // Assume you have a 'users' table in your database
   const userId = 1; // Replace with the actual user ID
