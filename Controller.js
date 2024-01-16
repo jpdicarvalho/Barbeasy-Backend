@@ -22,9 +22,9 @@ const corsOptions = {
   origin: 'https://barbeasy.netlify.app',
   optionsSuccessStatus: 200, // Some browser versions may need this code
 };
+
 app.use(cors(corsOptions));
 app.use(cors());
-
 app.use(express.json());
 app.use(bodyParser.json());
 
@@ -40,11 +40,9 @@ db.connect((error) => {
   }
 });
 
-//Route show "API running"
-app.get('/', (req, res) => {
-  console.log('API running');
-  res.send('API running');
-});
+const storage = multer.memoryStorage()
+const upload = multer({storage: storage})
+
 //ROTAS USER-CLIENT-BARBEARIA
 // Cadastro de usuário com senha criptografada
 app.post("/SignUp", async (req, res) => {
@@ -238,7 +236,6 @@ app.post("/SignUp_Barbearia", async (req, res) => {
       return res.status(400).send('E-mail já cadastrado. Por favor, escolha outro e-mail.');
     }
 
-    // Hash da senha antes de salvar no banco de dados
     const barbearia = {
       name,
       email,
@@ -284,43 +281,7 @@ app.post('/SignIn_Barbearia', async (req, res) => {
   });
 });
 
-//Upload de Imagem de Usuário
-// Configuração do Multer para armazenar as imagens no diretório 'uploads'
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, 'uploads/'); // The directory where uploaded files will be stored
-  },
-  filename: (req, file, cb) => {
-    cb(null, `${file.fieldname}-${Date.now()}${path.extname(file.originalname)}`);
-  },
-});
-
-const upload = multer({ storage });
-
-// Endpoint for uploading user image
-app.post('/uploadImageUser', upload.single('userImage'), (req, res) => {
-  if (!req.file) {
-    return res.status(400).json({ error: 'No file uploaded' });
-  }
-
-  const imageUrl = `/uploads/${req.file.filename}`;
-  const imagePath = path.join(__dirname, 'uploads', req.file.filename);
-
-  // Assume you have a 'users' table in your database
-  const userId = 1; // Replace with the actual user ID
-
-  // Update the 'profile_image' column with the file path in the 'users' table
-  const updateQuery = 'UPDATE images SET profile_img = ? WHERE id = ?';
-
-  db.query(updateQuery, [imageUrl, userId], (updateErr, updateResults) => {
-    if (updateErr) {
-      console.error('Error updating user image in the database:', updateErr);
-      return res.status(500).json({ error: 'Internal Server Error' });
-    }
-
-    return res.json({ imageUrl });
-  });
-});
+//Upload de Imagem de Usuário na AWS S3
 
 
 
