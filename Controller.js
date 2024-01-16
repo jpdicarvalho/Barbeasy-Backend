@@ -299,7 +299,7 @@ app.post('/SignIn_Barbearia', async (req, res) => {
 app.post('/api/upload-image-user-barbearia', upload.single('image'), (req, res) => {
   const barbeariaId = req.body.barbeariaId;
   const newImageUser = req.file.originalname;
-
+  console.log(barbeariaId)
   //Verifica se o usuário possuí imagem cadastrada
   const verifyImage = "SELECT * from images WHERE barbearia_id = ?";
   db.query(verifyImage, [barbeariaId], (err, result) =>{
