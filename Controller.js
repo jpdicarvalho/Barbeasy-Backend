@@ -366,6 +366,30 @@ app.post('/api/upload-image-user-barbearia', upload.single('image'), (req, res) 
   })
 });
 
+app.get('/api/image-user-barbearia', (req, res) =>{
+  const barbeariaId = req.query.barbeariaId; 
+
+  const sql = "SELECT * from images WHERE barbearia_id = ?";
+  db.query(sql, [barbeariaId], async (err, result) => {
+    if(err){
+      console.error('Erro ao buscar imagem no banco de dados:', err);
+      return res.status(500).json({ error: 'Internal Server Error' });
+    }else{
+      if(result.length > 0){
+        const getObjectParams = {
+          Bucket: awsBucketName,
+          Key: result[0].user_image,
+        }
+      
+        const command = new GetObjectCommand(getObjectParams);
+        const url = await getSignedUrl(s3, command, { expiresIn: 3600 });
+  
+        return res.json({url});
+      }
+    }
+  })
+})
+
 
 
 // Inicia o servidor na porta especificada
