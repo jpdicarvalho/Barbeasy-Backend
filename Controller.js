@@ -39,9 +39,23 @@ db.connect((error) => {
     console.log('Conexão bem-sucedida ao banco de dados!');
   }
 });
-
+//Set multer
 const storage = multer.memoryStorage()
 const upload = multer({storage: storage})
+
+//Set AWS S3
+const awsBucketName = process.env.AWS_S3_BUCKET_NAME
+const awsRegion = process.env.AWS_REGION
+const awsAccessKey = process.env.AWS_ACCESS_KEY_ID
+const awsSecretAccessKey = process.env.AWS_SECRET_ACCESS_KEY
+
+const s3 = new S3Client({
+  credentials:{
+    accessKeyId: awsAccessKey,
+    secretAccessKey: awsSecretAccessKey,
+  },
+  region: awsRegion
+});
 
 //ROTAS USER-CLIENT-BARBEARIA
 // Cadastro de usuário com senha criptografada
