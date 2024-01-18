@@ -387,9 +387,10 @@ app.post('/api/upload-banners-images', upload.array('images'), (req, res) => {
     }
     if(currentResult.length > 0) {
       console.log('currentResult:',currentResult)
-      const bannerImagesName = currentResult[0].banner_images;
+      //const bannerImagesName = currentResult;
+      console.log('currentResult.banners:',currentResult.banners)
+      console.log('currentResult[0].banners:',currentResult[0].banners)
       const bannerImagesArray = bannerImagesName.split(',');
-      console.log('bannerImagesName:',bannerImagesName)
 
       for(let i = 0; i < bannerImagesArray.length; i++){
         //Configurando os parâmetros para apagar a imagem salva no bucket da AWS S3
