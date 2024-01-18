@@ -377,7 +377,6 @@ app.get('/api/image-user-barbearia', (req, res) =>{
 app.post('/api/upload-banners-images', upload.array('images'), (req, res) => {
 
   const barbeariaId = req.body.barbeariaId;
-  console.log(barbeariaId);
 
   const currentBannerImg = "SELECT banners FROM barbearia WHERE id IN (?)";
   db.query(currentBannerImg, [barbeariaId], (currentErr, currentResult) =>{
@@ -449,7 +448,6 @@ app.post('/api/upload-banners-images', upload.array('images'), (req, res) => {
 //Rota para obter as imagens para o banner
 app.get('/api/banner-images', (req, res) => {
   const barbeariaId = req.query.barbeariaId;
-  console.log(barbeariaId)
 
   const sql = "SELECT banners FROM barbearia WHERE id = ?";
   db.query(sql, [barbeariaId], async (err, result) => {
