@@ -376,8 +376,8 @@ app.get('/api/image-user-barbearia', (req, res) =>{
 // Rota para lidar com o upload de imagens de banners
 app.post('/api/upload-banners-images', upload.array('images'), (req, res) => {
 
-  const barbearia_Id = req.body.barbearia_Id;
-  console.log(barbearia_Id)
+  const barbeariaId = req.body.barbearia_Id.split(',').map(id => parseInt(id.trim()));
+  console.log(barbeariaId);
 
   const currentBannerImg = "SELECT banners FROM barbearia WHERE id = ?";
   db.query(currentBannerImg, [barbearia_Id], (currentErr, currentResult) =>{
