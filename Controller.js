@@ -348,7 +348,7 @@ app.post('/api/upload-image-user-barbearia', upload.single('image'), (req, res) 
     }
   });
 });
-
+//Rota para obter a imagem de usuário
 app.get('/api/image-user-barbearia', (req, res) =>{
   const barbeariaId = req.query.barbeariaId; 
 
@@ -373,6 +373,78 @@ app.get('/api/image-user-barbearia', (req, res) =>{
   })
 })
 
+// Rota para lidar com o upload de imagens de banners
+app.post('/api/upload-banners-images', upload.array('images'), (req, res) => {
+
+  const barbeariaId = req.body.barbeariaId;
+
+  const currentBannerImg = "SELECT banners FROM barbearia WHERE id = ?";
+  db.query(currentBannerImg, [barbeariaId], (currentErr, currentResult) =>{
+    if(currentErr){
+      console.error('Erro ao buscar o nome das imagens banners no banco de dados:', currentErr);
+      return res.status(500).json({ error: 'Internal Server Error' });
+    }
+    if(currentResult.length > 0) {
+      const bannerImagesName = currentResult[0].banner_images;
+      const bannerImagesArray = bannerImagesName.split(',');
+
+      for(let i = 0; i < bannerImagesArray.length; i++){
+        //Configurando os parâmetros para apagar a imagem salva no bucket da AWS S3
+        const deleteParams = {
+          Bucket: awsBucketName,
+          Key: bannerImagesArray[i]
+        }
+        const deleteCommand = new DeleteObjectCommand(deleteParams)//Instânciando o comando que irá apagar a imagem
+        //Enviando o comando para apagar a imagem
+        s3.send(deleteCommand, (uploadBannerErr, uploadBannerResult) => {
+          if(uploadBannerErr){
+            console.error('Erro ao apagar as imagens banners no bucket aws-s3:', uploadBannerErr);
+            return res.status(500).json({ error: 'Internal Server Error' });
+          }else{
+            //obtendo o nome e o buffer para salvar no BD e na AWS-S3, respectivamente, das imagens enviadas
+            const bannerImages = req.files.map((file) => {
+              return {
+                originalname: file.originalname,
+                buffer: file.buffer,
+              };
+            });
+            //Enviando imagem por imagem para o bucket aws-s3
+            for (let i = 0; i < bannerImages.length; i++) {
+              const params = {
+                Bucket: awsBucketName,
+                Key: bannerImages[i].originalname,
+                Body: bannerImages[i].buffer,
+                ContentType: bannerImages[i].mimetype,
+              }
+              // Cria um comando PutObject para enviar o arquivo para o AWS S3
+              const command = new PutObjectCommand(params)
+              // Envia o comando para o Amazon S3 usando a instância do serviço S3
+              s3.send(command)
+            }
+            //Array com os nomes das imagens enviadas
+            const bannerImagesName = [];
+            //Salvando os nomes das imagens no array acima
+            for (let i = 0; i < bannerImages.length; i++) {
+              bannerImagesName.push(bannerImages[i].originalname);
+            }
+            // Converte o array de nomes em uma string separada por vírgulas
+            const bannerImagesNameString = bannerImagesName.join(','); 
+            //Atualizando o nome das imagens banner no BD MySQL
+            const sql = "UPDATE barbearia SET banners = ? WHERE id = ?";
+            db.query(sql, [bannerImagesNameString, barbeariaId], (err, result) => {
+              if (err) {
+                console.error('Erro ao atualizar o nome das imagens no banco de dados:', err);
+                return res.status(500).json({ error: 'Internal Server Error' });
+              }
+            });
+          }
+          // Retorna um JSON indicando sucesso após a atualização do banco de dados
+          res.status(200).json({ Status: 'Success' });
+        })
+      }
+    }
+  })
+});
 
 
 // Inicia o servidor na porta especificada
