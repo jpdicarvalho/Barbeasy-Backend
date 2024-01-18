@@ -9,7 +9,7 @@ import jwt  from 'jsonwebtoken';
 import MercadoPago from "mercadopago";
 
 import multer from 'multer';
-import { S3Client, PutObjectCommand, GetObjectCommand } from '@aws-sdk/client-s3';
+import { S3Client, PutObjectCommand, GetObjectCommand, DeleteObjectCommand } from '@aws-sdk/client-s3';
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
 import 'dotenv/config'
@@ -295,75 +295,58 @@ app.post('/SignIn_Barbearia', async (req, res) => {
   });
 });
 
-//Upload de Imagem de Usuário na AWS S3
+//Upload de Imagem do Usuário Barbearia, na AWS S3
 app.post('/api/upload-image-user-barbearia', upload.single('image'), (req, res) => {
   const barbeariaId = req.body.barbeariaId;
   const newImageUser = req.file.originalname;
 
-  //Verifica se o usuário possuí imagem cadastrada
-  const verifyImage = "SELECT * from images WHERE barbearia_id = ?";
-  db.query(verifyImage, [barbeariaId], (err, result) =>{
-    //Mensagem de erro caso não seja possuível realizar a consulta no Banco de Dados
+  //Buscando imagem atual salva no BD MySQL
+  const currentImg = "SELECT user_image FROM barbearia WHERE id = ?";
+  db.query(currentImg, [barbeariaId], (err, result) => {
     if(err){
-      console.error('Error on verification image:', err);
-      return res.status(500).json({ error: 'Verify Image - Internal Server Error' });
-    }else{
-      if(result.length > 0){
-        //Update da imagem cadastrada no Banco de Dados
-        const sql = "UPDATE images SET user_image = ? WHERE barbearia_id = ?";
-        db.query(sql, [newImageUser, barbeariaId], (updateErr, updateResult) => {
-          if (updateErr) {
-            //Mensagem de erro caso não seja possuível realizar a atualização da imagem no Banco de Dados
-            console.error('Error on Update Image:', updateErr);
-            return res.status(500).json({ error: 'Update Image - Internal Server Error' });
-          }else{
-              // Cria os parâmetros para enviar a imagem para o bucket da AWS S3
-              const params = {
-              Bucket: awsBucketName,
-              Key: newImageUser,
-              Body: req.file.buffer,
-              ContentType: req.file.mimetype,
-            }
-
-            // Cria um comando PutObject para enviar o arquivo para o AWS S3
-            const command = new PutObjectCommand(params)
-
-            // Envia o comando para o Amazon S3 usando a instância do serviço S3
-            s3.send(command)
-
-            //Mensagem de sucesso referente atualização da imagem no Banco de Dados
-            return res.status(200).json({ Status: "Success" });
-          }
-        });
-      }else{
-        // Cadastra a imagem no Banco de Dados caso o usuário não possua nenhuma imagem
-        const insertImageQuery = "INSERT INTO images (barbearia_id, user_image) VALUES (?, ?)";
-        db.query(insertImageQuery, [barbeariaId, newImageUser], (insertErr, insertResult) => {
-          if (insertErr) {
-            //Mensagem de erro caso não seja possuível realizar o cadastro no Banco de Dados
-            console.error('Erro ao inserir imagem no banco de dados:', insertErr);
-            return res.status(500).json({ error: 'Insert Image - Internal Server Error' });
-          }else{
-            // Cria os parâmetros para enviar a imagem para o bucket da AWS S3
-            const params = {
-              Bucket: awsBucketName,
-              Key: newImageUser,
-              Body: req.file.buffer,
-              ContentType: req.file.mimetype,
-            }
-
-            // Cria um comando PutObject para enviar o arquivo para o AWS S3
-            const command = new PutObjectCommand(params)
-
-            // Envia o comando para o Amazon S3 usando a instância do serviço S3
-            s3.send(command)
-            //Mensagem de sucesso referente atualização da imagem no Banco de Dados
-            return res.status(200).json({ Status: "Success" });
-          }
-        });
-      }
+      console.error('Error on Update Image:', err);
+      return res.status(500).json({ error: 'Current Image - Internal Server Error' });
     }
-  })
+    //Verificando se há imagem salva
+    if(result.length > 0){
+      const currentImageName = result[0].user_image; //Nome da imagem salva no BD MySQL
+
+      //Configurando os parâmetros para apagar a imagem salva no bucket da AWS S3
+      const params = {
+        Bucket: awsBucketName,
+        Key: currentImageName
+      }
+      const command = new DeleteObjectCommand(params)//Instânciando o comando que irá apagar a imagem
+
+      //Enviando o comando para apagar a imagem
+      s3.send(command, (sendErr, sendResult) =>{
+        if(sendErr){
+          console.error('Send Error:', sendErr);
+        }else{
+          //Atualizando a coluna 'user_image' com a nova imagem do usuário
+          const sql = "UPDATE barbearia SET user_image=? WHERE id=?";
+          db.query(sql, [newImageUser, barbeariaId], (updateErr, updateResult) => {
+            if (updateErr) {
+              //Mensagem de erro caso não seja possuível realizar a atualização da imagem no Banco de Dados
+              console.error('Error on Update Image:', updateErr);
+              return res.status(500).json({ error: 'Update Image - Internal Server Error' });
+            }else{
+                // Cria os parâmetros para enviar a imagem para o bucket da AWS S3
+                const updateParams = {
+                Bucket: awsBucketName,
+                Key: newImageUser,
+                Body: req.file.buffer,
+                ContentType: req.file.mimetype,
+              }
+              const updateCommand = new PutObjectCommand(updateParams)// Instânciando o comando que irá salvar a imagem
+              s3.send(updateCommand)// Envia o comando para o Amazon S3 usando a instância do serviço S3
+              return res.status(200).json({ Status: "Success" });
+            }
+          });
+        }
+      })
+    }
+  });
 });
 
 app.get('/api/image-user-barbearia', (req, res) =>{
