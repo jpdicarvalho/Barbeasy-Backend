@@ -377,6 +377,7 @@ app.get('/api/image-user-barbearia', (req, res) =>{
 app.post('/api/upload-banners-images', upload.array('images'), (req, res) => {
 
   const barbeariaId = req.body.barbeariaId;
+  console.log(barbeariaId)
 
   const currentBannerImg = "SELECT banners FROM barbearia WHERE id = ?";
   db.query(currentBannerImg, [barbeariaId], (currentErr, currentResult) =>{
@@ -444,6 +445,40 @@ app.post('/api/upload-banners-images', upload.array('images'), (req, res) => {
       }
     }
   })
+});
+//Rota para obter as imagens para o banner
+app.get('/api/banner-images', (req, res) => {
+  const barbeariaId = req.query.barbeariaId;
+
+  const sql = "SELECT banners FROM barbearia WHERE id = ?";
+  db.query(sql, [barbeariaId], async (err, result) => {
+    if (err) {
+      console.error('Erro ao buscar imagens banner no banco de dados:', err);
+      return res.status(500).json({ error: 'Internal Server Error' });
+    }
+    if (result.length > 0) {
+      const bannerImagesName = result[0].banner_images;
+      const bannerImagesArray = bannerImagesName.split(',');
+      const urls = [];
+
+      for (let i = 0; i < bannerImagesArray.length; i++) {
+        const imageName = bannerImagesArray[i];
+
+        // Configurando os parâmetros para obter as imagens salvas no bucket da AWS S3
+        const getParams = {
+          Bucket: awsBucketName,
+          Key: imageName
+        };
+
+        const getCommand = new GetObjectCommand(getParams);
+
+        // Enviando o comando para obter a URL assinada da imagem
+        const url = await getSignedUrl(s3, getCommand, { expiresIn: 3700 });
+        urls.push(url);
+      }
+      return res.json({ urls });
+    }
+  });
 });
 
 
