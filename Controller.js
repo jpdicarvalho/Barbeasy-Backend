@@ -376,11 +376,11 @@ app.get('/api/image-user-barbearia', (req, res) =>{
 // Rota para lidar com o upload de imagens de banners
 app.post('/api/upload-banners-images', upload.array('images'), (req, res) => {
 
-  const barbeariaId = req.body.barbeariaId;
-  console.log(barbeariaId)
+  const barbearia_Id = req.body.barbearia_Id;
+  console.log(barbearia_Id)
 
   const currentBannerImg = "SELECT banners FROM barbearia WHERE id = ?";
-  db.query(currentBannerImg, [barbeariaId], (currentErr, currentResult) =>{
+  db.query(currentBannerImg, [barbearia_Id], (currentErr, currentResult) =>{
     if(currentErr){
       console.error('Erro ao buscar o nome das imagens banners no banco de dados:', currentErr);
       return res.status(500).json({ error: 'Internal Server Error' });
@@ -432,7 +432,7 @@ app.post('/api/upload-banners-images', upload.array('images'), (req, res) => {
             const bannerImagesNameString = bannerImagesName.join(','); 
             //Atualizando o nome das imagens banner no BD MySQL
             const sql = "UPDATE barbearia SET banners = ? WHERE id = ?";
-            db.query(sql, [bannerImagesNameString, barbeariaId], (err, result) => {
+            db.query(sql, [bannerImagesNameString, barbearia_Id], (err, result) => {
               if (err) {
                 console.error('Erro ao atualizar o nome das imagens no banco de dados:', err);
                 return res.status(500).json({ error: 'Internal Server Error' });
