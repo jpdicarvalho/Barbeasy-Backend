@@ -386,10 +386,7 @@ app.post('/api/upload-banners-images', upload.array('images'), (req, res) => {
       return res.status(500).json({ error: 'Internal Server Error' });
     }
     if(currentResult.length > 0) {
-      console.log('currentResult:',currentResult)
-      //const bannerImagesName = currentResult;
-      console.log('currentResult.banners:',currentResult.banners)
-      console.log('currentResult[0].banners:',currentResult[0].banners)
+      const bannerImagesName = currentResult[0].banners;
       const bannerImagesArray = bannerImagesName.split(',');
 
       for(let i = 0; i < bannerImagesArray.length; i++){
