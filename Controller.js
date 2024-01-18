@@ -431,7 +431,7 @@ app.post('/api/upload-banners-images', upload.array('images'), (req, res) => {
             // Converte o array de nomes em uma string separada por vírgulas
             const bannerImagesNameString = bannerImagesName.join(','); 
             //Atualizando o nome das imagens banner no BD MySQL
-            const sql = "UPDATE barbearia SET banners = ? WHERE id = ?";
+            const sql = "UPDATE barbearia SET banners = ? WHERE id IN (?)";
             db.query(sql, [bannerImagesNameString, barbeariaId], (err, result) => {
               if (err) {
                 console.error('Erro ao atualizar o nome das imagens no banco de dados:', err);
