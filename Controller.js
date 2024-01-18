@@ -386,8 +386,10 @@ app.post('/api/upload-banners-images', upload.array('images'), (req, res) => {
       return res.status(500).json({ error: 'Internal Server Error' });
     }
     if(currentResult.length > 0) {
+      console.log('currentResult:',currentResult)
       const bannerImagesName = currentResult[0].banner_images;
       const bannerImagesArray = bannerImagesName.split(',');
+      console.log('bannerImagesName:',bannerImagesName)
 
       for(let i = 0; i < bannerImagesArray.length; i++){
         //Configurando os parâmetros para apagar a imagem salva no bucket da AWS S3
