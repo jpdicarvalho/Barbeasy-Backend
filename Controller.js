@@ -449,6 +449,7 @@ app.post('/api/upload-banners-images', upload.array('images'), (req, res) => {
 //Rota para obter as imagens para o banner
 app.get('/api/banner-images', (req, res) => {
   const barbeariaId = req.query.barbeariaId;
+  console.log(barbeariaId)
 
   const sql = "SELECT banners FROM barbearia WHERE id = ?";
   db.query(sql, [barbeariaId], async (err, result) => {
@@ -457,7 +458,7 @@ app.get('/api/banner-images', (req, res) => {
       return res.status(500).json({ error: 'Internal Server Error' });
     }
     if (result.length > 0) {
-      const bannerImagesName = result[0].banner_images;
+      const bannerImagesName = result[0].banners;
       const bannerImagesArray = bannerImagesName.split(',');
       const urls = [];
 
