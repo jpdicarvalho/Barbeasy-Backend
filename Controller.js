@@ -483,8 +483,8 @@ app.get('/api/banner-images', (req, res) => {
 });
 
 //Rota para atualizar o status da barbearia 'Aberta' ou 'Fechada'
-app.post('/api/status-update', (req, res) =>{
-  const barbeariaId = req.body.barbeariaId;
+app.post('/api/status-update/:barbeariaId', (req, res) =>{
+  const barbeariaId = req.params.barbeariaId;
   const status = req.body.Status === 'Aberta' ? 'Fechada': 'Aberta';
 
   const sql = "UPDATE barbearia SET status = ? WHERE id = ?";
@@ -501,8 +501,8 @@ app.post('/api/status-update', (req, res) =>{
 });
 
 //Rota para obter o status da barbearia
-app.get('/api/status-barbearia', (req, res) =>{
-  const barbeariaId = req.body.barbeariaId;
+app.get('/api/status-barbearia/:barbeariaId', (req, res) =>{
+  const barbeariaId = req.params.barbeariaId;
   
   const sql = "SELECT status FROM barbearia WHERE id = ?";
   db.query(sql, [barbeariaId], (err, result) => {
