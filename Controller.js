@@ -348,6 +348,7 @@ app.post('/api/upload-image-user-barbearia', upload.single('image'), (req, res) 
     }
   });
 });
+
 //Rota para obter a imagem de usuário
 app.get('/api/image-user-barbearia', (req, res) =>{
   const barbeariaId = req.query.barbeariaId; 
@@ -371,7 +372,7 @@ app.get('/api/image-user-barbearia', (req, res) =>{
       }
     }
   })
-})
+});
 
 // Rota para lidar com o upload de imagens de banners
 app.post('/api/upload-banners-images', upload.array('images'), (req, res) => {
@@ -445,6 +446,7 @@ app.post('/api/upload-banners-images', upload.array('images'), (req, res) => {
     }
   })
 });
+
 //Rota para obter as imagens para o banner
 app.get('/api/banner-images', (req, res) => {
   const barbeariaId = req.query.barbeariaId;
@@ -479,6 +481,24 @@ app.get('/api/banner-images', (req, res) => {
     }
   });
 });
+
+//Rota para atualizar o status da barbearia 'Aberta' ou 'Fechada'
+app.post('/api/status-update', (req, res) =>{
+  const barbeariaId = req.body.barbeariaId;
+  const status = req.body.Status === 'Aberta' ? 'Fechada': 'Aberta';
+
+  const sql = "UPDATE barbearia SET status = ? WHERE id = ?";
+  db.query(sql, [status, barbeariaId], (err, result) => {
+    if(err){
+      console.error("Erro ao atualizar o status da barbearia", err);
+      return res.status(500).json({Error: "Internal Server Error"});
+    }else{
+      if(result){
+        return res.status(200).json({Success: "Success"});
+      }
+    }
+  })
+})
 
 
 // Inicia o servidor na porta especificada
