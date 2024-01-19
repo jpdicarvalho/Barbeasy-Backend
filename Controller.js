@@ -498,7 +498,25 @@ app.post('/api/status-update', (req, res) =>{
       }
     }
   })
-})
+});
+
+//Rota para obter o status da barbearia
+app.get('/api/status-barbearia', (req, res) =>{
+  const barbeariaId = req.body.barbeariaId;
+  
+  const sql = "SELECT status FROM barbearia WHERE id = ?";
+  db.query(sql, [barbeariaId], (err, result) => {
+    if(err) {
+      console.error("Erro ao buscar o status da barbearia", err);
+      return res.status(500).json({Error: "Internal Server Error"});
+    }else{
+      if(result.length > 0){
+        const statusBarbearia = result[0].status;
+        return res.status(200).json({ StatusBarbearia: statusBarbearia});
+      }
+    }
+  })
+});
 
 
 // Inicia o servidor na porta especificada
