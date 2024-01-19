@@ -352,7 +352,7 @@ app.post('/api/upload-image-user-barbearia', upload.single('image'), (req, res) 
 app.get('/api/image-user-barbearia', (req, res) =>{
   const barbeariaId = req.query.barbeariaId; 
 
-  const sql = "SELECT * from images WHERE barbearia_id = ?";
+  const sql = "SELECT * from user_image WHERE barbearia_id = ?";
   db.query(sql, [barbeariaId], async (err, result) => {
     if(err){
       console.error('Erro ao buscar imagem no banco de dados:', err);
