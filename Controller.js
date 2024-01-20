@@ -456,19 +456,9 @@ app.get('/api/banner-images', (req, res) => {
       const urls = [];
 
       for (let i = 0; i < bannerImagesArray.length; i++) {
-        const imageName = bannerImagesArray[i];
-
-        // Configurando os parâmetros para obter as imagens salvas no bucket da AWS S3
-        const getParams = {
-          Bucket: awsBucketName,
-          Key: imageName
-        };
-
-        const getCommand = new GetObjectCommand(getParams);
-
-        // Enviando o comando para obter a URL assinada da imagem
-        const url = await getSignedUrl(s3, getCommand, { expiresIn: 3700 });
-        urls.push(url);
+        const imageName = bannerImagesArray[i];//Pegando o nome de cada imagem salva no array anterior
+        const url = "https://d15o6h0uxpz56g.cloudfront.net/" + imageName;// Salvando a URL da imagem obtida pelo Cloud Front AWS-S3
+        urls.push(url);//Adicionando a nova imagem no Array de URLs
       }
       return res.json({ urls });
     }
