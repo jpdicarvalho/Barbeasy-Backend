@@ -535,14 +535,12 @@ app.get('/api/nome-barbearia/:barbeariaId', (req, res) => {
       }
     }
   })
-})
+});
 
 //Rota para obter atualizar o endereço da barbearia
 app.post('/api/update-endereco/:barbeariaId', (req, res) => {
   const barbeariaId = req.params.barbeariaId;
   const values = req.body.Values;//Obtendo os valores informados pelo usuário
-  console.log('values', values);
-  console.log('req.body.Values;', req.body.Values);
   const enderocoArray = [];//Array para armazenar os valores separadamente
 
   //Adicionando os valores no array anterior
@@ -565,7 +563,26 @@ app.post('/api/update-endereco/:barbeariaId', (req, res) => {
       }
     }
   })
-})
+});
+
+//Rota para obter o endereço da barbearia
+app.get('/api/endereco/:barbeariaId', (req, res) => {
+  const barbeariaId = req.params.barbeariaId;
+
+  const sql = "SELECT endereco FROM barbearia WHERE id = ?";
+  db.query(sql, [barbeariaId], (err, result) => {
+    if(err) {
+      console.error("Erro ao buscar o nome da barbearia", err);
+      return res.status(500).json({Error: "Internal Server Error"});
+    }else{
+      if(result.length > 0) {
+        const endereco = result[0].endereco;
+        console.log(endereco)
+        return res.status(200).json({ Endereco: endereco});
+      }
+    }
+  })
+});
 
 // Inicia o servidor na porta especificada
 app.listen(port, () => {
