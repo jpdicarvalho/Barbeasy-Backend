@@ -576,9 +576,8 @@ app.get('/api/endereco/:barbeariaId', (req, res) => {
       return res.status(500).json({Error: "Internal Server Error"});
     }else{
       if(result.length > 0) {
-        console.log(result)
-        const endereco = result[0].endereco;
-        console.log(endereco)
+        const enderecoString = result[0].endereco;
+        const endereco = enderecoString.split(',');
         return res.status(200).json({ Endereco: endereco});
       }
     }
