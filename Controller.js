@@ -584,6 +584,41 @@ app.get('/api/endereco/:barbeariaId', (req, res) => {
   })
 });
 
+//Rota para atualizar o nome de usuário da barbearia
+app.post('/api/upload-user-name-barbearia/:barbeariaId', (req, res) => {
+  const barbeariaId = req.params.barbeariaId;
+  const newUserName = req.body.newUserName.userName;
+
+  const sql = "UPDATE barbearia SET usuario = ? WHERE id = ?";
+  db.query(sql, [newUserName, barbeariaId], (err, result) =>{
+    if(err){
+      console.error("Erro ao atualizar o nome de usuário da barbearia", err);
+      return res.status(500).json({Error: "Internal Server Error"});
+    }else{
+      if(result){
+        return res.status(200).json({Success: "Success"});
+      }
+    }
+  })
+});
+
+//Rota para obter o nome de usuário da barbearia
+app.get('/api/user-name-barbearia/:barbeariaId', (req, res) => {
+  const barbeariaId = req.params.barbeariaId;
+  const sql = "SELECT usuario FROM barbearia WHERE id = ?";
+  db.query(sql, [barbeariaId], (err, result) => {
+    if(err) {
+      console.error("Erro ao buscar o nome da barbearia", err);
+      return res.status(500).json({Error: "Internal Server Error"});
+    }else{
+      if(result.length > 0) {
+        const userNameBarbearia = result[0].usuario;
+        return res.status(200).json({ UserNameBarbearia: userNameBarbearia});
+      }
+    }
+  })
+})
+
 // Inicia o servidor na porta especificada
 app.listen(port, () => {
     console.log("Servidor rodando");
