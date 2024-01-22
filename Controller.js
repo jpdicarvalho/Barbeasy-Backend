@@ -541,6 +541,8 @@ app.get('/api/nome-barbearia/:barbeariaId', (req, res) => {
 app.post('/api/update-endereco/:barbeariaId', (req, res) => {
   const barbeariaId = req.params.barbeariaId;
   const values = req.body.Values;//Obtendo os valores informados pelo usuário
+  console.log('values', values);
+  console.log('req.body.Values;', req.body.Values);
   const enderocoArray = [];//Array para armazenar os valores separadamente
 
   //Adicionando os valores no array anterior
