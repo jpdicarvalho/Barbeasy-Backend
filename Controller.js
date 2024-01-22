@@ -537,6 +537,33 @@ app.get('/api/nome-barbearia/:barbeariaId', (req, res) => {
   })
 })
 
+//Rota para obter atualizar o endereço da barbearia
+app.post('/api/update-endereco/:barbeariaId', (req, res) => {
+  const barbeariaId = req.params.barbeariaId;
+  const values = req.body.Values;//Obtendo os valores informados pelo usuário
+  const enderocoArray = [];//Array para armazenar os valores separadamente
+
+  //Adicionando os valores no array anterior
+  enderocoArray.push(values.street);
+  enderocoArray.push(values.number);
+  enderocoArray.push(values.neighborhood);
+  enderocoArray.push(values.city);
+
+  // Usando o método join para criar uma string com vírgula e espaço como separadores
+  const newEndereco = enderocoArray.join(', ');
+
+  const sql = "UPDATE barbearia SET endereco = ? WHERE id = ?";
+  db.query(sql, [newEndereco, barbeariaId], (err, result) =>{
+    if(err){
+      console.error("Erro ao atualizar o endereço da barbearia", err);
+      return res.status(500).json({Error: "Internal Server Error"});
+    }else{
+      if(result){
+        return res.status(200).json({Success: "Success"});
+      }
+    }
+  })
+})
 
 // Inicia o servidor na porta especificada
 app.listen(port, () => {
