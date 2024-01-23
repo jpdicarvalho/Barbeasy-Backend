@@ -677,6 +677,8 @@ app.get('/api/update-password-barbearia', (req, res) => {
         }
       })
       return res.status(200).json({ Success: "Success"});
+    }else{
+      return res.status(404).json({ Success: "Falied"});
     }
   })
 });
