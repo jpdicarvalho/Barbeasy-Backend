@@ -605,6 +605,7 @@ app.post('/api/upload-user-name-barbearia/:barbeariaId', (req, res) => {
 //Rota para obter o nome de usuário da barbearia
 app.get('/api/user-name-barbearia/:barbeariaId', (req, res) => {
   const barbeariaId = req.params.barbeariaId;
+  
   const sql = "SELECT usuario FROM barbearia WHERE id = ?";
   db.query(sql, [barbeariaId], (err, result) => {
     if(err) {
@@ -617,7 +618,7 @@ app.get('/api/user-name-barbearia/:barbeariaId', (req, res) => {
       }
     }
   })
-})
+});
 
 //Rota para atualizar o nome de usuário da barbearia
 app.post('/api/upload-email-barbearia/:barbeariaId', (req, res) => {
@@ -636,6 +637,25 @@ app.post('/api/upload-email-barbearia/:barbeariaId', (req, res) => {
     }
   })
 });
+
+//Rota para obter o nome de usuário da barbearia
+app.get('/api/email-barbearia/:barbeariaId', (req, res) => {
+  const barbeariaId = req.params.barbeariaId;
+
+  const sql = "SELECT email FROM barbearia WHERE id = ?";
+  db.query(sql, [barbeariaId], (err, result) => {
+    if(err) {
+      console.error("Erro ao buscar o email de usuário da barbearia", err);
+      return res.status(500).json({Error: "Internal Server Error"});
+    }else{
+      if(result.length > 0) {
+        const emailBarbearia = result[0].email;
+        return res.status(200).json({ EmailBarbearia: emailBarbearia});
+      }
+    }
+  })
+});
+
 
 // Inicia o servidor na porta especificada
 app.listen(port, () => {
