@@ -619,6 +619,24 @@ app.get('/api/user-name-barbearia/:barbeariaId', (req, res) => {
   })
 })
 
+//Rota para atualizar o nome de usuário da barbearia
+app.post('/api/upload-email-barbearia/:barbeariaId', (req, res) => {
+  const barbeariaId = req.params.barbeariaId;
+  const newEmail = req.body.NewEmail;
+
+  const sql = "UPDATE barbearia SET email = ? WHERE id = ?";
+  db.query(sql, [newEmail, barbeariaId], (err, result) =>{
+    if(err){
+      console.error("Erro ao atualizar o email de usuário barbearia", err);
+      return res.status(500).json({Error: "Internal Server Error"});
+    }else{
+      if(result){
+        return res.status(200).json({Success: "Success"});
+      }
+    }
+  })
+});
+
 // Inicia o servidor na porta especificada
 app.listen(port, () => {
     console.log("Servidor rodando");
