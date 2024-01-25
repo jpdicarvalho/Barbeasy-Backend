@@ -505,7 +505,7 @@ app.get('/api/status-barbearia/:barbeariaId', (req, res) =>{
 app.post('/api/update-barbearia-name/:barbeariaId', (req, res) => {
   const barbeariaId = req.params.barbeariaId;
   const novoNomeBarbearia = req.body.novoNome;
-   console.log(barbeariaId, novoNomeBarbearia)
+
   const sql = "UPDATE barbearia SET name = ? WHERE id = ?";
   db.query(sql, [novoNomeBarbearia, barbeariaId], (err, result) =>{
     if(err){
