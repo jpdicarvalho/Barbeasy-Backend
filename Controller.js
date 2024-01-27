@@ -683,6 +683,51 @@ app.get('/api/update-password-barbearia', (req, res) => {
   })
 });
 
+//Rota para atualizar a agenda da barbearia
+app.post('/api/update-agenda/:barbeariaId', (req, res) => {
+  //Obtendo as variáveis enviadas
+  const barbeariaId = req.params.barbeariaId;
+  const daysWeekSelected = req.body.daysWeek;
+  const QntDaysSelected = req.body.qntDays;
+
+  //Concatenando os nomes dos dias da semana selecionado
+  const daysWeekName = daysWeekSelected.join(',');
+
+  //Verificando se há registro na agenda referente a barbearia informada
+  const sql = "SELECT * FROM agenda WHERE barbearia_id = ?";
+  db.query(sql, [barbeariaId], (err, result) => {
+    if(err){
+      console.error("Erro ao encontrar registro na agenda", err);
+      return res.status(500).json({Error: "Internal Server Error"});
+    }else{
+      if(result.length > 0){
+        const sqlUpdate = "UPDATE agenda SET dias = ?, qnt_dias = ? WHERE barbearia_id = ?";
+        db.query(sqlUpdate, [daysWeekName, QntDaysSelected, barbeariaId], (err, result) =>{
+          if(err){
+            console.error("Erro ao cadastrar agenda da barbearia", err);
+            return res.status(500).json({Error: "Internal Server Error"});
+          }else{
+            if(result){
+              return res.status(200).json({Success: "Success"});
+            }
+          }
+        })
+      }else{
+        const sqlInsert = "INSERT INTO agenda (barbearia_id, dias, qnt_dias) VALUES (?, ?, ?)";
+        db.query(sqlInsert, [barbeariaId, daysWeekName, QntDaysSelected], (err, result) =>{
+          if(err){
+            console.error("Erro ao cadastrar agenda da barbearia", err);
+            return res.status(500).json({Error: "Internal Server Error"});
+          }else{
+            if(result){
+              return res.status(200).json({Success: "Success"});
+            }
+          }
+        })
+      }
+    }
+  })
+});
 
 
 
