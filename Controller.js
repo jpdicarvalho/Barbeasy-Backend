@@ -729,6 +729,28 @@ app.post('/api/update-agenda/:barbeariaId', (req, res) => {
   })
 });
 
+//Rota para obter informações da agenda da barbearia
+app.get('/api/agenda/:barbeariaId', (req, res) => {
+  const barbeariaId = req.params.barbeariaId;
+  
+  const sql = "SELECT dias, qnt_dias FROM agenda WHERE barbearia_id = ?";
+  db.query(sql, [barbeariaId], (err, result) => {
+    if(err) {
+      console.error("Erro ao buscar as informações da agenda da barbearia", err);
+      return res.status(500).json({Error: "Internal Server Error"});
+    }else{
+      if(result.length > 0) {
+        const agenda = [];
+
+        agenda.push(result[0].dias);
+        agenda.push(result[0].qnt_dias);
+
+        return res.status(200).json({ Agenda: agenda});
+      }
+    }
+  })
+});
+
 
 
 
