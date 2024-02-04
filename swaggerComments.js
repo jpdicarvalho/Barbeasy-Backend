@@ -200,30 +200,31 @@
  *     description: Rota utilizada para registrar uma nova barbearia.
  *     tags:
  *       - User-Barbearia
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               name:
- *                 type: string
- *                 description: Nome da barbearia.
- *               email:
- *                 type: string
- *                 format: email
- *                 description: Endereço de e-mail da barbearia.
- *               usuario:
- *                 type: string
- *                 description: Nome de usuário da barbearia.
- *               senha:
- *                 type: string
- *                 format: password
- *                 description: Senha da barbearia (criptografada).
- *               endereco:
- *                 type: string
- *                 description: Endereço da barbearia.
+ *     parameters:
+ *       - in: body
+ *         name: barbearia
+ *         description: Dados da barbearia a serem cadastrados.
+ *         required: true
+ *         schema:
+ *           type: object
+ *           properties:
+ *             name:
+ *               type: string
+ *               description: Nome da barbearia.
+ *             email:
+ *               type: string
+ *               format: email
+ *               description: Endereço de e-mail da barbearia.
+ *             usuario:
+ *               type: string
+ *               description: Nome de usuário da barbearia.
+ *             senha:
+ *               type: string
+ *               format: password
+ *               description: Senha da barbearia (criptografada).
+ *             endereco:
+ *               type: string
+ *               description: Endereço da barbearia.
  *     responses:
  *       201:
  *         description: Barbearia registrada com sucesso.
