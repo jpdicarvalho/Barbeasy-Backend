@@ -142,32 +142,44 @@
  *     description: Rota utilizada para cadastrar a avaliação do usuário sobre uma barbearia.
  *     tags:
  *       - User-Client-Barbearia
+ *     parameters:
+ *       - in: body
+ *         name: avaliacao
+ *         description: Objeto contendo os dados da avaliação do usuário.
+ *         required: true
+ *         schema:
+ *           type: object
+ *           properties:
+ *             userName:
+ *               type: string
+ *               description: Nome do usuário que está fazendo a avaliação.
+ *             barbeariaId:
+ *               type: integer
+ *               description: ID da barbearia que está sendo avaliada.
+ *             avaliacao:
+ *               type: integer
+ *               description: Avaliação em estrelas (de 1 a 5) dada pelo usuário.
+ *             comentario:
+ *               type: string
+ *               description: Comentário sobre a experiência na barbearia.
+ *             data_avaliacao:
+ *               type: string
+ *               format: date
+ *               description: Data da avaliação.
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               userName:
- *                 type: string
- *                 description: Nome do usuário que está fazendo a avaliação.
- *               barbeariaId:
- *                 type: integer
- *                 description: ID da barbearia que está sendo avaliada.
- *               avaliacao:
- *                 type: integer
- *                 description: Avaliação em estrelas (de 1 a 5) dada pelo usuário.
- *               comentario:
- *                 type: string
- *                 description: Comentário sobre a experiência na barbearia.
- *               data_avaliacao:
- *                 type: string
- *                 format: date
- *                 description: Data da avaliação.
+ *           example:
+ *             userName: "João"
+ *             barbeariaId: 1
+ *             avaliacao: 5
+ *             comentario: "Excelente serviço!"
+ *             data_avaliacao: "2024-02-05"
  *     responses:
  *       201:
  *         description: Avaliação registrada com sucesso.
  *       500:
  *         description: Erro interno do servidor ao registrar avaliação.
  */
+

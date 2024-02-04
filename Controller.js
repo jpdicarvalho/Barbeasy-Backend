@@ -156,11 +156,11 @@ app.get('/api/listServico', async (req, res)=>{
 app.post("/api/avaliacao", (req, res) => {
   const sql = "INSERT INTO avaliacoes (`user_name`,`barbearia_id`, `estrelas`, `comentarios`, `data_avaliacao`) VALUES (?)";
   const values = [
-    req.body.userName,
-    req.body.barbeariaId,
-    req.body.avaliacao,
-    req.body.comentario,
-    req.body.data_avaliacao
+    req.body.userName, //String
+    req.body.barbeariaId, //interge
+    req.body.avaliacao, //interge
+    req.body.comentario, //String
+    req.body.data_avaliacao //String
   ]
   db.query(sql, [values], (err, result) => {
     if (err) {
