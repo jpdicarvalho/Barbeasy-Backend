@@ -1,5 +1,4 @@
 /**
- * ### ROTAS USER-CLIENT-BARBEARIA
  * @swagger
  * /api/SignUp:
  *   post:
@@ -43,7 +42,6 @@
  *       500:
  *         description: Erro interno do servidor ao registrar usuário.
  */
-
 /**
  * @swagger
  * /api/SignIn:
@@ -75,7 +73,6 @@
  *       500:
  *         description: Erro interno do servidor ao autenticar usuário.
  */
-
 /**
  * @swagger
  * /api/listBarbearia:
