@@ -75,7 +75,7 @@
  *     summary: Listando as barbearias cadastradas
  *     description: Rota utilizada para obter uma lista de todas as barbearias cadastradas no sistema.
  *     tags:
- *       - Listar Barbearia
+ *       - User-Client-Barbearia
  *     responses:
  *       200:
  *         description: Lista de barbearias obtida com sucesso.
@@ -108,7 +108,7 @@
  *     summary: Listando os Serviços cadastrados pelas barbearias
  *     description: Rota utilizada para listar os serviços cadastrados pelas barbearias.
  *     tags:
- *       - Listar Serviços
+ *       - User-Client-Barbearia
  *     responses:
  *       200:
  *         description: Lista de serviços cadastrados pelas barbearias.
@@ -170,16 +170,34 @@
  *       required: true
  *       content:
  *         application/json:
- *           example:
- *             userName: "João"
- *             barbeariaId: 1
- *             avaliacao: 5
- *             comentario: "Excelente serviço!"
- *             data_avaliacao: "2024-02-05"
+ *           schema:
+ *             type: object
  *     responses:
  *       201:
  *         description: Avaliação registrada com sucesso.
  *       500:
  *         description: Erro interno do servidor ao registrar avaliação.
  */
+/**
+ * @swagger
+ * /api/SearchAvaliation:
+ *   get:
+ *     summary: Buscando a avaliação da barbearia em específico
+ *     description: Rota utilizada para buscar as avaliações de uma barbearia específica.
+ *     tags:
+ *       - User-Client-Barbearia
+ *     parameters:
+ *       - in: query
+ *         name: barbeariaId
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: ID da barbearia para a qual deseja-se obter as avaliações.
+ *     responses:
+ *       200:
+ *         description: Lista de avaliações da barbearia obtida com sucesso.
+ *       500:
+ *         description: Erro interno do servidor ao buscar as avaliações da barbearia.
+ */
+
 
