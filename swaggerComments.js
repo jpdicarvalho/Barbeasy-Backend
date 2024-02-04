@@ -144,7 +144,7 @@
  *       - User-Client-Barbearia
  *     parameters:
  *       - in: body
- *         name: avaliacao
+ *         name: Avaliação
  *         description: Objeto contendo os dados da avaliação do usuário.
  *         required: true
  *         schema:
@@ -156,7 +156,7 @@
  *             barbeariaId:
  *               type: integer
  *               description: ID da barbearia que está sendo avaliada.
- *             avaliacao:
+ *             estrelas:
  *               type: integer
  *               description: Avaliação em estrelas (de 1 a 5) dada pelo usuário.
  *             comentario:
@@ -164,14 +164,7 @@
  *               description: Comentário sobre a experiência na barbearia.
  *             data_avaliacao:
  *               type: string
- *               format: date
  *               description: Data da avaliação.
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
  *     responses:
  *       201:
  *         description: Avaliação registrada com sucesso.
