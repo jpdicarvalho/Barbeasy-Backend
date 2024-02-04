@@ -76,20 +76,28 @@
  *     description: Rota utilizada para obter uma lista de todas as barbearias cadastradas no sistema.
  *     tags:
  *       - Listar Barbearia
- *     parameters:
- *       - in: query
- *         name: page
- *         schema:
- *           type: integer
- *         description: Número da página a ser recuperada
- *       - in: query
- *         name: limit
- *         schema:
- *           type: integer
- *         description: Número máximo de resultados por página
  *     responses:
  *       200:
  *         description: Lista de barbearias obtida com sucesso.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   id:
+ *                     type: integer
+ *                     description: ID da barbearia.
+ *                   nome:
+ *                     type: string
+ *                     description: Nome da barbearia.
+ *                   endereco:
+ *                     type: string
+ *                     description: Endereço da barbearia.
+ *                   telefone:
+ *                     type: string
+ *                     description: Número de telefone da barbearia.
  *       500:
  *         description: Erro interno do servidor ao obter a lista de barbearias.
  */
@@ -125,4 +133,41 @@
  *                     description: Preço do serviço.
  *       500:
  *         description: Erro interno do servidor ao listar serviços.
+ */
+/**
+ * @swagger
+ * /api/avaliacao:
+ *   post:
+ *     summary: Cadastrando a avaliação do usuário
+ *     description: Rota utilizada para cadastrar a avaliação do usuário sobre uma barbearia.
+ *     tags:
+ *       - User-Client-Barbearia
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               userName:
+ *                 type: string
+ *                 description: Nome do usuário que está fazendo a avaliação.
+ *               barbeariaId:
+ *                 type: integer
+ *                 description: ID da barbearia que está sendo avaliada.
+ *               avaliacao:
+ *                 type: integer
+ *                 description: Avaliação em estrelas (de 1 a 5) dada pelo usuário.
+ *               comentario:
+ *                 type: string
+ *                 description: Comentário sobre a experiência na barbearia.
+ *               data_avaliacao:
+ *                 type: string
+ *                 format: date
+ *                 description: Data da avaliação.
+ *     responses:
+ *       201:
+ *         description: Avaliação registrada com sucesso.
+ *       500:
+ *         description: Erro interno do servidor ao registrar avaliação.
  */
