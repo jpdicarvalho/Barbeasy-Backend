@@ -8,7 +8,7 @@ const swaggerOptions = {
   swaggerDefinition: {
     info: {
       title: 'Barbeasy-API',
-      description: "### Barbeasy API é uma plataforma simplificada para agendamento e pagamentos de serviços de barbearias.",
+      description: "### Barbeasy API é uma plataforma intuitiva para realizar agendamento e pagamentos de serviços de barbearias.",
       version: '1.0.0',
       contact: {
         name: 'jp.dicarvalho',
