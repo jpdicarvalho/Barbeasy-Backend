@@ -11,6 +11,8 @@ import MercadoPago from "mercadopago";
 import multer from 'multer';
 import { S3Client, PutObjectCommand, GetObjectCommand, DeleteObjectCommand } from '@aws-sdk/client-s3';
 
+import { serveSwaggerUI, setupSwaggerUI } from './swaggerConfig.js';
+
 import 'dotenv/config'
 
 const app = express();
@@ -38,6 +40,9 @@ db.connect((error) => {
     console.log('Conexão bem-sucedida ao banco de dados!');
   }
 });
+
+// Inicializando o Swagger
+app.use('/api-docs', serveSwaggerUI, setupSwaggerUI);
 
 //Set multer
 const storage = multer.memoryStorage()
