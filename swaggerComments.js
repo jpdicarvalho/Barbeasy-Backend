@@ -6,34 +6,27 @@
  *     description: Rota utilizada para registrar um novo usuário com informações criptografadas.
  *     tags:
  *       - User
- *     parameters:
- *       - in: body
- *         name: user
- *         description: Dados do usuário a serem cadastrados.
- *         required: true
- *         schema:
- *           type: object
- *           properties:
- *             name:
- *               type: string
- *               description: Nome do usuário.
- *             email:
- *               type: string
- *               format: email
- *               description: Endereço de e-mail do usuário.
- *             senha:
- *               type: string
- *               format: password
- *               description: Senha do usuário (criptografada).
- *             celular:
- *               type: string
- *               description: Número de celular do usuário.
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/User'
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *                 description: Nome do usuário.
+ *               email:
+ *                 type: string
+ *                 format: email
+ *                 description: Endereço de e-mail do usuário.
+ *               senha:
+ *                 type: string
+ *                 format: password
+ *                 description: Senha do usuário (criptografada).
+ *               celular:
+ *                 type: string
+ *                 description: Número de celular do usuário.
  *     responses:
  *       201:
  *         description: Usuário registrado com sucesso.
