@@ -194,7 +194,7 @@
  */
 /**
  * @swagger
- * /SignUp_Barbearia:
+ * /api/SignUp-Barbearia:
  *   post:
  *     summary: Cadastro de usuário Barbearia
  *     description: Rota utilizada para registrar uma nova barbearia.
