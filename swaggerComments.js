@@ -5,7 +5,7 @@
  *     summary: Cadastro de usuário com senha criptografada
  *     description: Rota utilizada para registrar um novo usuário com informações criptografadas.
  *     tags:
- *       - User
+ *       - SignUp User-Client-Barbearia
  *     requestBody:
  *       required: true
  *       content:
@@ -42,7 +42,7 @@
  *     summary: Realizando Login e Gerando Token de autenticação
  *     description: Rota utilizada para autenticar um usuário e gerar um token de autenticação.
  *     tags:
- *       - Authentication
+ *       - SignIn User-Client-Barbearia
  *     requestBody:
  *       required: true
  *       content:
@@ -73,7 +73,7 @@
  *     summary: Listando as barbearias cadastradas
  *     description: Rota utilizada para obter uma lista de todas as barbearias cadastradas no sistema.
  *     tags:
- *       - Barber Shops
+ *       - Listar Barbearia
  *     parameters:
  *       - in: query
  *         name: page
