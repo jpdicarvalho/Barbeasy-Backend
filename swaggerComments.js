@@ -192,5 +192,46 @@
  *       500:
  *         description: Erro interno do servidor ao buscar as avaliações da barbearia.
  */
+/**
+ * @swagger
+ * /SignUp_Barbearia:
+ *   post:
+ *     summary: Cadastro de usuário Barbearia
+ *     description: Rota utilizada para registrar uma nova barbearia.
+ *     tags:
+ *       - User-Barbearia
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *                 description: Nome da barbearia.
+ *               email:
+ *                 type: string
+ *                 format: email
+ *                 description: Endereço de e-mail da barbearia.
+ *               usuario:
+ *                 type: string
+ *                 description: Nome de usuário da barbearia.
+ *               senha:
+ *                 type: string
+ *                 format: password
+ *                 description: Senha da barbearia (criptografada).
+ *               endereco:
+ *                 type: string
+ *                 description: Endereço da barbearia.
+ *     responses:
+ *       201:
+ *         description: Barbearia registrada com sucesso.
+ *       400:
+ *         description: E-mail já cadastrado. Por favor, escolha outro e-mail.
+ *       500:
+ *         description: Erro interno do servidor ao registrar barbearia.
+ */
+
 
 
