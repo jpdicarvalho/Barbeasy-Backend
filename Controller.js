@@ -10,7 +10,6 @@ import MercadoPago from "mercadopago";
 
 import multer from 'multer';
 import { S3Client, PutObjectCommand, GetObjectCommand, DeleteObjectCommand } from '@aws-sdk/client-s3';
-import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
 import 'dotenv/config'
 
@@ -39,6 +38,7 @@ db.connect((error) => {
     console.log('Conexão bem-sucedida ao banco de dados!');
   }
 });
+
 //Set multer
 const storage = multer.memoryStorage()
 const upload = multer({storage: storage})
@@ -57,9 +57,10 @@ const s3 = new S3Client({
   region: awsRegion
 });
 
-//ROTAS USER-CLIENT-BARBEARIA
+//=-=-=-=-= ROTAS USER-CLIENT-BARBEARIA =-=-=-=-=
+
 // Cadastro de usuário com senha criptografada
-app.post("/SignUp", async (req, res) => {
+app.post("/api/SignUp", async (req, res) => {
   const { name, email, senha, celular } = req.body;
 
   // Verificação se o e-mail ou o número de celular já estão cadastrado
@@ -98,7 +99,7 @@ app.post("/SignUp", async (req, res) => {
 });
 
 //Realizando Login e Gerando Token de autenticação
-app.post('/SignIn', async (req, res) => {
+app.post('/api/SignIn', async (req, res) => {
   const {email, senha} = req.body;
 
   // Buscar usuário pelo email
@@ -122,7 +123,7 @@ app.post('/SignIn', async (req, res) => {
 });
 
 //listando as barbearias cadastradas
-app.get('/listBarbearia', async (req, res) => {
+app.get('/api/listBarbearia', async (req, res) => {
   try {
     db.query('SELECT * FROM barbearia', (err, rows) => {
       if (err) throw err;
@@ -135,7 +136,7 @@ app.get('/listBarbearia', async (req, res) => {
 });
 
 /*listando os Serviços cadastrados pelas barbearias*/
-app.get('/listServico', async (req, res)=>{
+app.get('/api/listServico', async (req, res)=>{
   try {
     db.query('SELECT * FROM servico', (err, rows) => {
       if (err) throw err;
@@ -147,7 +148,7 @@ app.get('/listServico', async (req, res)=>{
 });
 
 //Cadastrando a avaliação do usuário
-app.post("/avaliacao", (req, res) => {
+app.post("/api/avaliacao", (req, res) => {
   const sql = "INSERT INTO avaliacoes (`user_name`,`barbearia_id`, `estrelas`, `comentarios`, `data_avaliacao`) VALUES (?)";
   const values = [
     req.body.userName,
@@ -167,7 +168,7 @@ app.post("/avaliacao", (req, res) => {
 });
 
 //Buscando a avaliação da barbearia em especifico
-app.get('/SearchAvaliation', async(req, res)=>{
+app.get('/api/SearchAvaliation', async(req, res)=>{
   try {
     db.query('SELECT * FROM avaliacoes', (err, rows) => {
       if (err) throw err;
@@ -179,7 +180,7 @@ app.get('/SearchAvaliation', async(req, res)=>{
 });
 
 //Salvando o agendamento feito pelo cliente
-app.post('/agendamento', (req, res) => {
+app.post('/api/agendamento', (req, res) => {
   const { selectedDate, selectedTime, selectedService, barbeariaId, userId} = req.body;
   db.query('INSERT INTO agendamentos (dia_agendamento, horario, user_id, barbearia_id, servico_id) VALUES (?, ?, ?, ?, ?)', 
     [selectedDate, selectedTime, userId, barbeariaId, selectedService], 
@@ -194,7 +195,7 @@ app.post('/agendamento', (req, res) => {
 });
 
 //RoutesPayment
-app.post('/Checkout', async (req, res) => {
+app.post('/api/Checkout', async (req, res) => {
   //set API Mercago Pago
   const client = new MercadoPago.MercadoPagoConfig({
     accessToken: process.env.accessTokenMercadoPago,
@@ -230,7 +231,7 @@ app.post('/Checkout', async (req, res) => {
    }).catch(function (error){
      console.log(error);
    });
- });
+});
 
 //ROTAS USER-BARBEARIA
 
@@ -750,9 +751,6 @@ app.get('/api/agenda/:barbeariaId', (req, res) => {
     }
   })
 });
-
-
-
 
 // Inicia o servidor na porta especificada
 app.listen(port, () => {
