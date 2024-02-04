@@ -156,7 +156,7 @@
  *             barbeariaId:
  *               type: integer
  *               description: ID da barbearia que está sendo avaliada.
- *             estrelas:
+ *             avaliacao:
  *               type: integer
  *               description: Avaliação em estrelas (de 1 a 5) dada pelo usuário.
  *             comentario:
