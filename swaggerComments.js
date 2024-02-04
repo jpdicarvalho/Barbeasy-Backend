@@ -93,3 +93,36 @@
  *       500:
  *         description: Erro interno do servidor ao obter a lista de barbearias.
  */
+/**
+ * @swagger
+ * /api/listServico:
+ *   get:
+ *     summary: Listando os Serviços cadastrados pelas barbearias
+ *     description: Rota utilizada para listar os serviços cadastrados pelas barbearias.
+ *     tags:
+ *       - Listar Serviços
+ *     responses:
+ *       200:
+ *         description: Lista de serviços cadastrados pelas barbearias.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   id:
+ *                     type: integer
+ *                     description: ID do serviço.
+ *                   nome:
+ *                     type: string
+ *                     description: Nome do serviço.
+ *                   descricao:
+ *                     type: string
+ *                     description: Descrição do serviço.
+ *                   preco:
+ *                     type: number
+ *                     description: Preço do serviço.
+ *       500:
+ *         description: Erro interno do servidor ao listar serviços.
+ */
