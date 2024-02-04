@@ -44,21 +44,22 @@
  *     description: Rota utilizada para autenticar um usuário e gerar um token de autenticação.
  *     tags:
  *       - User-Client-Barbearia
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               email:
- *                 type: string
- *                 format: email
- *                 description: Endereço de e-mail do usuário.
- *               senha:
- *                 type: string
- *                 format: password
- *                 description: Senha do usuário.
+ *     parameters:
+ *       - in: body
+ *         name: userCredentials
+ *         description: Credenciais de login do usuário.
+ *         required: true
+ *         schema:
+ *           type: object
+ *           properties:
+ *             email:
+ *               type: string
+ *               format: email
+ *               description: Endereço de e-mail do usuário.
+ *             senha:
+ *               type: string
+ *               format: password
+ *               description: Senha do usuário.
  *     responses:
  *       200:
  *         description: Usuário autenticado com sucesso. Retorna um token de autenticação.
