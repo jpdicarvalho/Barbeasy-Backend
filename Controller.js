@@ -241,7 +241,7 @@ app.post('/api/Checkout', async (req, res) => {
 //ROTAS USER-BARBEARIA
 
 //Cadastro de ususário Barbearia
-app.post("/SignUp_Barbearia", async (req, res) => {
+app.post("/api/SignUp-Barbearia", async (req, res) => {
   const { name, email, usuario, senha, endereco } = req.body;
 
   // Verificação se o e-mail já está cadastrado
