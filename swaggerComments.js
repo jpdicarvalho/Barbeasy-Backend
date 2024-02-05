@@ -240,7 +240,7 @@
  *     summary: Realizando Login e Gerando Token de autenticação
  *     description: Rota utilizada para autenticar uma barbearia e gerar um token de autenticação.
  *     tags:
- *       - Barbearia
+ *       - User-Barbearia
  *     parameters:
  *       - in: body
  *         name: barbeariaLogin
@@ -265,5 +265,31 @@
  *       500:
  *         description: Erro interno do servidor ao autenticar barbearia.
  */
+/**
+ * @swagger
+ * /api/upload-image-user-barbearia:
+ *   post:
+ *     summary: Upload de Imagem do Usuário Barbearia, na AWS S3
+ *     description: Rota utilizada para realizar o upload de imagem do usuário barbearia para o AWS S3.
+ *     tags:
+ *       - User-Barbearia
+ *     parameters:
+ *       - in: formData
+ *         name: image
+ *         description: Arquivo de imagem a ser enviado.
+ *         required: true
+ *         type: file
+ *       - in: formData
+ *         name: barbeariaId
+ *         description: ID da barbearia associada à imagem.
+ *         required: true
+ *         type: string
+ *     responses:
+ *       200:
+ *         description: Imagem do usuário barbearia foi carregada com sucesso.
+ *       500:
+ *         description: Erro interno do servidor ao realizar o upload da imagem.
+ */
+
 
 
