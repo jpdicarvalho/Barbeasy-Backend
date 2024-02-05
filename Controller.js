@@ -278,7 +278,7 @@ app.post("/api/SignUp-Barbearia", async (req, res) => {
 });
 
 //Realizando Login e Gerando Token de autenticação
-app.post('/SignIn_Barbearia', async (req, res) => {
+app.post('/api/SignIn-Barbearia', async (req, res) => {
   const {email, senha} = req.body;
 
   // Buscar usuário pelo email

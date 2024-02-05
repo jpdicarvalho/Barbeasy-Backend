@@ -233,6 +233,37 @@
  *       500:
  *         description: Erro interno do servidor ao registrar barbearia.
  */
-
+/**
+ * @swagger
+ * /api/SignIn-Barbearia:
+ *   post:
+ *     summary: Realizando Login e Gerando Token de autenticação
+ *     description: Rota utilizada para autenticar uma barbearia e gerar um token de autenticação.
+ *     tags:
+ *       - Barbearia
+ *     parameters:
+ *       - in: body
+ *         name: barbeariaLogin
+ *         description: Dados de login da barbearia.
+ *         required: true
+ *         schema:
+ *           type: object
+ *           properties:
+ *             email:
+ *               type: string
+ *               format: email
+ *               description: Endereço de e-mail da barbearia.
+ *             senha:
+ *               type: string
+ *               format: password
+ *               description: Senha da barbearia.
+ *     responses:
+ *       200:
+ *         description: Barbearia autenticada com sucesso. Retorna um token de autenticação.
+ *       404:
+ *         description: Barbearia não encontrada.
+ *       500:
+ *         description: Erro interno do servidor ao autenticar barbearia.
+ */
 
 
