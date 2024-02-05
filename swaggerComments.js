@@ -337,9 +337,10 @@
  *     parameters:
  *       - in: formData
  *         name: images
- *         description: Arquivos de imagens de banners a serem enviados.
+ *         description: Arquivos de imagens de banners a serem enviados (máximo de 5 imagens).
  *         required: true
  *         type: array
+ *         maxItems: 5
  *         items:
  *           type: file
  *       - in: formData
@@ -353,6 +354,7 @@
  *       500:
  *         description: Erro interno do servidor ao lidar com o upload de imagens de banners.
  */
+
 /**
  * @swagger
  * /api/banner-images:
