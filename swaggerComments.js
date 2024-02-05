@@ -273,6 +273,8 @@
  *     description: Rota utilizada para realizar o upload de imagem do usuário barbearia para o AWS S3.
  *     tags:
  *       - User-Barbearia
+ *     consumes:
+ *       - multipart/form-data
  *     parameters:
  *       - in: formData
  *         name: image
@@ -287,6 +289,8 @@
  *     responses:
  *       200:
  *         description: Imagem do usuário barbearia foi carregada com sucesso.
+ *       400:
+ *         description: Requisição inválida. Certifique-se de enviar todos os parâmetros necessários.
  *       500:
  *         description: Erro interno do servidor ao realizar o upload da imagem.
  */
@@ -320,5 +324,38 @@
  *       500:
  *         description: Erro interno do servidor ao obter a imagem de usuário.
  */
+/**
+ * @swagger
+ * /api/status-update/{barbeariaId}:
+ *   post:
+ *     summary: Atualização do Status da Barbearia
+ *     description: Rota utilizada para atualizar o status da barbearia para 'Aberta' ou 'Fechada'.
+ *     tags:
+ *       - User-Barbearia
+ *     parameters:
+ *       - in: path
+ *         name: barbeariaId
+ *         required: true
+ *         description: ID da barbearia a ser atualizada.
+ *         schema:
+ *           type: integer
+ *       - in: body
+ *         name: Status
+ *         description: Objeto contendo o novo status da barbearia ('Aberta' ou 'Fechada').
+ *         required: true
+ *         schema:
+ *           type: object
+ *           properties:
+ *             Status:
+ *               type: string
+ *               enum: [Aberta, Fechada]
+ *               description: Novo status da barbearia.
+ *     responses:
+ *       200:
+ *         description: Status da barbearia atualizado com sucesso.
+ *       500:
+ *         description: Erro interno do servidor ao atualizar o status da barbearia.
+ */
+
 
 
