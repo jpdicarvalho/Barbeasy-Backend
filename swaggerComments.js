@@ -354,7 +354,6 @@
  *       500:
  *         description: Erro interno do servidor ao lidar com o upload de imagens de banners.
  */
-
 /**
  * @swagger
  * /api/banner-images:
@@ -420,6 +419,58 @@
  *       500:
  *         description: Erro interno do servidor ao atualizar o status da barbearia.
  */
+/**
+ * @swagger
+ * /api/status-barbearia/{barbeariaId}:
+ *   get:
+ *     summary: Obter o status da barbearia
+ *     description: Rota utilizada para obter o status da barbearia com base no ID fornecido.
+ *     tags:
+ *       - User-Barbearia
+ *     parameters:
+ *       - in: path
+ *         name: barbeariaId
+ *         required: true
+ *         description: ID da barbearia.
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Status da barbearia retornado com sucesso.
+ *       500:
+ *         description: Erro interno do servidor ao buscar o status da barbearia.
+ */
+/**
+ * @swagger
+ * /api/update-barbearia-name/{barbeariaId}:
+ *   post:
+ *     summary: Atualizar o nome da barbearia
+ *     description: Rota utilizada para atualizar o nome da barbearia com base no ID fornecido.
+ *     tags:
+ *       - User-Barbearia
+ *     parameters:
+ *       - in: path
+ *         name: barbeariaId
+ *         required: true
+ *         description: ID da barbearia.
+ *         schema:
+ *           type: integer
+ *       - in: body
+ *         name: novoNome
+ *         description: Novo nome da barbearia.
+ *         required: true
+ *         schema:
+ *           type: object
+ *           properties:
+ *             novoNome:
+ *               type: string
+ *     responses:
+ *       200:
+ *         description: Nome da barbearia atualizado com sucesso.
+ *       500:
+ *         description: Erro interno do servidor ao atualizar o nome da barbearia.
+ */
+
 
 
 
