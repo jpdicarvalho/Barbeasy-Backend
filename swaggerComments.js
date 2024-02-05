@@ -283,13 +283,42 @@
  *         name: barbeariaId
  *         description: ID da barbearia associada à imagem.
  *         required: true
- *         type: string
+ *         type: integer
  *     responses:
  *       200:
  *         description: Imagem do usuário barbearia foi carregada com sucesso.
  *       500:
  *         description: Erro interno do servidor ao realizar o upload da imagem.
  */
-
+/**
+ * @swagger
+ * /api/image-user-barbearia:
+ *   get:
+ *     summary: Obter a imagem de usuário da barbearia
+ *     description: Rota utilizada para obter a imagem de usuário da barbearia com base no ID da barbearia.
+ *     tags:
+ *       - User-Barbearia
+ *     parameters:
+ *       - in: query
+ *         name: barbeariaId
+ *         description: ID da barbearia para a qual a imagem do usuário será obtida.
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: URL da imagem de usuário da barbearia.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 url:
+ *                   type: string
+ *                   format: uri
+ *                   description: URL da imagem de usuário da barbearia.
+ *       500:
+ *         description: Erro interno do servidor ao obter a imagem de usuário.
+ */
 
 
