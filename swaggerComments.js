@@ -326,6 +326,68 @@
  */
 /**
  * @swagger
+ * /api/upload-banners-images:
+ *   post:
+ *     summary: Upload de Imagens de Banners
+ *     description: Rota utilizada para lidar com o upload de imagens de banners da barbearia para a AWS S3.
+ *     tags:
+ *       - User-Barbearia
+ *     consumes:
+ *       - multipart/form-data
+ *     parameters:
+ *       - in: formData
+ *         name: images
+ *         description: Arquivos de imagens de banners a serem enviados.
+ *         required: true
+ *         type: array
+ *         items:
+ *           type: file
+ *       - in: formData
+ *         name: barbeariaId
+ *         description: ID da barbearia associada às imagens de banners.
+ *         required: true
+ *         type: integer
+ *     responses:
+ *       200:
+ *         description: Imagens de banners carregadas com sucesso.
+ *       500:
+ *         description: Erro interno do servidor ao lidar com o upload de imagens de banners.
+ */
+/**
+ * @swagger
+ * /api/banner-images:
+ *   get:
+ *     summary: Obter Imagens para o Banner
+ *     description: Rota utilizada para obter as imagens dos banners da barbearia.
+ *     tags:
+ *       - User-Barbearia
+ *     parameters:
+ *       - in: query
+ *         name: barbeariaId
+ *         description: ID da barbearia para a qual as imagens do banner devem ser obtidas.
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Imagens do banner obtidas com sucesso.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 urls:
+ *                   type: array
+ *                   items:
+ *                     type: string
+ *                     format: uri
+ *                     description: URL das imagens do banner.
+ *       500:
+ *         description: Erro interno do servidor ao obter as imagens do banner.
+ */
+
+/**
+ * @swagger
  * /api/status-update/{barbeariaId}:
  *   post:
  *     summary: Atualização do Status da Barbearia
