@@ -470,7 +470,63 @@
  *       500:
  *         description: Erro interno do servidor ao atualizar o nome da barbearia.
  */
-
+/**
+ * @swagger
+ * /api/nome-barbearia/{barbeariaId}:
+ *   get:
+ *     summary: Obter o nome da barbearia
+ *     description: Rota utilizada para obter o nome da barbearia com base no ID fornecido.
+ *     tags:
+ *       - User-Barbearia
+ *     parameters:
+ *       - in: path
+ *         name: barbeariaId
+ *         required: true
+ *         description: ID da barbearia.
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Nome da barbearia retornado com sucesso.
+ *       500:
+ *         description: Erro interno do servidor ao buscar o nome da barbearia.
+ */
+/**
+ * @swagger
+ * /api/update-endereco/{barbeariaId}:
+ *   post:
+ *     summary: Atualizar o endereço da barbearia
+ *     description: Rota utilizada para atualizar o endereço da barbearia com base no ID fornecido.
+ *     tags:
+ *       - User-Barbearia
+ *     parameters:
+ *       - in: path
+ *         name: barbeariaId
+ *         required: true
+ *         description: ID da barbearia.
+ *         schema:
+ *           type: integer
+ *       - in: body
+ *         name: Values
+ *         description: Valores do endereço da barbearia.
+ *         required: true
+ *         schema:
+ *           type: object
+ *           properties:
+ *             street:
+ *               type: string
+ *             number:
+ *               type: string
+ *             neighborhood:
+ *               type: string
+ *             city:
+ *               type: string
+ *     responses:
+ *       200:
+ *         description: Endereço da barbearia atualizado com sucesso.
+ *       500:
+ *         description: Erro interno do servidor ao atualizar o endereço da barbearia.
+ */
 
 
 
