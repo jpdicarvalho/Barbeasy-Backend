@@ -586,8 +586,8 @@
  *         description: Nome de usuário da barbearia atualizado com sucesso.
  *       500:
  *         description: Erro interno do servidor ao atualizar o nome de usuário da barbearia.
- * /
- /**
+ */
+/**
  * @swagger
  * /api/user-name-barbearia/{barbeariaId}:
  *   get:
@@ -694,7 +694,7 @@
  *       500:
  *         description: Erro interno do servidor ao atualizar a senha de usuário da barbearia.
  */
- /**
+/**
  * @swagger 
  * /api/update-agenda/{barbeariaId}:
  *   post:
@@ -728,7 +728,7 @@
  *       500:
  *         description: Erro interno do servidor ao atualizar a agenda da barbearia.
  */
- /** 
+/** 
  * @swagger
  * /api/agenda/{barbeariaId}:
  *   get:
