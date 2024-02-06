@@ -1,12 +1,5 @@
 /**
  * @swagger
- * info:
- *      title: Barbeasy-API
- *      description: Barbeasy API é uma plataforma intuitiva para realizar agendamento e pagamentos de serviços de barbearias.
- *      contact:
- *           email: joaopedro.ufopa@email.com
- * servers:
- *      url: https://api-user-barbeasy.up.railway.app/api-docs/
  * /api/SignUp:
  *   post:
  *     summary: Cadastro de usuário com senha criptografada
