@@ -596,19 +596,22 @@ app.get('/api/endereco/:barbeariaId', (req, res) => {
   })
 });
 
-//Rota para atualizar o nome de usuário da barbearia
 app.post('/api/upload-user-name-barbearia/:barbeariaId', (req, res) => {
   const barbeariaId = req.params.barbeariaId;
-  const newUserName = req.body.newUserName.userName;
+  const newUserName = req.body.newUserName;
+
+  if (!newUserName || !newUserName.userName) {
+    return res.status(400).json({ Error: "Invalid request body" });
+  }
 
   const sql = "UPDATE barbearia SET usuario = ? WHERE id = ?";
-  db.query(sql, [newUserName, barbeariaId], (err, result) =>{
+  db.query(sql, [newUserName.userName, barbeariaId], (err, result) =>{
     if(err){
       console.error("Erro ao atualizar o nome de usuário da barbearia", err);
-      return res.status(500).json({Error: "Internal Server Error"});
-    }else{
-      if(result){
-        return res.status(200).json({Success: "Success"});
+      return res.status(500).json({ Error: "Internal Server Error" });
+    } else {
+      if(result) {
+        return res.status(200).json({ Success: "Success" });
       }
     }
   })
