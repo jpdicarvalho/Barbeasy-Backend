@@ -579,7 +579,7 @@
  *         schema:
  *           type: object
  *           properties:
- *             userName:
+ *             newUserName:
  *               type: string
  *     responses:
  *       200:
