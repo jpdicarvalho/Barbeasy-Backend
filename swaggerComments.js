@@ -495,7 +495,7 @@
  * @swagger
  * /api/update-endereco/{barbeariaId}:
  *   post:
- *     summary: Atualizar o endereço da barbearia
+ *     summary: Atualizar Endereço da Barbearia
  *     description: Rota utilizada para atualizar o endereço da barbearia com base no ID fornecido.
  *     tags:
  *       - User-Barbearia
@@ -527,6 +527,37 @@
  *       500:
  *         description: Erro interno do servidor ao atualizar o endereço da barbearia.
  */
+/**
+ * @swagger
+ * /api/endereco/{barbeariaId}:
+ *   get:
+ *     summary: Obter Endereço da Barbearia
+ *     description: Rota utilizada para obter o endereço da barbearia com base no ID fornecido.
+ *     tags:
+ *       - User-Barbearia
+ *     parameters:
+ *       - in: path
+ *         name: barbeariaId
+ *         required: true
+ *         description: ID da barbearia.
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Endereço da barbearia obtido com sucesso.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 Endereco:
+ *                   type: array
+ *                   items:
+ *                     type: string
+ *       500:
+ *         description: Erro interno do servidor ao obter o endereço da barbearia.
+ */
+
 
 
 
