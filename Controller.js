@@ -577,7 +577,6 @@ app.post('/api/update-endereco/:barbeariaId', (req, res) => {
   });
 });
 
-
 //Rota para obter o endereço da barbearia
 app.get('/api/endereco/:barbeariaId', (req, res) => {
   const barbeariaId = req.params.barbeariaId;

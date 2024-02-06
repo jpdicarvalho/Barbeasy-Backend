@@ -557,7 +557,196 @@
  *       500:
  *         description: Erro interno do servidor ao obter o endereço da barbearia.
  */
-
-
-
+/**
+ * @swagger
+ * /api/upload-user-name-barbearia/{barbeariaId}:
+ *   post:
+ *     summary: Atualizar Nome de Usuário da Barbearia
+ *     description: Rota utilizada para atualizar o nome de usuário da barbearia com base no ID fornecido.
+ *     tags:
+ *       - User-Barbearia
+ *     parameters:
+ *       - in: path
+ *         name: barbeariaId
+ *         required: true
+ *         description: ID da barbearia.
+ *         schema:
+ *           type: integer
+ *       - in: body
+ *         name: newUserName
+ *         description: Novo nome de usuário da barbearia.
+ *         required: true
+ *         schema:
+ *           type: object
+ *           properties:
+ *             userName:
+ *               type: string
+ *     responses:
+ *       200:
+ *         description: Nome de usuário da barbearia atualizado com sucesso.
+ *       500:
+ *         description: Erro interno do servidor ao atualizar o nome de usuário da barbearia.
+ * /
+ /**
+ * @swagger
+ * /api/user-name-barbearia/{barbeariaId}:
+ *   get:
+ *     summary: Obter Nome de Usuário da Barbearia
+ *     description: Rota utilizada para obter o nome de usuário da barbearia com base no ID fornecido.
+ *     tags:
+ *       - User-Barbearia
+ *     parameters:
+ *       - in: path
+ *         name: barbeariaId
+ *         required: true
+ *         description: ID da barbearia.
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Nome de usuário da barbearia obtido com sucesso.
+ *       500:
+ *         description: Erro interno do servidor ao obter o nome de usuário da barbearia.
+ */
+/**
+ * @swagger
+ * /api/upload-email-barbearia/{barbeariaId}:
+ *   post:
+ *     summary: Atualizar Email de Usuário da Barbearia
+ *     description: Rota utilizada para atualizar o email de usuário da barbearia com base no ID fornecido.
+ *     tags:
+ *       - User-Barbearia
+ *     parameters:
+ *       - in: path
+ *         name: barbeariaId
+ *         required: true
+ *         description: ID da barbearia.
+ *         schema:
+ *           type: integer
+ *       - in: body
+ *         name: NewEmail
+ *         description: Novo endereço de email da barbearia.
+ *         required: true
+ *         schema:
+ *           type: object
+ *           properties:
+ *             NewEmail:
+ *               type: string
+ *     responses:
+ *       200:
+ *         description: Email de usuário da barbearia atualizado com sucesso.
+ *       500:
+ *         description: Erro interno do servidor ao atualizar o email de usuário da barbearia.
+ */
+/**
+ * @swagger
+ * /api/email-barbearia/{barbeariaId}:
+ *   get:
+ *     summary: Obter Email de Usuário da Barbearia
+ *     description: Rota utilizada para obter o email de usuário da barbearia com base no ID fornecido.
+ *     tags:
+ *       - User-Barbearia
+ *     parameters:
+ *       - in: path
+ *         name: barbeariaId
+ *         required: true
+ *         description: ID da barbearia.
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Email de usuário da barbearia obtido com sucesso.
+ *       500:
+ *         description: Erro interno do servidor ao obter o email de usuário da barbearia.
+ */
+/**
+ * @swagger
+ * /api/update-password-barbearia:
+ *   get:
+ *     summary: Atualizar Senha de Usuário da Barbearia
+ *     description: Rota utilizada para atualizar a senha de usuário da barbearia.
+ *     tags:
+ *       - User-Barbearia
+ *     parameters:
+ *       - in: query
+ *         name: barbeariaId
+ *         required: true
+ *         description: ID da barbearia.
+ *         schema:
+ *           type: integer
+ *       - in: query
+ *         name: passwordConfirm
+ *         required: true
+ *         description: Senha atual do usuário da barbearia.
+ *         schema:
+ *           type: string
+ *       - in: query
+ *         name: newPassword
+ *         required: true
+ *         description: Nova senha do usuário da barbearia.
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Senha de usuário da barbearia atualizada com sucesso.
+ *       404:
+ *         description: Falha ao atualizar a senha de usuário da barbearia.
+ *       500:
+ *         description: Erro interno do servidor ao atualizar a senha de usuário da barbearia.
+ */
+ /**
+ * @swagger 
+ * /api/update-agenda/{barbeariaId}:
+ *   post:
+ *     summary: Atualizar Agenda da Barbearia
+ *     description: Rota utilizada para atualizar a agenda da barbearia com base no ID fornecido.
+ *     tags:
+ *       - User-Barbearia
+ *     parameters:
+ *       - in: path
+ *         name: barbeariaId
+ *         required: true
+ *         description: ID da barbearia.
+ *         schema:
+ *           type: integer
+ *       - in: body
+ *         name: AgendaData
+ *         description: Dados da agenda da barbearia a serem atualizados.
+ *         required: true
+ *         schema:
+ *           type: object
+ *           properties:
+ *             daysWeek:
+ *               type: array
+ *               items:
+ *                 type: string
+ *             qntDays:
+ *               type: integer
+ *     responses:
+ *       200:
+ *         description: Agenda da barbearia atualizada com sucesso.
+ *       500:
+ *         description: Erro interno do servidor ao atualizar a agenda da barbearia.
+ */
+ /** 
+ * @swagger
+ * /api/agenda/{barbeariaId}:
+ *   get:
+ *     summary: Obter Informações da Agenda da Barbearia
+ *     description: Rota utilizada para obter informações da agenda da barbearia com base no ID fornecido.
+ *     tags:
+ *       - User-Barbearia
+ *     parameters:
+ *       - in: path
+ *         name: barbeariaId
+ *         required: true
+ *         description: ID da barbearia.
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Informações da agenda da barbearia obtidas com sucesso.
+ *       500:
+ *         description: Erro interno do servidor ao obter informações da agenda da barbearia.
+ */
 
