@@ -543,13 +543,19 @@ app.get('/api/nome-barbearia/:barbeariaId', (req, res) => {
   })
 });
 
-//Rota para obter atualizar o endereço da barbearia
+// Rota para obter atualizar o endereço da barbearia
 app.post('/api/update-endereco/:barbeariaId', (req, res) => {
   const barbeariaId = req.params.barbeariaId;
-  const values = req.body.Values;//Obtendo os valores informados pelo usuário
-  const enderocoArray = [];//Array para armazenar os valores separadamente
+  const values = req.body;//Agora estamos pegando o corpo completo da requisição
 
-  //Adicionando os valores no array anterior
+  // Verificando se os valores necessários estão presentes no corpo da requisição
+  if (!values || !values.street || !values.number || !values.neighborhood || !values.city) {
+    return res.status(400).json({ error: "Valores de endereço incompletos" });
+  }
+
+  const enderocoArray = [];
+
+  // Adicionando os valores no array
   enderocoArray.push(values.street);
   enderocoArray.push(values.number);
   enderocoArray.push(values.neighborhood);
@@ -563,13 +569,14 @@ app.post('/api/update-endereco/:barbeariaId', (req, res) => {
     if(err){
       console.error("Erro ao atualizar o endereço da barbearia", err);
       return res.status(500).json({Error: "Internal Server Error"});
-    }else{
-      if(result){
-        return res.status(200).json({Success: "Success"});
+    } else {
+      if(result) {
+        return res.status(200).json({ Success: "Endereço atualizado com sucesso" });
       }
     }
-  })
+  });
 });
+
 
 //Rota para obter o endereço da barbearia
 app.get('/api/endereco/:barbeariaId', (req, res) => {
