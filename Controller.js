@@ -762,6 +762,52 @@ app.get('/api/agenda/:barbeariaId', (req, res) => {
   })
 });
 
+// Rota para salvar a agenda de horários do dia selecionado
+app.post('/api/update-agendaDiaSelecionado/:barbeariaId', (req, res) => {
+  const barbeariaId = req.params.barbeariaId;
+  const agendaDiaSelecionado = req.body.StrAgenda;
+
+  // Objeto para mapear os dias da semana para abreviações
+  const diasDaSemana = {
+      'm': 'dom',
+      'g': 'seg',
+      'r': 'ter',
+      'a': 'qua',
+      'i': 'qui',
+      'x': 'sex',
+      'b': 'sab'
+  };
+
+  // Verifica se a entrada é válida
+  if (typeof agendaDiaSelecionado !== 'string' || agendaDiaSelecionado.length < 3) {
+      return res.status(400).json({ error: 'Entrada inválida' });
+  }
+
+  const diaAbreviado = diasDaSemana[agendaDiaSelecionado[2]];
+
+  if (diaAbreviado) {
+    // Construir a consulta SQL dinamicamente
+    const sql = `UPDATE agenda SET ${diaAbreviado} = ? WHERE barbearia_id = ?`;
+    db.query(sql, [agendaDiaSelecionado, barbeariaId], (err, result) => {
+        if (err) {
+            console.error("Erro ao cadastrar agenda do dia selecionado da barbearia", err);
+            return res.status(500).json({ Error: "Internal Server Error" });
+        } else {
+            if (result) {
+                return res.status(200).json({ Success: "Success" });
+            }
+        }
+    });
+} else {
+    return res.status(404).json({ Error: "Dia da semana desconhecido" });
+}
+});
+
+
+
+
+
+
 // Inicia o servidor na porta especificada
 app.listen(port, () => {
     console.log("Servidor rodando");
