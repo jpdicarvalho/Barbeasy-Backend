@@ -844,6 +844,31 @@ app.get('/api/agendaDiaSelecionado/:barbeariaId', (req, res) =>{
   })
 });
 
+//Rota para salvar a genda de horários para todos os dias definidos
+app.post('/api/update-horariosTodosOsDias/:barbeariaId', (req, res) => {
+  const barbeariaId = req.params.barbeariaId;
+  const strHorariosTodosOsDias = req.body.StrAgenda;
+  const value = 'horarioPadronizado';
+
+  const sql = "UPDATE agenda SET horariosTdias = ? WHERE barbearia_id = ?";
+  db.query(sql, [strHorariosTodosOsDias, barbeariaId], (err, result) =>{
+    if(err){
+      console.error("Erro ao cadastrar agenda para todos os dias definidos da barbearia", err);
+      return res.status(500).json({ Error: "Internal Server Error" });
+    }
+    if(result){
+      const sqlUpdate = "UPDATE agenda SET dom = ?, seg = ?, ter = ?, qua = ?, qui = ?, sex = ?, sab = ? WHERE barbearia_id = ?";
+      db.query(sqlUpdate, [value,value,value,value,value,value,value,barbeariaId], (error, resul) =>{
+        if(error){
+          console.error("Erro ao padronizar os horários de trabalho da barbearia", error);
+          return res.status(500).json({ Error: "Internal Server Error" });
+        }
+        return res.status(200).json({ Success: "Success" });
+      })
+    }
+  })
+});
+
 
 
 
