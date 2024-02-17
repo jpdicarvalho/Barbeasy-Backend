@@ -262,16 +262,16 @@ app.post("/api/SignUp-Barbearia", async (req, res) => {
       usuario,
       senha,
       status: 'Fechado',
-      endereco
+      endereco,
+      user_image: 'user_image',
+      banners: 'banners',
     };
-
     // Inserção no banco de dados
     db.query('INSERT INTO barbearia SET ?', barbearia, (error, results) => {
       if (error) {
         console.error(error);
         return res.status(500).send('Erro ao registrar usuário');
       }
-
       res.status(201).send('Usuário registrado com sucesso');
     });
   });
