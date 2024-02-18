@@ -546,7 +546,7 @@ app.get('/api/nome-barbearia/:barbeariaId', (req, res) => {
 // Rota para obter atualizar o endereço da barbearia
 app.post('/api/update-endereco/:barbeariaId', (req, res) => {
   const barbeariaId = req.params.barbeariaId;
-  const values = req.body;//Agora estamos pegando o corpo completo da requisição
+  const values = req.body.Values;
 
   // Verificando se os valores necessários estão presentes no corpo da requisição
   if (!values || !values.street || !values.number || !values.neighborhood || !values.city) {
