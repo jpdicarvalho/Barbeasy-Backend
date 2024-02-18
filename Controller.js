@@ -571,7 +571,7 @@ app.post('/api/update-endereco/:barbeariaId', (req, res) => {
       return res.status(500).json({Error: "Internal Server Error"});
     } else {
       if(result) {
-        return res.status(200).json({ Success: "Endereço atualizado com sucesso" });
+        return res.status(200).json({ Success: "Success" });
       }
     }
   });
