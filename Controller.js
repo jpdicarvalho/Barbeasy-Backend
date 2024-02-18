@@ -599,7 +599,6 @@ app.get('/api/endereco/:barbeariaId', (req, res) => {
 app.post('/api/upload-user-name-barbearia/:barbeariaId', (req, res) => {
   const barbeariaId = req.params.barbeariaId;
   const newUserName = req.body.newUserName;
-  console.log(barbeariaId, newUserName)
 
   const sql = "UPDATE barbearia SET usuario = ? WHERE id = ?";
   db.query(sql, [newUserName, barbeariaId], (err, result) =>{
