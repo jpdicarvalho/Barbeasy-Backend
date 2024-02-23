@@ -869,7 +869,32 @@ app.post('/api/update-horariosTodosOsDias/:barbeariaId', (req, res) => {
   })
 });
 
+//Rota para cadastrar um novo serviço
+app.post('/api/add-service/:barbeariaId', (req, res) => {
+  const barbearia_id = req.params.barbeariaId;
+  const name = req.body.nameService;
+  const preco = req.body.priceService;
+  const duracao = req.body.time;
 
+  const service = {
+    name,
+    preco,
+    duracao,
+    barbearia_id
+  };
+
+  db.query('INSERT INTO servico SET ?', service, (err, result) =>{
+    if(err){
+      console.error("Erro ao cadastrar o serviço da barbearia", err);
+      return res.status(500).json({ Error: "Internal Server Error" });
+    }else{
+      if(result){
+        return res.status(201).json({ Success: "Success" });
+      }
+    }
+  })
+
+})
 
 
 
