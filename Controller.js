@@ -896,6 +896,23 @@ app.post('/api/add-service/:barbeariaId', (req, res) => {
 
 })
 
+//Rota obter os serviços cadastrados
+app.get('/api/get-service/:barbeariaId', (req, res) =>{
+  const barbeariaId = req.params.barbeariaId;
+
+  const sql="SELECT * FROM servico WHERE barbearia_id = ?"
+  db.query(sql, [barbeariaId], (err, result) =>{
+    if(err){
+      console.error("Erro ao obter os serviços da barbearia", err);
+      return res.status(500).json({ Error: "Internal Server Error" });
+    }else{
+      if(result.length > 0){
+        return res.status(200).json({ Success: "Success", result});//Enviando o array com os horários
+      }
+    }
+  })
+})
+
 
 
 
