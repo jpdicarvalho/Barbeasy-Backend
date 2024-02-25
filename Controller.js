@@ -913,6 +913,48 @@ app.get('/api/get-service/:barbeariaId', (req, res) =>{
   })
 })
 
+// Rota para atualizar informações de um serviço cadastrado
+app.post('/api/update-service/:barbeariaId', (req, res) => {
+  const barbeariaId = req.params.barbeariaId;
+  const { newNomeServiço, newPrecoServiço, newTempoDuracao, servico_Id } = req.body;
+
+  // Construa a query base para atualização dos dados
+  let query = `UPDATE servico SET`;
+
+  // Array para armazenar os valores a serem atualizados
+  const values = [];
+
+  // Verifique se os campos estão preenchidos e adicione à query
+  if (newNomeServiço) {
+    query += ` name = ?,`;
+    values.push(newNomeServiço);
+  }
+  if (newPrecoServiço) {
+    query += ` preco = ?,`;
+    values.push(newPrecoServiço);
+  }
+  if (newTempoDuracao) {
+    query += ` duracao = ?,`;
+    values.push(newTempoDuracao);
+  }
+
+  // Remova a última vírgula da query
+  query = query.slice(0, -1);
+
+  // Adicione as condições WHERE na query
+  query += ` WHERE id = ? AND barbearia_id = ?`;
+  values.push(servico_Id, barbeariaId);
+
+  // Execute a query para atualizar os dados do serviço
+  db.query(query, values, (err, result) => {
+    if (err) {
+      console.error("Erro ao atualizar informações do serviço:", err);
+      res.status(500).json({ Success: "Error", Message: "Erro ao atualizar informações do serviço" });
+    } if(result) {
+      res.status(200).json({ Success: "Success"});
+    }
+  });
+});
 
 
 
