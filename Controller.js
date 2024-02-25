@@ -957,7 +957,6 @@ app.post('/api/update-service/:barbeariaId', (req, res) => {
 });
 
 
-
 // Inicia o servidor na porta especificada
 app.listen(port, () => {
     console.log("Servidor rodando");
