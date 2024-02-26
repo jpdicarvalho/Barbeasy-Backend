@@ -956,6 +956,23 @@ app.post('/api/update-service/:barbeariaId', (req, res) => {
   });
 });
 
+// Rota para deletar um serviço específico
+app.delete('/api/delete-service/:barbeariaId/:servicoId', (req, res) => {
+  const barbeariaId = req.params.barbeariaId;
+  const servicoId = req.params.servicoId;
+
+  const sql="DELETE FROM servico WHERE id = ? AND barbearia_id = ?";
+  db.query(sql, [servicoId, barbeariaId], (err, result) => {
+    if(err){
+      console.error('Erro ao excluir o serviço:', err);
+      return res.status(500).json({ Error: "Error" });
+    }
+    if(result){
+      res.status(200).json({ Success: "Success"});
+    }
+  })
+});
+
 
 // Inicia o servidor na porta especificada
 app.listen(port, () => {
