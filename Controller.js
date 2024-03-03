@@ -872,9 +872,9 @@ app.post('/api/update-horariosTodosOsDias/:barbeariaId', (req, res) => {
 //Rota para cadastrar um novo serviço
 app.post('/api/add-service/:barbeariaId', (req, res) => {
   const barbearia_id = req.params.barbeariaId;
-  const name = req.body.nameService;
-  const preco = req.body.priceService;
-  const duracao = req.body.time;
+  const name = req.body.newNameService; 
+  const preco = req.body.newPriceService;
+  const duracao = req.body.newDuration;
 
   const service = {
     name,
@@ -916,7 +916,7 @@ app.get('/api/get-service/:barbeariaId', (req, res) =>{
 // Rota para atualizar informações de um serviço cadastrado
 app.post('/api/update-service/:barbeariaId', (req, res) => {
   const barbeariaId = req.params.barbeariaId;
-  const { newNomeServiço, newPrecoServiço, newTempoDuracao, servico_Id } = req.body;
+  const { editedServiceName, editedServicePrice, editedDuration, servico_Id } = req.body;
 
   // Construa a query base para atualização dos dados
   let query = `UPDATE servico SET`;
@@ -925,17 +925,17 @@ app.post('/api/update-service/:barbeariaId', (req, res) => {
   const values = [];
 
   // Verifique se os campos estão preenchidos e adicione à query
-  if (newNomeServiço) {
+  if (editedServiceName) {
     query += ` name = ?,`;
-    values.push(newNomeServiço);
+    values.push(editedServiceName);
   }
-  if (newPrecoServiço) {
+  if (editedServicePrice) {
     query += ` preco = ?,`;
-    values.push(newPrecoServiço);
+    values.push(editedServicePrice);
   }
-  if (newTempoDuracao) {
+  if (editedDuration) {
     query += ` duracao = ?,`;
-    values.push(newTempoDuracao);
+    values.push(editedDuration);
   }
 
   // Remova a última vírgula da query
