@@ -264,6 +264,7 @@ app.post("/api/SignUp-Barbearia", async (req, res) => {
       status: 'Fechado',
       endereco,
       user_image: 'user_image',
+      banner_main: 'banner_main',
       banners: 'banners',
     };
     // Inserção no banco de dados
@@ -427,11 +428,15 @@ app.post('/api/upload-banners-images', upload.array('images'), (req, res) => {
             for (let i = 0; i < bannerImages.length; i++) {
               bannerImagesName.push(bannerImages[i].originalname);
             }
+            //Obtém o nome da primeira imagem para defini-lá como principal
+            const bannerMain = bannerImagesName[0];
+
             // Converte o array de nomes em uma string separada por vírgulas
             const bannerImagesNameString = bannerImagesName.join(','); 
+
             //Atualizando o nome das imagens banner no BD MySQL
-            const sql = "UPDATE barbearia SET banners = ? WHERE id IN (?)";
-            db.query(sql, [bannerImagesNameString, barbeariaId], (err, result) => {
+            const sql = "UPDATE barbearia SET banner_main = ?, banners = ? WHERE id IN (?)";
+            db.query(sql, [bannerMain, bannerImagesNameString, barbeariaId], (err, result) => {
               if (err) {
                 console.error('Erro ao atualizar o nome das imagens no banco de dados:', err);
                 return res.status(500).json({ error: 'Internal Server Error' });
