@@ -127,12 +127,27 @@ app.post('/api/SignIn', async (req, res) => {
   });
 });
 
-//listando as barbearias cadastradas
+//Route to get all barbearias
 app.get('/api/listBarbearia', async (req, res) => {
   try {
-    db.query('SELECT * FROM barbearia', (err, rows) => {
-      if (err) throw err;
-      res.json(rows);
+    const sql="SELECT id, name, banner__main, banner_images, status, endereco FROM barbearia";
+    db.query(sql, (err, rows) => {
+      if (err){
+        console.error("Erro ao buscar barbearias:", err);
+        return res.status(500).json({ Success: "Error", Message: "Erro ao buscar barbearias" });
+      }
+      if(rows.length > 0){
+        const sqlService="SELECT name, barbearia_id FROM servico";
+        db.query(sqlService, (error, result) =>{
+          if(error){
+            console.error("Erro ao buscar serviços:", err);
+            return res.status(500).json({ Success: "Error", Message: "Erro ao buscar serviços" });
+          }else{
+            res.json({barbearias: rows, services: result});
+          }
+        })
+      }
+      
     });
   } catch (error) {
     console.error('Erro ao obter os registros:', error);
@@ -823,7 +838,6 @@ app.get('/api/agendaDiaSelecionado/:barbeariaId', (req, res) =>{
     }
     //Verificação de Sucesso na consulta
     if(result.length > 0){
-      console.log(result)
       const timesDays = {
         Dom: result[0].dom,
         Seg: result[0].seg,
