@@ -990,7 +990,7 @@ app.post('/api/create-professional/:barbeariaId', (req, res) => {
       return res.status(401).json({ Unauthorized: "Unauthorized"});
     }else{
       const sqlInsertOnProfessional="INSERT INTO professional (name, email, password, cell_phone, user_image) VALUES (?, ?, ?, ?, ?);"
-      db.query(sqlInsert, [newNameProfessional, newEmailProfessional, newPasswordProfessional, newPhoneProfessional, fakeNameUserImage], (erro, result) =>{
+      db.query(sqlInsertOnProfessional, [newNameProfessional, newEmailProfessional, newPasswordProfessional, newPhoneProfessional, fakeNameUserImage], (erro, result) =>{
         if(erro){
           console.error('Erro ao criar profissional:', erro);
           return res.status(500).json({ Error: "Error" });
