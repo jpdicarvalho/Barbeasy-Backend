@@ -971,6 +971,59 @@ app.delete('/api/delete-service/:barbeariaId/:servicoId', (req, res) => {
   })
 });
 
+//Route to create a new professional
+app.post('/api/create-professional/:barbeariaId', (req, res) => {
+  const barbeariaId = req.params.barbeariaId;
+  const newNameProfessional = req.body.newNameProfessional;
+  const newPhoneProfessional = req.body.newPhoneProfessional;
+  const newEmailProfessional = req.body.newEmailProfessional;
+  const newPasswordProfessional = req.body.newPasswordProfessional;
+  const fakeNameUserImage = 'default.png';
+
+  const sql="SELECT email FROM professional WHERE email = ?";
+  db.query(sql, [newEmailProfessional], (err, resul) =>{
+    if(err){
+      console.error('Erro ao verificar email do profissional:', err);
+      return res.status(500).json({ Error: "Error" });
+    }
+    if(resul.length > 0){
+      return res.status(401).json({ Unauthorized: "Unauthorized"});
+    }else{
+      const sqlInsertOnProfessional="INSERT INTO professional (name, email, password, cell_phone, user_image) VALUES (?, ?, ?, ?, ?);"
+      db.query(sqlInsert, [newNameProfessional, newEmailProfessional, newPasswordProfessional, newPhoneProfessional, fakeNameUserImage], (erro, result) =>{
+        if(erro){
+          console.error('Erro ao criar profissional:', erro);
+          return res.status(500).json({ Error: "Error" });
+        }else{
+          if(result){
+            const sqlGetProfessionalId="SELECT id FROM professional WHERE email = ?";
+            db.query(sqlGetProfessionalId, [newEmailProfessional], (error, resulta) =>{
+              if(error){
+                console.error('Erro ao buscar id do profissional:', error);
+                return res.status(500).json({ Error: "Error" });
+              }else{
+                if(resulta.length > 0){
+                  const professionalId = resulta[0].id;
+                  const sqlInsertOnBarbProfessional="INSERT INTO Barb_Professional (barbearia_id, professional_id) VALUES (?, ?);"
+                  db.query(sqlInsertOnBarbProfessional, [barbeariaId, professionalId], (problem, resultado) =>{
+                    if(problem){
+                      console.error('Erro ao criar vinculo do profissional com a barbearia:', error);
+                      return res.status(500).json({ Error: "Error" });
+                    }
+                    if(resultado){
+                      return res.status(200).json({ Success: "Success"});
+                    }
+                  })
+                }
+              }
+            })
+          }
+        }
+      })
+    }
+  })
+})
+
 
 // Inicia o servidor na porta especificada
 app.listen(port, () => {
