@@ -714,10 +714,12 @@ app.get('/api/update-password-barbearia', (req, res) => {
   })
 });
 
-//Rota para atualizar a agenda da barbearia
-app.post('/api/update-agenda/:barbeariaId', (req, res) => {
+//Route to update the 'agenda' of professional
+app.post('/api/update-agenda/:barbeariaId/:professionalId', (req, res) => {
   //Obtendo as variáveis enviadas
   const barbeariaId = req.params.barbeariaId;
+  const professionalId = req.params.professionalId;
+
   const daysWeekSelected = req.body.daysWeek;
   const QntDaysSelected = req.body.qntDays;
 
@@ -725,17 +727,19 @@ app.post('/api/update-agenda/:barbeariaId', (req, res) => {
   const daysWeekName = daysWeekSelected.join(',');
 
   //Verificando se há registro na agenda referente a barbearia informada
-  const sql = "SELECT * FROM agenda WHERE barbearia_id = ?";
-  db.query(sql, [barbeariaId], (err, result) => {
+  const sql = "SELECT * FROM agenda WHERE barbearia_id = ? AND professional_id = ?";
+  db.query(sql, [barbeariaId, professionalId], (err, result) => {
     if(err){
       console.error("Erro ao encontrar registro na agenda", err);
       return res.status(500).json({Error: "Internal Server Error"});
     }else{
       if(result.length > 0){
-        const sqlUpdate = "UPDATE agenda SET dias = ?, qnt_dias = ? WHERE barbearia_id = ?";
-        db.query(sqlUpdate, [daysWeekName, QntDaysSelected, barbeariaId], (err, result) =>{
+        const HP = 'Não há horários definidos.';
+        const sqlUpdate = "UPDATE agenda SET dias = ?, qnt_dias = ?, dom = ?, seg = ?, ter = ?, qua = ?, qui = ?, sex = ?, sab = ? WHERE barbearia_id = ? AND professional_id = ?";
+        db.query(sqlUpdate, [daysWeekName, QntDaysSelected, HP, HP, HP, HP, HP, HP, HP, barbeariaId, professionalId], (err, result) =>{
           if(err){
             console.error("Erro ao cadastrar agenda da barbearia", err);
+
             return res.status(500).json({Error: "Internal Server Error"});
           }else{
             if(result){
@@ -744,9 +748,9 @@ app.post('/api/update-agenda/:barbeariaId', (req, res) => {
           }
         })
       }else{
-        const HP = 'horarioPadronizado';
-        const sqlInsert = "INSERT INTO agenda (barbearia_id, dias, qnt_dias, horariosTdias, dom, seg, ter, qua, qui, sex, sab) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        db.query(sqlInsert, [barbeariaId, daysWeekName, QntDaysSelected, HP, HP, HP, HP, HP, HP, HP, HP], (err, result) =>{
+        const HP = 'Não há horários definidos.';
+        const sqlInsert = "INSERT INTO agenda (barbearia_id, professional_id, dias, qnt_dias, dom, seg, ter, qua, qui, sex, sab) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        db.query(sqlInsert, [barbeariaId, professionalId, daysWeekName, QntDaysSelected, HP, HP, HP, HP, HP, HP, HP], (err, result) =>{
           if(err){
             console.error("Erro ao cadastrar agenda da barbearia", err);
             return res.status(500).json({Error: "Internal Server Error"});
@@ -761,12 +765,13 @@ app.post('/api/update-agenda/:barbeariaId', (req, res) => {
   })
 });
 
-//Rota para obter informações da agenda da barbearia
-app.get('/api/agenda/:barbeariaId', (req, res) => {
+//Rota to get 'Agenda' of professional
+app.get('/api/agenda/:barbeariaId/:professionalId', (req, res) => {
   const barbeariaId = req.params.barbeariaId;
-  
-  const sql = "SELECT dias, qnt_dias FROM agenda WHERE barbearia_id = ?";
-  db.query(sql, [barbeariaId], (err, result) => {
+  const professionalId = req.params.professionalId;
+
+  const sql = "SELECT dias, qnt_dias FROM agenda WHERE barbearia_id = ? AND professional_id = ?";
+  db.query(sql, [barbeariaId, professionalId], (err, result) => {
     if(err) {
       console.error("Erro ao buscar as informações da agenda da barbearia", err);
       return res.status(500).json({Error: "Internal Server Error"});
@@ -783,9 +788,11 @@ app.get('/api/agenda/:barbeariaId', (req, res) => {
   })
 });
 
-// Rota para salvar a agenda de horários do dia selecionado
-app.post('/api/update-agendaDiaSelecionado/:barbeariaId', (req, res) => {
+// Routa to save times of day selected of professional
+app.post('/api/update-agendaDiaSelecionado/:barbeariaId/:professionalId', (req, res) => {
   const barbeariaId = req.params.barbeariaId;
+  const professionalId = req.params.professionalId;
+
   const agendaDiaSelecionado = req.body.StrAgenda;
 
   // Objeto para mapear os dias da semana para abreviações
@@ -808,8 +815,8 @@ app.post('/api/update-agendaDiaSelecionado/:barbeariaId', (req, res) => {
 
   if (diaAbreviado) {
     // Construir a consulta SQL dinamicamente
-    const sql = `UPDATE agenda SET ${diaAbreviado} = ? WHERE barbearia_id = ?`;
-    db.query(sql, [agendaDiaSelecionado, barbeariaId], (err, result) => {
+    const sql = `UPDATE agenda SET ${diaAbreviado} = ? WHERE barbearia_id = ? AND professional_id = ?`;
+    db.query(sql, [agendaDiaSelecionado, barbeariaId, professionalId], (err, result) => {
         if (err) {
             console.error("Erro ao cadastrar agenda do dia selecionado da barbearia", err);
             return res.status(500).json({ Error: "Internal Server Error" });
@@ -825,12 +832,14 @@ app.post('/api/update-agendaDiaSelecionado/:barbeariaId', (req, res) => {
 });
 
 //Rota para obter os horarios definidos para cada dia em específico
-app.get('/api/agendaDiaSelecionado/:barbeariaId', (req, res) =>{
+app.get('/api/agendaDiaSelecionado/:barbeariaId/:professionalId', (req, res) =>{
   const barbeariaId = req.params.barbeariaId;
+  const professionalId = req.params.professionalId;
+
 
   //Consultando as colunas que possuem os horários de trabalho da barbearia
-  const sql = "SELECT dom, seg, ter, qua, qui, sex, sab FROM agenda WHERE barbearia_id = ?";
-  db.query(sql, [barbeariaId], (err, result) => {
+  const sql = "SELECT dom, seg, ter, qua, qui, sex, sab FROM agenda WHERE barbearia_id = ? AND professional_id = ?";
+  db.query(sql, [barbeariaId, professionalId], (err, result) => {
     //Verifição de erro na consulta
     if(err){
       console.error("Erro ao buscar os horários da agenda da barbearia", err);
@@ -853,12 +862,14 @@ app.get('/api/agendaDiaSelecionado/:barbeariaId', (req, res) =>{
 });
 
 //Rota para salvar a genda de horários para todos os dias definidos
-app.post('/api/update-horariosTodosOsDias/:barbeariaId', (req, res) => {
+app.post('/api/update-horariosTodosOsDias/:barbeariaId/:professionalId', (req, res) => {
   const barbeariaId = req.params.barbeariaId;
+  const professionalId = req.params.professionalId;
+
   const strAllTimes = req.body.StrAgenda;
 
-      const sqlUpdate = "UPDATE agenda SET dom = ?, seg = ?, ter = ?, qua = ?, qui = ?, sex = ?, sab = ? WHERE barbearia_id = ?";
-      db.query(sqlUpdate, [strAllTimes,strAllTimes,strAllTimes,strAllTimes,strAllTimes,strAllTimes,strAllTimes,barbeariaId], (error, resul) =>{
+      const sqlUpdate = "UPDATE agenda SET dom = ?, seg = ?, ter = ?, qua = ?, qui = ?, sex = ?, sab = ? WHERE barbearia_id = ? AND professional_id = ?";
+      db.query(sqlUpdate, [strAllTimes,strAllTimes,strAllTimes,strAllTimes,strAllTimes,strAllTimes,strAllTimes,barbeariaId, professionalId], (error, resul) =>{
         if(error){
           console.error("Erro ao padronizar os horários de trabalho da barbearia", error);
           return res.status(500).json({ Error: "Internal Server Error" });
@@ -868,17 +879,22 @@ app.post('/api/update-horariosTodosOsDias/:barbeariaId', (req, res) => {
 });
 
 //Rota para cadastrar um novo serviço
-app.post('/api/add-service/:barbeariaId', (req, res) => {
+app.post('/api/add-service/:barbeariaId/:professionalId', (req, res) => {
   const barbearia_id = req.params.barbeariaId;
+  const professional_id = req.params.professionalId;
+
   const name = req.body.newNameService; 
   const preco = req.body.newPriceService;
+  const commission_fee = req.body.newCommissionFee;
   const duracao = req.body.newDuration;
 
   const service = {
     name,
     preco,
     duracao,
-    barbearia_id
+    commission_fee,
+    barbearia_id,
+    professional_id
   };
 
   db.query('INSERT INTO servico SET ?', service, (err, result) =>{
@@ -895,11 +911,13 @@ app.post('/api/add-service/:barbeariaId', (req, res) => {
 })
 
 //Rota obter os serviços cadastrados
-app.get('/api/get-service/:barbeariaId', (req, res) =>{
+app.get('/api/get-service/:barbeariaId/:professionalId', (req, res) =>{
   const barbeariaId = req.params.barbeariaId;
+  const professionalId = req.params.professionalId;
 
-  const sql="SELECT * FROM servico WHERE barbearia_id = ?"
-  db.query(sql, [barbeariaId], (err, result) =>{
+
+  const sql="SELECT * FROM servico WHERE barbearia_id = ? AND professional_id = ?"
+  db.query(sql, [barbeariaId, professionalId], (err, result) =>{
     if(err){
       console.error("Erro ao obter os serviços da barbearia", err);
       return res.status(500).json({ Error: "Internal Server Error" });
@@ -909,12 +927,15 @@ app.get('/api/get-service/:barbeariaId', (req, res) =>{
       }
     }
   })
-})
+});
 
 // Rota para atualizar informações de um serviço cadastrado
-app.post('/api/update-service/:barbeariaId', (req, res) => {
+
+app.post('/api/update-service/:barbeariaId/:professionalId', (req, res) => {
   const barbeariaId = req.params.barbeariaId;
-  const { editedServiceName, editedServicePrice, editedDuration, servico_Id } = req.body;
+  const professionalId = req.params.professionalId;
+
+  const { editedServiceName, editedServicePrice, editedCommissionFee, editedDuration, servico_Id } = req.body;
 
   // Construa a query base para atualização dos dados
   let query = `UPDATE servico SET`;
@@ -931,6 +952,10 @@ app.post('/api/update-service/:barbeariaId', (req, res) => {
     query += ` preco = ?,`;
     values.push(editedServicePrice);
   }
+  if (editedCommissionFee) {
+    query += ` commission_fee = ?,`;
+    values.push(editedCommissionFee);
+  }
   if (editedDuration) {
     query += ` duracao = ?,`;
     values.push(editedDuration);
@@ -940,8 +965,8 @@ app.post('/api/update-service/:barbeariaId', (req, res) => {
   query = query.slice(0, -1);
 
   // Adicione as condições WHERE na query
-  query += ` WHERE id = ? AND barbearia_id = ?`;
-  values.push(servico_Id, barbeariaId);
+  query += ` WHERE id = ? AND barbearia_id = ? AND professional_id = ?`;
+  values.push(servico_Id, barbeariaId, professionalId);
 
   // Execute a query para atualizar os dados do serviço
   db.query(query, values, (err, result) => {
@@ -955,12 +980,13 @@ app.post('/api/update-service/:barbeariaId', (req, res) => {
 });
 
 // Rota para deletar um serviço específico
-app.delete('/api/delete-service/:barbeariaId/:servicoId', (req, res) => {
+app.delete('/api/delete-service/:barbeariaId/:professionalId/:servicoId', (req, res) => {
   const barbeariaId = req.params.barbeariaId;
+  const professionalId = req.params.professionalId;
   const servicoId = req.params.servicoId;
 
-  const sql="DELETE FROM servico WHERE id = ? AND barbearia_id = ?";
-  db.query(sql, [servicoId, barbeariaId], (err, result) => {
+  const sql="DELETE FROM servico WHERE id = ? AND barbearia_id = ? AND professional_id = ?";
+  db.query(sql, [servicoId, barbeariaId, professionalId], (err, result) => {
     if(err){
       console.error('Erro ao excluir o serviço:', err);
       return res.status(500).json({ Error: "Error" });
@@ -1022,7 +1048,8 @@ app.post('/api/create-professional/:barbeariaId', (req, res) => {
       })
     }
   })
-})
+});
+
 
 
 // Inicia o servidor na porta especificada
