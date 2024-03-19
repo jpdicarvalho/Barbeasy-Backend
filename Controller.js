@@ -1050,6 +1050,22 @@ app.post('/api/create-professional/:barbeariaId', (req, res) => {
   })
 });
 
+//Rota para obter os profissionais da barbearia
+app.get('/api/professional/:barbeariaId', (req, res) => {
+  const barbeariaId = req.params.barbeariaId;
+
+  const sql="SELECT professional.id, professional.name, professional.cell_phone, professional.user_image FROM professional INNER JOIN Barb_Professional ON barbearia_id = ? AND professional.id = professional_id;"
+  db.query(sql, [barbeariaId], (err, result) =>{
+    if(err){
+      console.error('Erro ao buscar profissionais da barbearia:', err);
+      return res.status(500).json({ Error: 'Erro ao buscar profissionais da barbearia:' });
+    }
+    if(result){
+      //console.log(result)
+      return res.status(200).json({ Success: "Success", Professional: result});//Enviando o array com os profissionais
+    }
+  })
+});
 
 
 // Inicia o servidor na porta especificada
