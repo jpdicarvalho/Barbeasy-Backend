@@ -867,15 +867,40 @@ app.post('/api/update-horariosTodosOsDias/:barbeariaId/:professionalId', (req, r
   const professionalId = req.params.professionalId;
 
   const strAllTimes = req.body.StrAgenda;
+  const namesDaysFormated = req.body.NamesDaysFormated;
 
-      const sqlUpdate = "UPDATE agenda SET dom = ?, seg = ?, ter = ?, qua = ?, qui = ?, sex = ?, sab = ? WHERE barbearia_id = ? AND professional_id = ?";
-      db.query(sqlUpdate, [strAllTimes,strAllTimes,strAllTimes,strAllTimes,strAllTimes,strAllTimes,strAllTimes,barbeariaId, professionalId], (error, resul) =>{
-        if(error){
-          console.error("Erro ao padronizar os horários de trabalho da barbearia", error);
-          return res.status(500).json({ Error: "Internal Server Error" });
-        }
-        return res.status(200).json({ Success: "Success" });
-      })
+  let query = "UPDATE agenda SET";
+  const values = [];
+  
+  const days = ['dom', 'seg', 'ter', 'qua', 'qui', 'sex', 'sab'];
+
+  days.forEach((day) => {
+    if (namesDaysFormated.includes(day)) {
+      query += ` ${day} = ?,`;
+      values.push(strAllTimes);
+    } else {
+      query += ` ${day} = ?,`;
+      values.push('Não há horários disponíveis para esse dia');
+    }
+  });
+
+  // Removendo a última vírgula da query
+  query = query.slice(0, -1);
+
+  // Adicionando as condições WHERE na query
+  query += ` WHERE barbearia_id = ? AND professional_id = ?`;
+  values.push(barbeariaId, professionalId);
+
+  console.log(query, values);
+
+  db.query(query, [...values, barbeariaId, professionalId], (error, result) => {
+    if (error) {
+      console.error("Erro ao padronizar os horários de trabalho da barbearia", error);
+      return res.status(500).json({ Error: "Internal Server Error" });
+    }
+    return res.status(200).json({ Success: "Success" });
+  });
+
 });
 
 //Rota para cadastrar um novo serviço
