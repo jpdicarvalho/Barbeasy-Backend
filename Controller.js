@@ -1147,6 +1147,24 @@ app.post('/api/create-booking/', (req, res) => {
   })
 });
 
+//rota para pegar todos os agendamentos da barbearia em específico
+app.get('/api/bookings/:barbeariaId', (req, res) =>{
+  const barbeariaId = req.params.barbeariaId;
+
+  const sql="SELECT professional_id, booking_date, booking_time FROM booking WHERE barbearia_id = ?";
+
+  db.query(sql, [barbeariaId], (err, result) =>{
+    if(err){
+      console.error('Erro ao buscar agendamentos da barbearia:', err);
+      return res.status(500).json({ Error: 'Internal Server Error.' }); 
+    }
+    if(result.length > 0){
+      res.status(200).json({Success: "Success", allBookings: result})
+    }
+    
+  })
+});
+
 // Inicia o servidor na porta especificada
 app.listen(port, () => {
     console.log("Servidor rodando");
