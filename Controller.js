@@ -1109,6 +1109,42 @@ app.get('/api/list-service/:barbeariaId', (req, res) =>{
   })
 });
 
+//Rota para realizar o agendamento
+app.post('/api/create-booking/', (req, res) => {
+  //Create object to make a toke for booking
+  const values = [
+    req.body.userId,
+    req.body.barbeariaId,
+    req.body.professionalId,
+    req.body.serviceId,
+    req.body.selectedDate,
+    req.body.timeSelected];
+    const formatDate = req.body.formattedDate;
+
+  const token = values.join('-')
+
+  
+  const sqlSelect="SELECT token FROM booking WHERE token = ?";
+  db.query(sqlSelect, [token], (err, resut) =>{
+    if(err){
+      console.error('Erro ao verificar disponibilidade da barbearia:', err);
+      return res.status(500).json({ Error: 'Erro ao verificar disponibilidade da barbearia.' });
+    }
+    if(resut.length > 0){
+      return res.status(401).json({ Unauthorized: 'Unauthorized' });
+    }else{
+      const sqlInsert = "INSERT INTO booking (user_id, barbearia_id, professional_id, service_id, booking_date, booking_time, date, token) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+      db.query(sqlInsert, [...values, formatDate, token], (erro, results) => {
+        if(erro){
+          console.error('Erro ao realizar agendamento:', erro);
+          return res.status(500).json({ Error: ' Internal Server Error' });
+        }if(results){
+          return res.status(200).json({ Success: "Success"});
+        }
+      })
+    }
+  })
+});
 
 // Inicia o servidor na porta especificada
 app.listen(port, () => {
