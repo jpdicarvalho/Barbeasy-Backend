@@ -816,7 +816,8 @@ app.post('/api/update-agendaDiaSelecionado/:barbeariaId/:professionalId', (req, 
   if (diaAbreviado) {
     // Construir a consulta SQL dinamicamente
     const sql = `UPDATE agenda SET ${diaAbreviado} = ? WHERE barbearia_id = ? AND professional_id = ?`;
-    db.query(sql, [agendaDiaSelecionado, barbeariaId, professionalId], (err, result) => {
+    let strFormated = agendaDiaSelecionado.substring(4);
+    db.query(sql, [strFormated, barbeariaId, professionalId], (err, result) => {
         if (err) {
             console.error("Erro ao cadastrar agenda do dia selecionado da barbearia", err);
             return res.status(500).json({ Error: "Internal Server Error" });
