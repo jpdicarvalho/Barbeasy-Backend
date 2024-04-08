@@ -1147,7 +1147,7 @@ app.post('/api/create-booking/', (req, res) => {
   })
 });
 
-//rota para pegar todos os agendamentos da barbearia em específico
+//Route to get all bookings of especific barbearia
 app.get('/api/bookings/:barbeariaId', (req, res) =>{
   const barbeariaId = req.params.barbeariaId;
 
