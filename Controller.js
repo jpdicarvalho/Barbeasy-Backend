@@ -1110,6 +1110,44 @@ app.get('/api/list-service/:barbeariaId', (req, res) =>{
   })
 });
 
+//Route to save days-off
+app.post('/api/update-dayOff/:barbeariaId/:professionalId', (req, res) => {
+  const barbeariaId = req.params.barbeariaId;
+  const professionalId = req.params.professionalId;
+  const {selectedDate, timesLockedByProfessional} = req.body;
+
+  const sql="SELECT * FROM days_off WHERE barbeariaId = ? AND professionalId = ? AND day = ?";
+  db.query(sql, [barbeariaId, professionalId, selectedDate], (err, resu) =>{
+    if(err){
+      console.error("Erro ao obter folgas da professional", err);
+      return res.status(500).json({ Error: "Internal Server Error" });
+    }
+    if(resu.length > 0){
+      const sqlUpdate="UPDATE days_off SET times = ? WHERE barbeariaId = ? AND professionalId = ? AND day = ?";
+      db.query(sqlUpdate, [timesLockedByProfessional, barbeariaId, professionalId, selectedDate], (erro, resul) =>{
+        if(erro){
+          console.error("Erro ao atualizar folgas do professional", err);
+          return res.status(500).json({ Error: "Internal Server Error" });
+        }else{
+          return res.status(200).json({ Success: "Success", resul});//Enviando o array com os horários
+        }
+      })
+    }else{
+      const sqlInsert="INSERT INTO days_off SET barbeariaId = ?, professionalId = ?, day = ?, times = ?";
+      db.query(sqlInsert, [barbeariaId, professionalId, selectedDate, timesLockedByProfessional], (error, result) =>{
+        if(error){
+          console.error("Erro ao salvar folga do professional", err);
+          return res.status(500).json({ Error: "Internal Server Error" });
+        }else{
+          if(result){
+            return res.status(200).json({ Success: "Success", resul});//Enviando o array com os horários
+          }
+        }
+      })
+    }
+  })
+})
+
 //Rota para realizar o agendamento
 app.post('/api/create-booking/', (req, res) => {
   //Create object to make a toke for booking
