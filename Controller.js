@@ -1116,14 +1116,14 @@ app.post('/api/update-dayOff/:barbeariaId/:professionalId', (req, res) => {
   const professionalId = req.params.professionalId;
   const {selectedDate, timesLockedByProfessional} = req.body;
 
-  const sql="SELECT * FROM days_off WHERE barbeariaId = ? AND professionalId = ? AND day = ?";
+  const sql="SELECT * FROM days_off WHERE barbearia_id = ? AND professional_id = ? AND day = ?";
   db.query(sql, [barbeariaId, professionalId, selectedDate], (err, resu) =>{
     if(err){
       console.error("Erro ao obter folgas da professional", err);
       return res.status(500).json({ Error: "Internal Server Error" });
     }
     if(resu.length > 0){
-      const sqlUpdate="UPDATE days_off SET times = ? WHERE barbeariaId = ? AND professionalId = ? AND day = ?";
+      const sqlUpdate="UPDATE days_off SET times = ? WHERE barbearia_id = ? AND professional_id = ? AND day = ?";
       db.query(sqlUpdate, [timesLockedByProfessional, barbeariaId, professionalId, selectedDate], (erro, resul) =>{
         if(erro){
           console.error("Erro ao atualizar folgas do professional", err);
@@ -1133,7 +1133,7 @@ app.post('/api/update-dayOff/:barbeariaId/:professionalId', (req, res) => {
         }
       })
     }else{
-      const sqlInsert="INSERT INTO days_off SET barbeariaId = ?, professionalId = ?, day = ?, times = ?";
+      const sqlInsert="INSERT INTO days_off SET barbearia_id = ?, professional_id = ?, day = ?, times = ?";
       db.query(sqlInsert, [barbeariaId, professionalId, selectedDate, timesLockedByProfessional], (error, result) =>{
         if(error){
           console.error("Erro ao salvar folga do professional", err);
