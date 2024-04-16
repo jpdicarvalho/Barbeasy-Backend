@@ -1207,7 +1207,7 @@ app.post('/api/update-dayOff/:barbeariaId/:professionalId', (req, res) => {
   })
 });
 
-app.post('/api/daysOff/:barbeariaId/:professionalId', (req, res) => {
+app.get('/api/daysOff/:barbeariaId/:professionalId', (req, res) => {
   const barbeariaId = req.params.barbeariaId;
   const professionalId = req.params.professionalId;
   const selectedDate = req.body.selectedDate;
