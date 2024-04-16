@@ -1144,7 +1144,7 @@ app.post('/api/update-dayOff/:barbeariaId/:professionalId', (req, res) => {
           return res.status(500).json({ Error: "Internal Server Error" });
         }else{
           if(result){
-            return res.status(200).json({ Success: "Success", resul});//Enviando o array com os horários
+            return res.status(200).json({ Success: "Success", result});//Enviando o array com os horários
           }
         }
       })
