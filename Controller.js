@@ -1148,12 +1148,14 @@ app.post('/api/create-booking/', (req, res) => {
 });
 
 //Route to get all bookings of especific barbearia
-app.get('/api/bookings/:barbeariaId', (req, res) =>{
+app.get('/api/bookings/:barbeariaId/:professionalId/:selectedDate', (req, res) =>{
   const barbeariaId = req.params.barbeariaId;
+  const professionalId = req.params.professionalId;
+  const selectedDate = req.params.selectedDate;
 
-  const sql="SELECT professional_id, booking_date, booking_time FROM booking WHERE barbearia_id = ?";
+  const sql="SELECT professional_id, booking_date, booking_time FROM booking WHERE barbearia_id = ? AND professional_id = ? AND booking_date = ?";
 
-  db.query(sql, [barbeariaId], (err, result) =>{
+  db.query(sql, [barbeariaId, professionalId, selectedDate], (err, result) =>{
     if(err){
       console.error('Erro ao buscar agendamentos da barbearia:', err);
       return res.status(500).json({ Error: 'Internal Server Error.' }); 
@@ -1211,7 +1213,7 @@ app.get('/api/daysOff/:barbeariaId/:professionalId/:selectedDate', (req, res) =>
   const barbeariaId = req.params.barbeariaId;
   const professionalId = req.params.professionalId;
   const selectedDate = req.params.selectedDate;
-console.log(selectedDate)
+
   const sql="SELECT * FROM days_off WHERE barbearia_id = ? AND professional_id = ? AND day = ?";
   db.query(sql, [barbeariaId, professionalId, selectedDate], (err, result) =>{
     if(err){
