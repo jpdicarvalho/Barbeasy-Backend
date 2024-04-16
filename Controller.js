@@ -1211,7 +1211,7 @@ app.post('/api/daysOff/:barbeariaId/:professionalId', (req, res) => {
   const barbeariaId = req.params.barbeariaId;
   const professionalId = req.params.professionalId;
   const selectedDate = req.body.selectedDate;
-
+console.log(selectedDate)
   const sql="SELECT * FROM days_off WHERE barbearia_id = ? AND professional_id = ? AND day = ?";
   db.query(sql, [barbeariaId, professionalId, selectedDate], (err, result) =>{
     if(err){
