@@ -1114,8 +1114,10 @@ app.get('/api/list-service/:barbeariaId', (req, res) =>{
 app.post('/api/update-dayOff/:barbeariaId/:professionalId', (req, res) => {
   const barbeariaId = req.params.barbeariaId;
   const professionalId = req.params.professionalId;
-  const {selectedDate, timesLockedByProfessional} = req.body;
+  const selectedDate = req.body.selectedDate;
+  const timesLockedByProfessional = req.body.timesLockedByProfessional;
 
+console.log(barbeariaId, professionalId, timesLockedByProfessional, selectedDate)
   const sql="SELECT * FROM days_off WHERE barbearia_id = ? AND professional_id = ? AND day = ?";
   db.query(sql, [barbeariaId, professionalId, selectedDate], (err, resu) =>{
     if(err){
@@ -1124,14 +1126,17 @@ app.post('/api/update-dayOff/:barbeariaId/:professionalId', (req, res) => {
     }
     if(resu.length > 0){
       const sqlUpdate="UPDATE days_off SET times = ? WHERE barbearia_id = ? AND professional_id = ? AND day = ?";
-      db.query(sqlUpdate, [timesLockedByProfessional, barbeariaId, professionalId, selectedDate], (erro, resul) =>{
-        if(erro){
-          console.error("Erro ao atualizar folgas do professional", err);
-          return res.status(500).json({ Error: "Internal Server Error" });
-        }else{
-          return res.status(200).json({ Success: "Success", resul});//Enviando o array com os horários
-        }
-      })
+      if(timesLockedByProfessional.length > 1){
+        let timesLocked = timesLockedByProfessional.join(',');
+        db.query(sqlUpdate, [timesLocked, barbeariaId, professionalId, selectedDate], (erro, resul) =>{
+          if(erro){
+            console.error("Erro ao atualizar folgas do professional", err);
+            return res.status(500).json({ Error: "Internal Server Error" });
+          }else{
+            return res.status(200).json({ Success: "Success", resul});//Enviando o array com os horários
+          }
+        })
+      }
     }else{
       const sqlInsert="INSERT INTO days_off SET barbearia_id = ?, professional_id = ?, day = ?, times = ?";
       db.query(sqlInsert, [barbeariaId, professionalId, selectedDate, timesLockedByProfessional], (error, result) =>{
