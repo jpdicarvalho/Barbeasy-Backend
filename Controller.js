@@ -1140,7 +1140,7 @@ app.post('/api/update-dayOff/:barbeariaId/:professionalId', (req, res) => {
       const sqlInsert="INSERT INTO days_off SET barbearia_id = ?, professional_id = ?, day = ?, times = ?";
       db.query(sqlInsert, [barbeariaId, professionalId, selectedDate, timesLockedByProfessional], (error, result) =>{
         if(error){
-          console.error("Erro ao salvar folga do professional", err);
+          console.error("Erro ao salvar folga do professional", error);
           return res.status(500).json({ Error: "Internal Server Error" });
         }else{
           if(result){
