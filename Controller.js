@@ -1117,7 +1117,6 @@ app.post('/api/update-dayOff/:barbeariaId/:professionalId', (req, res) => {
   const selectedDate = req.body.selectedDate;
   const timesLockedByProfessional = req.body.timesLockedByProfessional;
 
-console.log(barbeariaId, professionalId, timesLockedByProfessional, selectedDate)
   const sql="SELECT * FROM days_off WHERE barbearia_id = ? AND professional_id = ? AND day = ?";
   db.query(sql, [barbeariaId, professionalId, selectedDate], (err, resu) =>{
     if(err){
@@ -1126,7 +1125,7 @@ console.log(barbeariaId, professionalId, timesLockedByProfessional, selectedDate
     }
     if(resu.length > 0){
       const sqlUpdate="UPDATE days_off SET times = ? WHERE barbearia_id = ? AND professional_id = ? AND day = ?";
-      if(timesLockedByProfessional.length > 1){
+      if(timesLockedByProfessional.length >= 1){
         let timesLocked = timesLockedByProfessional.join(',');
         db.query(sqlUpdate, [timesLocked, barbeariaId, professionalId, selectedDate], (erro, resul) =>{
           if(erro){
