@@ -1182,7 +1182,7 @@ app.post('/api/update-dayOff/:barbeariaId/:professionalId', (req, res) => {
     }
     if(resu.length > 0){
       const sqlUpdate="UPDATE days_off SET times = ? WHERE barbearia_id = ? AND professional_id = ? AND day = ?";
-        db.query(sqlUpdate, [timesLocked, barbeariaId, professionalId, selectedDate], (erro, resul) =>{
+        db.query(sqlUpdate, [timesLockedByProfessional, barbeariaId, professionalId, selectedDate], (erro, resul) =>{
           if(erro){
             console.error("Erro ao atualizar folgas do professional", err);
             return res.status(500).json({ Error: "Internal Server Error" });
