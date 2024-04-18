@@ -1182,8 +1182,6 @@ app.post('/api/update-dayOff/:barbeariaId/:professionalId', (req, res) => {
     }
     if(resu.length > 0){
       const sqlUpdate="UPDATE days_off SET times = ? WHERE barbearia_id = ? AND professional_id = ? AND day = ?";
-      if(timesLockedByProfessional.length >= 1){
-        let timesLocked = timesLockedByProfessional.join(',');
         db.query(sqlUpdate, [timesLocked, barbeariaId, professionalId, selectedDate], (erro, resul) =>{
           if(erro){
             console.error("Erro ao atualizar folgas do professional", err);
@@ -1192,7 +1190,6 @@ app.post('/api/update-dayOff/:barbeariaId/:professionalId', (req, res) => {
             return res.status(200).json({ Success: "Success", resul});//Enviando o array com os horários
           }
         })
-      }
     }else{
       const sqlInsert="INSERT INTO days_off SET barbearia_id = ?, professional_id = ?, day = ?, times = ?";
       db.query(sqlInsert, [barbeariaId, professionalId, selectedDate, timesLockedByProfessional], (error, result) =>{
