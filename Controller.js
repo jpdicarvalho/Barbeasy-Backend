@@ -1146,6 +1146,7 @@ app.post('/api/create-booking/', (req, res) => {
     }
   })
 });
+//SELECT professional_id, booking_date, booking_time FROM booking WHERE barbearia_id = ? AND professional_id = ? AND booking_date = ?
 
 //Route to get all bookings of especific barbearia
 app.get('/api/bookings/:barbeariaId/:professionalId/:selectedDate', (req, res) =>{
@@ -1153,7 +1154,15 @@ app.get('/api/bookings/:barbeariaId/:professionalId/:selectedDate', (req, res) =
   const professionalId = req.params.professionalId;
   const selectedDate = req.params.selectedDate;
 
-  const sql="SELECT professional_id, booking_date, booking_time FROM booking WHERE barbearia_id = ? AND professional_id = ? AND booking_date = ?";
+  const sql=`
+  SELECT booking.booking_time, days_off.times
+  FROM booking
+  INNER JOIN days_off ON booking.barbearia_id = days_off.barbearia_id
+                      AND booking.professional_id = days_off.professional_id
+                      AND booking.booking_date = days_off.day
+  WHERE booking.barbearia_id = ? 
+  AND booking.professional_id = ? 
+  AND booking.booking_date = ?`;
 
   db.query(sql, [barbeariaId, professionalId, selectedDate], (err, result) =>{
     if(err){
