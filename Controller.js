@@ -1215,23 +1215,6 @@ app.post('/api/update-dayOff/:barbeariaId/:professionalId', (req, res) => {
   })
 });
 
-app.get('/api/daysOff/:barbeariaId/:professionalId/:selectedDate', (req, res) => {
-  const barbeariaId = req.params.barbeariaId;
-  const professionalId = req.params.professionalId;
-  const selectedDate = req.params.selectedDate;
-
-  const sql="SELECT * FROM days_off WHERE barbearia_id = ? AND professional_id = ? AND day = ?";
-  db.query(sql, [barbeariaId, professionalId, selectedDate], (err, result) =>{
-    if(err){
-      console.error("Erro ao obter folgas do professional", err);
-      return res.status(500).json({ Error: "Internal Server Error" });
-    }
-    if(result.length > 0){
-    res.status(200).json({Success: "Success", allDaysOff: result})
-    }
-  })
-});
-
 // Inicia o servidor na porta especificada
 app.listen(port, () => {
     console.log("Servidor rodando");
