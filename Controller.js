@@ -1170,8 +1170,6 @@ app.get('/api/bookings/:barbeariaId/:professionalId/:selectedDate', (req, res) =
     }
     if (result.length > 0) {
       return res.status(200).json({ Success: "Success", allBookings: result });
-    } else {
-      return res.status(200).json({ Success: "NotFound" });
     }
   });
 });
