@@ -1148,41 +1148,41 @@ app.post('/api/create-booking/', (req, res) => {
 });
 //SELECT professional_id, booking_date, booking_time FROM booking WHERE barbearia_id = ? AND professional_id = ? AND booking_date = ?
 
-//Route to get all bookings of especific barbearia
-app.get('/api/bookings/:barbeariaId/:professionalId/:selectedDate', (req, res) =>{
+// Rota para buscar todos os agendamentos de uma barbearia específica
+app.get('/api/bookings/:barbeariaId/:professionalId/:selectedDate', (req, res) => {
   const barbeariaId = req.params.barbeariaId;
   const professionalId = req.params.professionalId;
   const selectedDate = req.params.selectedDate;
 
-  const sql=`
-        SELECT booking.booking_time, NULL AS times
-        FROM booking
-        WHERE booking.barbearia_id = ? 
-          AND booking.professional_id = ? 
-          AND booking.booking_date = ?
+  const sql = `
+    SELECT booking.booking_time, NULL AS times
+    FROM booking
+    WHERE booking.barbearia_id = ? 
+      AND booking.professional_id = ? 
+      AND booking.booking_date = ?
+    UNION ALL
+    SELECT NULL AS booking_time, days_off.times
+    FROM days_off
+    WHERE days_off.barbearia_id = ? 
+      AND days_off.professional_id = ? 
+      AND days_off.day = ?`;
 
-        UNION ALL
-
-        SELECT NULL AS booking_time, days_off.times
-        FROM days_off
-        WHERE days_off.barbearia_id = ? 
-          AND days_off.professional_id = ? 
-          AND days_off.day = ?`;
-
-  db.query(sql, [barbeariaId, professionalId, selectedDate], (err, result) =>{
-    if(err){
+  db.query(sql, [barbeariaId, professionalId, selectedDate, barbeariaId, professionalId, selectedDate], (err, result) => {
+    if (err) {
       console.error('Erro ao buscar agendamentos da barbearia:', err);
       return res.status(500).json({ Error: 'Internal Server Error.' }); 
     }
-    if(result.length > 0){
-      console.log('caiu aqui', result)
-      res.status(200).json({Success: "Success", allBookings: result})
-    }else{
-      console.log('caiu aqui', result)
-      res.status(200).json({Success: "NotFound" });
+
+    if (result.length > 0) {
+      console.log('Agendamentos encontrados:', result);
+      res.status(200).json({ Success: "Success", allBookings: result });
+    } else {
+      console.log('Nenhum agendamento encontrado.');
+      res.status(404).json({ Success: "NotFound" });
     }
-  })
+  });
 });
+
 
 //Route to save days-off
 app.post('/api/update-dayOff/:barbeariaId/:professionalId', (req, res) => {
