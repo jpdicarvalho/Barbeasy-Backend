@@ -1171,6 +1171,8 @@ app.get('/api/bookings/:barbeariaId/:professionalId/:selectedDate', (req, res) =
     }
     if(result.length > 0){
       res.status(200).json({Success: "Success", allBookings: result})
+    }else{
+      res.status(404).json({NotFound: "NotFound" });
     }
     
   })
