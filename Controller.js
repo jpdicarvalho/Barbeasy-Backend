@@ -1118,7 +1118,7 @@ app.post('/api/create-booking/', (req, res) => {
     req.body.barbeariaId,
     req.body.professionalId,
     req.body.serviceId,
-    req.body.selectedDate,
+    req.body.selectedDay,
     req.body.timeSelected];
     const formatDate = req.body.formattedDate;
 
@@ -1146,7 +1146,6 @@ app.post('/api/create-booking/', (req, res) => {
     }
   })
 });
-//SELECT professional_id, booking_date, booking_time FROM booking WHERE barbearia_id = ? AND professional_id = ? AND booking_date = ?
 
 // Rota para buscar todos os agendamentos de uma barbearia específica
 app.get('/api/bookings/:barbeariaId/:professionalId/:selectedDate', (req, res) => {
@@ -1180,7 +1179,6 @@ app.get('/api/bookings/:barbeariaId/:professionalId/:selectedDate', (req, res) =
     }
   });
 });
-
 
 //Route to save days-off
 app.post('/api/update-dayOff/:barbeariaId/:professionalId', (req, res) => {
