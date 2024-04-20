@@ -1174,7 +1174,7 @@ app.get('/api/bookings/:barbeariaId/:professionalId/:selectedDate', (req, res) =
       res.status(200).json({Success: "Success", allBookings: result})
     }else{
       console.log('caiu aqui', result)
-      res.status(404).json({NotFound: "NotFound" });
+      res.status(200).json({Success: "NotFound" });
     }
   })
 });
