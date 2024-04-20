@@ -1170,12 +1170,8 @@ app.get('/api/bookings/:barbeariaId/:professionalId/:selectedDate', (req, res) =
       return res.status(500).json({ Error: 'Internal Server Error.' }); 
     }
     if(result.length > 0){
-      res.status(200).json({Success: "Success", allBookings: result})
-    }else{
-      console.log('caiu aqui')
-      res.status(404).json({NotFound: "NotFound" });
+      return res.status(200).json({Success: "Success", allBookings: result})
     }
-    
   })
 });
 
