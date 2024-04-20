@@ -1155,14 +1155,30 @@ app.get('/api/bookings/:barbeariaId/:professionalId/:selectedDate', (req, res) =
   const selectedDate = req.params.selectedDate;
 
   const sql=`
-  SELECT booking.booking_time, days_off.times
-  FROM booking
-  INNER JOIN days_off ON booking.barbearia_id = days_off.barbearia_id
-                      AND booking.professional_id = days_off.professional_id
-                      AND booking.booking_date = days_off.day
-  WHERE booking.barbearia_id = ? 
+  -- Utilizando LEFT JOIN para incluir todos os registros de booking
+SELECT booking.booking_time, days_off.times
+FROM booking
+LEFT JOIN days_off 
+    ON booking.barbearia_id = days_off.barbearia_id 
+    AND booking.professional_id = days_off.professional_id 
+    AND booking.booking_date = days_off.day
+WHERE booking.barbearia_id = ? 
   AND booking.professional_id = ? 
-  AND booking.booking_date = ?`;
+  AND booking.booking_date = ?
+
+UNION  -- Usando UNION para combinar resultados
+
+-- Utilizando RIGHT JOIN para incluir todos os registros de days_off
+SELECT booking.booking_time, days_off.times
+FROM booking
+RIGHT JOIN days_off 
+    ON booking.barbearia_id = days_off.barbearia_id 
+    AND booking.professional_id = days_off.professional_id 
+    AND booking.booking_date = days_off.day
+WHERE days_off.barbearia_id = ? 
+  AND days_off.professional_id = ? 
+  AND days_off.day = ?
+`;
 
   db.query(sql, [barbeariaId, professionalId, selectedDate], (err, result) =>{
     if(err){
