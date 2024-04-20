@@ -1155,17 +1155,13 @@ app.get('/api/bookings/:barbeariaId/:professionalId/:selectedDate', (req, res) =
   const selectedDate = req.params.selectedDate;
 
   const sql = `
-    SELECT booking.booking_time, NULL AS times
+    SELECT booking_time
     FROM booking
-    WHERE booking.barbearia_id = ? 
-      AND booking.professional_id = ? 
-      AND booking.booking_date = ?
+    WHERE barbearia_id = ? AND professional_id = ? AND booking_date = ?
     UNION ALL
-    SELECT NULL AS booking_time, days_off.times
+    SELECT times
     FROM days_off
-    WHERE days_off.barbearia_id = ? 
-      AND days_off.professional_id = ? 
-      AND days_off.day = ?`;
+    WHERE barbearia_id = ? AND professional_id = ? AND day = ?`;
 
   db.query(sql, [barbeariaId, professionalId, selectedDate, barbeariaId, professionalId, selectedDate], (err, result) => {
     if (err) {
@@ -1177,8 +1173,7 @@ app.get('/api/bookings/:barbeariaId/:professionalId/:selectedDate', (req, res) =
       console.log('Agendamentos encontrados:', result);
       res.status(200).json({ Success: "Success", allBookings: result });
     } else {
-      console.log('Nenhum agendamento encontrado.');
-      res.status(404).json({ Success: "NotFound" });
+      res.status(200).json({ Success: "NotFound" });
     }
   });
 });
