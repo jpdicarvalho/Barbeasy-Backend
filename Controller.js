@@ -1168,12 +1168,10 @@ app.get('/api/bookings/:barbeariaId/:professionalId/:selectedDate', (req, res) =
       console.error('Erro ao buscar agendamentos da barbearia:', err);
       return res.status(500).json({ Error: 'Internal Server Error.' }); 
     }
-
     if (result.length > 0) {
-      console.log('Agendamentos encontrados:', result);
-      res.status(200).json({ Success: "Success", allBookings: result });
+      return res.status(200).json({ Success: "Success", allBookings: result });
     } else {
-      res.status(200).json({ Success: "NotFound" });
+      return res.status(200).json({ Success: "NotFound" });
     }
   });
 });
