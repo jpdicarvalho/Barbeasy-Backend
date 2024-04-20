@@ -1173,9 +1173,9 @@ app.get('/api/bookings/:barbeariaId/:professionalId/:selectedDate', (req, res) =
       return res.status(500).json({ Error: 'Internal Server Error.' }); 
     }else{
       if (result.length > 0) {
-        return res.status(200).json({ Success: "true", timesLocked: result });
+        return res.status(200).json({ Message: "true", timesLocked: result });
       }else{
-        return res.status(404).json({ Success: "false"});
+        return res.status(200).json({ Message: "false"});
       }
     }
   });
