@@ -1155,13 +1155,13 @@ app.get('/api/bookings/:barbeariaId/:professionalId/:selectedDate', (req, res) =
   const selectedDate = req.params.selectedDate;
 
   const sql = `
-        SELECT COALESCE(booking.booking_time, 0) AS booking_time
+        SELECT COALESCE(booking.booking_time, 0) AS timesLocked
         FROM booking
         WHERE booking.barbearia_id = ? 
           AND booking.professional_id = ? 
           AND booking.booking_date = ?
         UNION ALL
-        SELECT COALESCE(days_off.times, 0) AS daysOff_times
+        SELECT COALESCE(days_off.times, 0)
         FROM days_off
         WHERE days_off.barbearia_id = ? 
           AND days_off.professional_id = ? 
