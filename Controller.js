@@ -1155,21 +1155,25 @@ app.get('/api/bookings/:barbeariaId/:professionalId/:selectedDate', (req, res) =
   const selectedDate = req.params.selectedDate;
 
   const sql = `
-    SELECT booking_time
-    FROM booking
-    WHERE barbearia_id = ? AND professional_id = ? AND booking_date = ?
-    UNION ALL
-    SELECT times
-    FROM days_off
-    WHERE barbearia_id = ? AND professional_id = ? AND day = ?`;
+        SELECT COALESCE(booking.booking_time, 0) AS timesLocked
+        FROM booking
+        WHERE booking.barbearia_id = ? 
+          AND booking.professional_id = ? 
+          AND booking.booking_date = ?
+        UNION ALL
+        SELECT COALESCE(days_off.times, 0)
+        FROM days_off
+        WHERE days_off.barbearia_id = ? 
+          AND days_off.professional_id = ? 
+          AND days_off.day = ?`;
 
   db.query(sql, [barbeariaId, professionalId, selectedDate, barbeariaId, professionalId, selectedDate], (err, result) => {
     if (err) {
       console.error('Erro ao buscar agendamentos da barbearia:', err);
       return res.status(500).json({ Error: 'Internal Server Error.' }); 
     }else{
-      if (result) {
-        return res.status(200).json({ Success: "Success", allBookings: result });
+      if (result.length > 0) {
+        return res.status(200).json({ Success: "Success", timesLocked: result });
       }
     }
   });
