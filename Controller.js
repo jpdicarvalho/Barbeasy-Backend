@@ -892,8 +892,6 @@ app.post('/api/update-horariosTodosOsDias/:barbeariaId/:professionalId', (req, r
   query += ` WHERE barbearia_id = ? AND professional_id = ?`;
   values.push(barbeariaId, professionalId);
 
-  console.log(query, values);
-
   db.query(query, [...values, barbeariaId, professionalId], (error, result) => {
     if (error) {
       console.error("Erro ao padronizar os horários de trabalho da barbearia", error);
@@ -956,7 +954,6 @@ app.get('/api/get-service/:barbeariaId/:professionalId', (req, res) =>{
 });
 
 // Rota para atualizar informações de um serviço cadastrado
-
 app.post('/api/update-service/:barbeariaId/:professionalId', (req, res) => {
   const barbeariaId = req.params.barbeariaId;
   const professionalId = req.params.professionalId;
@@ -1226,6 +1223,7 @@ app.get('/api/bookings/:barbeariaId/:selectedDate', (req, res) =>{
 
   const sql=`
         SELECT
+          booking.id AS booking_id,
           user.id AS user_id,
           user.name user_name,
           user.celular AS user_phone,
