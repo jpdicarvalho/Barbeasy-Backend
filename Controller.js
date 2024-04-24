@@ -1223,10 +1223,11 @@ app.get('/api/bookings/:barbeariaId/:selectedDate', (req, res) =>{
 
   const sql=`
         SELECT
-          booking.id AS booking_id,
           user.id AS user_id,
           user.name user_name,
           user.celular AS user_phone,
+          booking.id AS booking_id,
+          booking.booking_time AS booking_time,
           professional.id AS professional_id,
           professional.name AS professional_name,
           servico.id AS service_id,
