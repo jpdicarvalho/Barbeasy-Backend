@@ -1246,6 +1246,8 @@ app.get('/api/bookings/:barbeariaId/:selectedDate', (req, res) =>{
         }else{
           if(result.length > 0){
             return res.status(200).json({ Message: "true", bookings: result });
+          }else{
+            return res.status(200).json({ Message: "false"});
           }
         }
       })
