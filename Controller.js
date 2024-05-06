@@ -1092,7 +1092,7 @@ app.get('/api/professional/:barbeariaId', (req, res) => {
 
 //Route to get all professional
 app.get('/api/list-professional', (req, res) => {
-  const sql = "SELECT * FROM professional";
+  const sql = "SELECT name, user_image, cell_phone, email FROM professional";
   db.query(sql, (err, result) =>{
     if(err){
       console.error('Erro ao buscar profissionais:', err);
