@@ -1073,7 +1073,7 @@ app.post('/api/create-professional/:barbeariaId', (req, res) => {
   })
 });
 
-//Rota para obter os profissionais da barbearia
+//Rota para obter os profissionais da barbearia em específico
 app.get('/api/professional/:barbeariaId', (req, res) => {
   const barbeariaId = req.params.barbeariaId;
 
@@ -1086,6 +1086,21 @@ app.get('/api/professional/:barbeariaId', (req, res) => {
     if(result){
       //console.log(result)
       return res.status(200).json({ Success: "Success", Professional: result});//Enviando o array com os profissionais
+    }
+  })
+});
+
+//Route to get all professional
+app.get('/api/list-professional', (req, res) => {
+  const sql = "SELECT * FROM professional";
+  db.query(sql, (err, result) =>{
+    if(err){
+      console.error('Erro ao buscar profissionais:', err);
+      return res.status(500).json({ Error: 'Erro ao buscar profissionais.' });
+    }else{
+      if(result.length > 0){
+        return res.status(200).json({ Success: "Success", Professional: result});//Enviando o array com os profissionais
+      }
     }
   })
 });
