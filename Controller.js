@@ -1103,7 +1103,7 @@ app.get('/api/list-professional/:searchProfessional', (req, res) => {
       if(result.length > 0){
         return res.status(200).json({ Message: "True", Professional: result});//Enviando o array com os profissionais
       }else{
-        return res.status(200).json({ Message: "false"});//Enviando o array com os profissionais
+        return res.status(200).json({ Message: "false", Professional: result});//Enviando o array com os profissionais
       }
     }
   })
