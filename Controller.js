@@ -1093,7 +1093,7 @@ app.get('/api/professional/:barbeariaId', (req, res) => {
 //Route to get all professional
 app.get('/api/list-professional/:searchProfessional', (req, res) => {
   const searchProfessional = req.params.searchProfessional;
-  
+
   const sql = "SELECT id, name, user_image, cell_phone, email FROM professional WHERE name = ?";
   db.query(sql, [searchProfessional], (err, result) =>{
     if(err){
@@ -1101,7 +1101,9 @@ app.get('/api/list-professional/:searchProfessional', (req, res) => {
       return res.status(500).json({ Error: 'Erro ao buscar profissionais.' });
     }else{
       if(result.length > 0){
-        return res.status(200).json({ Success: "Success", Professional: result});//Enviando o array com os profissionais
+        return res.status(200).json({ Message: "True", Professional: result});//Enviando o array com os profissionais
+      }else{
+        return res.status(404).json({ Message: "false"});//Enviando o array com os profissionais
       }
     }
   })
