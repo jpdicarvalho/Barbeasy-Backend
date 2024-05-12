@@ -1041,9 +1041,9 @@ app.post('/api/send-request-barbeariaToprofessional/', (req, res) =>{
 });
 
 //Route to get all link requests for a specific barbershop
-app.get('/api/all-request-link/:barbeariaId/:professionalId', (req, res) =>{
+app.get('/api/all-request-link/:barbeariaId/:professional_id', (req, res) =>{
   const barbeariaId = req.params.barbeariaId;
-  const professionalId = req.params.professionalId;
+  const professionalId = req.params.professional_id;
 
   const sql="SELECT * FROM requestBarbToProfe WHERE barbearia_id = ? AND professional_id = ?";
   db.query(sql, [barbeariaId, professionalId], (err, result) =>{
