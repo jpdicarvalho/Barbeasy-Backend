@@ -1020,6 +1020,16 @@ app.delete('/api/delete-service/:barbeariaId/:professionalId/:servicoId', (req, 
   })
 });
 
+//Route to create bond between barbearia and professional
+app.post('/api/send-request-barbeariaToprofessional/', (req, res) =>{
+  //get all params send from front-end
+  const professionalId = req.body.professionalId;
+  const barbeariaId = req.body.barbeariaId;
+  const textRequest = req.body.textRequest;
+
+  console.log(professionalId, barbeariaId, textRequest)
+});
+
 //Route to create a new professional
 app.post('/api/create-professional/:barbeariaId', (req, res) => {
   const barbeariaId = req.params.barbeariaId;
