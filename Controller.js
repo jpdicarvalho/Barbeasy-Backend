@@ -1052,7 +1052,9 @@ app.get('/api/all-request-link/:barbeariaId/:professional_id', (req, res) =>{
       return res.status(500).json({ Error: "Error" });
     }else{
       if(result.length > 0){
-        return res.status(200).json({ Message: "True"});
+        return res.status(200).json({ Success: "true"});
+      }else{
+        return res.status(200).json({ Success: "false"});
       }
     }
   })
