@@ -1020,7 +1020,7 @@ app.delete('/api/delete-service/:barbeariaId/:professionalId/:servicoId', (req, 
   })
 });
 
-//Route to create bond between barbearia and professional
+//Route to create link between barbearia and professional
 app.post('/api/send-request-barbeariaToprofessional/', (req, res) =>{
   //get all params send from front-end
   const barbeariaId = req.body.barbeariaId;
@@ -1040,6 +1040,23 @@ app.post('/api/send-request-barbeariaToprofessional/', (req, res) =>{
   })
 });
 
+//Route to get all link requests for a specific barbershop
+app.get('/api/all-request-link/:barbeariaId/:professionalId', (req, res) =>{
+  const barbeariaId = req.params.barbeariaId;
+  const professionalId = req.params.professionalId;
+
+  const sql="SELECT * FROM requestBarbToProfe WHERE barbearia_id = ? AND professional_id = ?";
+  db.query(sql, [barbeariaId, professionalId], (err, result) =>{
+    if(err){
+      console.error('Erro ao buscar solicitação de vinculo:', err);
+      return res.status(500).json({ Error: "Error" });
+    }else{
+      if(result.length > 0){
+        return res.status(200).json({ Message: "True"});
+      }
+    }
+  })
+})
 //Route to create a new professional
 app.post('/api/create-professional/:barbeariaId', (req, res) => {
   const barbeariaId = req.params.barbeariaId;
