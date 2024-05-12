@@ -1023,11 +1023,21 @@ app.delete('/api/delete-service/:barbeariaId/:professionalId/:servicoId', (req, 
 //Route to create bond between barbearia and professional
 app.post('/api/send-request-barbeariaToprofessional/', (req, res) =>{
   //get all params send from front-end
-  const professionalId = req.body.professionalId;
   const barbeariaId = req.body.barbeariaId;
+  const professionalId = req.body.professionalId;
   const textRequest = req.body.textRequest;
 
-  console.log(professionalId, barbeariaId, textRequest)
+  const sql="INSERT INTO requestBarbToProfe (barbearia_id, professional_id, text_request) VALUES (?, ?, ?)";
+  db.query(sql, [barbeariaId, professionalId, textRequest], (err, result) =>{
+    if(err){
+      console.error('Erro ao salvar solicitação de vinculo:', err);
+      return res.status(500).json({ Error: "Error" });
+    }else{
+      if(result){
+        return res.status(200).json({ Message: "True"});
+      }
+    }
+  })
 });
 
 //Route to create a new professional
