@@ -11,7 +11,7 @@ import MercadoPago from "mercadopago";
 import multer from 'multer';
 import { S3Client, PutObjectCommand, GetObjectCommand, DeleteObjectCommand } from '@aws-sdk/client-s3';
 
-import { serveSwaggerUI, setupSwaggerUI } from './swaggerConfig.js';
+//import { serveSwaggerUI, setupSwaggerUI } from './swaggerConfig.js';
 
 import 'dotenv/config'
 
@@ -41,8 +41,8 @@ db.connect((error) => {
   }
 });
 
-// Inicializando o Swagger
-app.use('/api-docs', serveSwaggerUI, setupSwaggerUI);
+/* Inicializando o Swagger
+app.use('/api-docs', serveSwaggerUI, setupSwaggerUI);*/
 
 //Set multer
 const storage = multer.memoryStorage()
