@@ -1059,6 +1059,7 @@ app.get('/api/all-request-link/:barbeariaId/:professional_id', (req, res) =>{
     }
   })
 })
+
 //Route to create a new professional
 app.post('/api/create-professional/:barbeariaId', (req, res) => {
   const barbeariaId = req.params.barbeariaId;
@@ -1310,6 +1311,7 @@ app.get('/api/bookings/:barbeariaId/:selectedDate', (req, res) =>{
         }
       })
 })
+
 
 // Inicia o servidor na porta especificada
 app.listen(port, () => {
