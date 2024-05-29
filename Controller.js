@@ -1312,7 +1312,6 @@ app.get('/api/bookings/:barbeariaId/:selectedDate', (req, res) =>{
       })
 })
 
-
 // Inicia o servidor na porta especificada
 app.listen(port, () => {
     console.log("Servidor rodando");
