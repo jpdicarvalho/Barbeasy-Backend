@@ -1022,6 +1022,7 @@ app.delete('/api/delete-service/:barbeariaId/:professionalId/:servicoId', (req, 
 
 //Route to create link between barbearia and professional
 app.post('/api/send-request-barbeariaToprofessional/', (req, res) =>{
+  
   //get all params send from front-end
   const barbeariaId = req.body.barbeariaId;
   const professionalId = req.body.professionalId;
