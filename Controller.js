@@ -65,7 +65,7 @@ const s3 = new S3Client({
 //=-=-=-=-= ROTAS USER-CLIENT-BARBEARIA =-=-=-=-=
 
 // Cadastro de usuário com senha criptografada
-app.post("/api/SignUp", async (req, res) => {
+app.post("/v1/api/Sign-Up", async (req, res) => {
   const { name, email, senha, celular } = req.body;
 
   // Verificação se o e-mail ou o número de celular já estão cadastrado
@@ -256,7 +256,7 @@ app.post('/api/Checkout', async (req, res) => {
 //ROTAS USER-BARBEARIA
 
 //Cadastro de ususário Barbearia
-app.post("/api/SignUp-Barbearia", async (req, res) => {
+app.post("/v1/api/SignUpBarbearia", async (req, res) => {
   const { name, email, usuario, senha, endereco } = req.body;
 
   // Verificação se o e-mail já está cadastrado
