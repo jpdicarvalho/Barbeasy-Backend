@@ -128,7 +128,7 @@ app.post('/api/SignIn', async (req, res) => {
 });
 
 //Route to get all barbearias
-app.get('/api/listBarbearia', async (req, res) => {
+app.get('/v1/api/getAllBarbearias', async (req, res) => {
   try {
     const sql="SELECT id, name, banner_main, banners, status, endereco FROM barbearia";
     db.query(sql, (err, rows) => {
@@ -156,7 +156,7 @@ app.get('/api/listBarbearia', async (req, res) => {
 });
 
 /*listando os Serviços cadastrados pelas barbearias*/
-app.get('/api/listServico', async (req, res)=>{
+app.get('/v1/api/getAllServices', async (req, res)=>{
   try {
     db.query('SELECT * FROM servico', (err, rows) => {
       if (err) throw err;
