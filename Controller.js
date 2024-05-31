@@ -20,7 +20,7 @@ const port = process.env.PORT || 3000;
 
 //CORS Settings to Only Allow Frontend Deployment to Netlify
 const corsOptions = {
-  origin: ' http://localhost:5173/barbeasy',
+  origin: ' http://localhost:5173/',
   optionsSuccessStatus: 200, // Some browser versions may need this code
 };
 
