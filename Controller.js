@@ -18,13 +18,13 @@ import 'dotenv/config'
 const app = express();
 const port = process.env.PORT || 3000;
 
-/* CORS Settings to Only Allow Frontend Deployment to Netlify
+//CORS Settings to Only Allow Frontend Deployment to Netlify
 const corsOptions = {
-  origin: 'https://barbeasy.netlify.app',
+  origin: ' http://localhost:5173/barbeasy',
   optionsSuccessStatus: 200, // Some browser versions may need this code
-};*/
+};
 
-app.use(cors(/*corsOptions*/));
+app.use(cors(corsOptions));
 app.use(cors());
 app.use(express.json());
 app.use(bodyParser.json());
