@@ -41,6 +41,7 @@ db.connect((error) => {
   }
 });
 
+
 /* Inicializando o Swagger
 app.use('/api-docs', serveSwaggerUI, setupSwaggerUI);*/
 
