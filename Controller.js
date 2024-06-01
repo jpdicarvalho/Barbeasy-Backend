@@ -21,7 +21,7 @@ import 'dotenv/config'
 const app = express();
 
 // Configuração do Morgan para registrar logs das requisições HTTP no console
-app.use(morgan('dev'));
+app.use(morgan('combined'));
 
 // Configuração do Winston para registrar logs em um arquivo
 const logger = winston.createLogger({
@@ -346,7 +346,8 @@ app.post('/v1/api/SignInBarbearia', async (req, res) => {
       res.status(404).json({success: false, message: 'Usuário não encontrado'});
     }
   });
-  logger.info('Requisição recebida na rota "/"');
+  const userAgent = req.headers['user-agent'];
+  logger.info(`Requisição recebida na rota "/v1/api/SignInBarbearia" do cliente: ${userAgent}`);
 });
 
 //Upload de Imagem do Usuário Barbearia, na AWS S3
