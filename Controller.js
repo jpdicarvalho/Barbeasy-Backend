@@ -1063,6 +1063,9 @@ app.get('/api/all-request-link/:barbeariaId/:professional_id', (req, res) =>{
 
 //Route to create a new professional
 app.post('/v1/api/create-professional/:barbeariaId', (req, res) => {
+  // Função para verificar se a entrada contém apenas letras maiúsculas e minúsculas
+  const isAlpha = (input) => /^[a-zA-Z]+$/.test(input);
+
   const barbeariaId = req.params.barbeariaId;
   const newNameProfessional = req.body.newNameProfessional;
   const newPhoneProfessional = req.body.newPhoneProfessional;
@@ -1071,8 +1074,28 @@ app.post('/v1/api/create-professional/:barbeariaId', (req, res) => {
   const token = req.body.token;
   const fakeNameUserImage = 'default.png';
 
-  const sql="SELECT email FROM professional WHERE email = ?";
-  db.query(sql, [token], (err, resul) =>{
+  // Verifica se newNameProfessional contém apenas letras maiúsculas e minúsculas
+  if (!isAlpha(newNameProfessional)) {
+    return res.status(400).json({ error: 'Error in values' });
+  }
+
+  // Verifica se newPhoneProfessional contém apenas letras maiúsculas e minúsculas
+  if (!isAlpha(newPhoneProfessional)) {
+    return res.status(400).json({ error: 'Error in values' });
+  }
+
+  // Verifica se newEmailProfessional contém apenas letras maiúsculas e minúsculas
+  if (!isAlpha(newEmailProfessional)) {
+    return res.status(400).json({ error: 'Error in values' });
+  }
+
+  // Verifica se newPasswordProfessional contém apenas letras maiúsculas e minúsculas
+  if (!isAlpha(newPasswordProfessional)) {
+    return res.status(400).json({ error: 'Error in values' });
+  }
+
+  const sql="SELECT name, email, cell_phone FROM professional WHERE name = ? OR email = ? OR cell_phone = ?";
+  db.query(sql, [newNameProfessional, newEmailProfessional, newPasswordProfessional], (err, resul) =>{
     if(err){
       console.error('Erro ao verificar token do profissional:', err);
       return res.status(500).json({ Error: "Error" });
