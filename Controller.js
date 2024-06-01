@@ -1062,25 +1062,26 @@ app.get('/api/all-request-link/:barbeariaId/:professional_id', (req, res) =>{
 })
 
 //Route to create a new professional
-app.post('/api/create-professional/:barbeariaId', (req, res) => {
+app.post('/v1/api/create-professional/:barbeariaId', (req, res) => {
   const barbeariaId = req.params.barbeariaId;
   const newNameProfessional = req.body.newNameProfessional;
   const newPhoneProfessional = req.body.newPhoneProfessional;
   const newEmailProfessional = req.body.newEmailProfessional;
   const newPasswordProfessional = req.body.newPasswordProfessional;
+  const token = req.body.token;
   const fakeNameUserImage = 'default.png';
 
   const sql="SELECT email FROM professional WHERE email = ?";
-  db.query(sql, [newEmailProfessional], (err, resul) =>{
+  db.query(sql, [token], (err, resul) =>{
     if(err){
-      console.error('Erro ao verificar email do profissional:', err);
+      console.error('Erro ao verificar token do profissional:', err);
       return res.status(500).json({ Error: "Error" });
     }
     if(resul.length > 0){
       return res.status(401).json({ Unauthorized: "Unauthorized"});
     }else{
-      const sqlInsertOnProfessional="INSERT INTO professional (name, email, password, cell_phone, user_image) VALUES (?, ?, ?, ?, ?);"
-      db.query(sqlInsertOnProfessional, [newNameProfessional, newEmailProfessional, newPasswordProfessional, newPhoneProfessional, fakeNameUserImage], (erro, result) =>{
+      const sqlInsertOnProfessional="INSERT INTO professional (name, email, password, cell_phone, user_image, token) VALUES (?, ?, ?, ?, ?, ?);"
+      db.query(sqlInsertOnProfessional, [newNameProfessional, newEmailProfessional, newPasswordProfessional, newPhoneProfessional, fakeNameUserImage, token], (erro, result) =>{
         if(erro){
           console.error('Erro ao criar profissional:', erro);
           return res.status(500).json({ Error: "Error" });
