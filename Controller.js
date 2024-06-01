@@ -11,11 +11,31 @@ import MercadoPago from "mercadopago";
 import multer from 'multer';
 import { S3Client, PutObjectCommand, GetObjectCommand, DeleteObjectCommand } from '@aws-sdk/client-s3';
 
+import morgan from 'morgan';
+import winston from 'winston';
+
 //import { serveSwaggerUI, setupSwaggerUI } from './swaggerConfig.js';
 
 import 'dotenv/config'
 
 const app = express();
+
+// Configuração do Morgan para registrar logs das requisições HTTP no console
+app.use(morgan('dev'));
+
+// Configuração do Winston para registrar logs em um arquivo
+const logger = winston.createLogger({
+  level: 'info',
+  format: winston.format.combine(
+    winston.format.timestamp(),
+    winston.format.json()
+  ),
+  transports: [
+    new winston.transports.Console(),
+    new winston.transports.File({ filename: 'combined.log' })
+  ]
+});
+
 const port = process.env.PORT || 3000;
 
 //CORS Settings to Only Allow Frontend Deployment to Netlify
@@ -40,7 +60,11 @@ db.connect((error) => {
     console.log('Conexão bem-sucedida ao banco de dados!');
   }
 });
-
+//regex to valided values of input
+const isNameValided = (input) => /^[a-zA-Z]+$/.test(input);
+const isPhoneValided = (input) => /^[0-9]*$/.test(input);
+const isEmailValided = (input) => /^[a-z0-9.@]+$/i.test(input);
+const isPasswordValided = (input) => /^[a-zA-Z0-9]+$/.test(input);
 
 /* Inicializando o Swagger
 app.use('/api-docs', serveSwaggerUI, setupSwaggerUI);*/
@@ -296,7 +320,13 @@ app.post("/v1/api/SignUpBarbearia", async (req, res) => {
 
 //Realizando Login e Gerando Token de autenticação
 app.post('/v1/api/SignInBarbearia', async (req, res) => {
-  const {email, senha} = req.body;
+  const email = req.body.email;
+  const senha = req.body.senha;
+
+  // Verifica se newEmail contém apenas letras maiúsculas e minúsculas
+  if (!isEmailValided(email)) {
+    return res.status(400).json({ error: 'Error in values' });
+  }
 
   // Buscar usuário pelo email
   db.query('SELECT * FROM barbearia WHERE email = ? AND senha = ?', [email, senha],
@@ -316,6 +346,7 @@ app.post('/v1/api/SignInBarbearia', async (req, res) => {
       res.status(404).json({success: false, message: 'Usuário não encontrado'});
     }
   });
+  logger.info('Requisição recebida na rota "/"');
 });
 
 //Upload de Imagem do Usuário Barbearia, na AWS S3
@@ -1064,13 +1095,7 @@ app.get('/api/all-request-link/:barbeariaId/:professional_id', (req, res) =>{
 
 //Route to create a new professional
 app.post('/v1/api/create-professional/:barbeariaId', (req, res) => {
-  // Função para verificar se a entrada contém apenas letras maiúsculas e minúsculas
-  const isNameValided = (input) => /^[a-zA-Z]+$/.test(input);
-  const isPhoneValided = (input) => /^[0-9]*$/.test(input);
-  const isEmailValided = (input) => /^[a-z0-9.@]+$/i.test(input);
-  const isPasswordValided = (input) => /^[a-zA-Z0-9]+$/.test(input);
-
-
+  
   const barbeariaId = req.params.barbeariaId;
   const newNameProfessional = req.body.newNameProfessional;
   const newPhoneProfessional = req.body.newPhoneProfessional;
