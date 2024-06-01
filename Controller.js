@@ -20,19 +20,30 @@ import 'dotenv/config'
 
 const app = express();
 
-// Configuração do Morgan para registrar logs das requisições HTTP no console e em arquivo
-app.use(morgan('combined', { stream: winston.transports.File({ filename: 'combined.log' }) }));
+// Defina o formato personalizado para o Morgan
+morgan.token('remote-addr', function(req) {
+  return req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+});
+
+// Use o Morgan com o formato personalizado
+app.use(morgan(':remote-addr - :method :url :status :res[content-length] - :response-time ms'));
 
 // Configuração do Winston para registrar logs em um arquivo
 const logger = winston.createLogger({
   level: 'info',
   format: winston.format.combine(
-    winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
-    winston.format.printf(info => `${info.timestamp} ${info.level}: ${info.message}`)
+    winston.format.timestamp(),
+    winston.format.json()
   ),
   transports: [
     new winston.transports.File({ filename: 'combined.log' })
   ]
+});
+
+// Adicionando o logger ao objeto de solicitação do Express para uso em rotas
+app.use((req, res, next) => {
+  req.logger = logger;
+  next();
 });
 
 const port = process.env.PORT || 3000;
@@ -47,11 +58,6 @@ app.use(cors(corsOptions));
 app.use(cors());
 app.use(express.json());
 app.use(bodyParser.json());
-// Adicionando o logger ao objeto de solicitação do Express para uso em rotas
-app.use((req, res, next) => {
-  req.logger = logger;
-  next();
-});
 
 // Create the connection to the database mysql on PlanetScale
 const db = mysql.createConnection(process.env.DATABASE_URL)
@@ -351,8 +357,8 @@ app.post('/v1/api/SignInBarbearia', async (req, res) => {
     }
   });
   const userAgent = req.headers['user-agent'];
-  req.logger.info('Página inicial acessada.');
-  logger.info(`Requisição recebida na rota "/v1/api/SignInBarbearia" do cliente: ${userAgent}`);
+  req.logger.info('Página inicial acessada.', { 'x-forwarded-for': req.headers['x-forwarded-for'] || req.socket.remoteAddress });
+  console.log(userAgent)
 });
 
 //Upload de Imagem do Usuário Barbearia, na AWS S3
