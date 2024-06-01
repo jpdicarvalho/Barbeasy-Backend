@@ -20,7 +20,7 @@ const port = process.env.PORT || 3000;
 
 //CORS Settings to Only Allow Frontend Deployment to Netlify
 const corsOptions = {
-  origin: ' http://localhost:5173',
+  origin: 'http://localhost:5173',
   optionsSuccessStatus: 200, // Some browser versions may need this code
 };
 
@@ -253,7 +253,7 @@ app.post('/api/Checkout', async (req, res) => {
    });
 });
 
-//ROTAS USER-BARBEARIA
+//======================================= ROTAS USER-BARBEARIA ====================================
 
 //Cadastro de ususário Barbearia
 app.post("/v1/api/SignUpBarbearia", async (req, res) => {
@@ -1064,7 +1064,11 @@ app.get('/api/all-request-link/:barbeariaId/:professional_id', (req, res) =>{
 //Route to create a new professional
 app.post('/v1/api/create-professional/:barbeariaId', (req, res) => {
   // Função para verificar se a entrada contém apenas letras maiúsculas e minúsculas
-  const isAlpha = (input) => /^[a-zA-Z]+$/.test(input);
+  const isNameValided = (input) => /^[a-zA-Z]+$/.test(input);
+  const isPhoneValided = (input) => /^[0-9]*$/.test(input);
+  const isEmailValided = (input) => /^[a-z0-9.@]+$/i.test(input);
+  const isPasswordValided = (input) => /^[a-zA-Z0-9]+$/.test(input);
+
 
   const barbeariaId = req.params.barbeariaId;
   const newNameProfessional = req.body.newNameProfessional;
@@ -1075,22 +1079,22 @@ app.post('/v1/api/create-professional/:barbeariaId', (req, res) => {
   const fakeNameUserImage = 'default.png';
 
   // Verifica se newNameProfessional contém apenas letras maiúsculas e minúsculas
-  if (!isAlpha(newNameProfessional)) {
+  if (!isNameValided(newNameProfessional)) {
     return res.status(400).json({ error: 'Error in values' });
   }
 
   // Verifica se newPhoneProfessional contém apenas letras maiúsculas e minúsculas
-  if (!isAlpha(newPhoneProfessional)) {
+  if (!isPhoneValided(newPhoneProfessional)) {
     return res.status(400).json({ error: 'Error in values' });
   }
 
   // Verifica se newEmailProfessional contém apenas letras maiúsculas e minúsculas
-  if (!isAlpha(newEmailProfessional)) {
+  if (!isEmailValided(newEmailProfessional)) {
     return res.status(400).json({ error: 'Error in values' });
   }
 
   // Verifica se newPasswordProfessional contém apenas letras maiúsculas e minúsculas
-  if (!isAlpha(newPasswordProfessional)) {
+  if (!isPasswordValided(newPasswordProfessional)) {
     return res.status(400).json({ error: 'Error in values' });
   }
 
