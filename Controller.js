@@ -315,7 +315,7 @@ app.post('/api/Checkout', async (req, res) => {
 //Cadastro de ususário Barbearia
 app.post("/v1/api/SignUpBarbearia", async (req, res) => {
   const { name, street, number, neighborhood, city, usuario, email, senha } = req.body;
-
+console.log()
   // Verifica se name contém apenas letras maiúsculas e minúsculas
   if (!isSignUpBarbeariaValid(name)) {
     return res.status(400).json({ error: 'Error in values' });
@@ -350,7 +350,7 @@ app.post("/v1/api/SignUpBarbearia", async (req, res) => {
   }
 
   // Verificação se o e-mail já está cadastrado
-  db.query('SELECT email, rua, N, bairro, cidade FROM barbearia WHERE email = ? AND rua = ? AND N = ? AND bairro = ? AND cidade = ?', [email, street, number, neighborhood, city,], (error, results) => {
+  db.query('SELECT email, rua, N, bairro, cidade FROM barbearia WHERE email = ? AND rua = ? AND N = ? AND bairro = ? AND cidade = ?', [email, street, number, neighborhood, city], (error, results) => {
     if (error) {
       console.error(error);
       return res.status(500).send('Erro ao verificar o e-mail');
@@ -358,7 +358,7 @@ app.post("/v1/api/SignUpBarbearia", async (req, res) => {
 
     // Se já houver resultados, significa que o e-mail já está cadastrado
     if (results.length > 0) {
-      return res.status(400).send('E-mail ou endereço já cadastrado.');
+      return res.status(401).send('E-mail ou endereço já cadastrado.');
     }
 
     const barbearia = {
@@ -367,7 +367,6 @@ app.post("/v1/api/SignUpBarbearia", async (req, res) => {
       usuario,
       senha,
       status: 'Fechado',
-      endereco,
       user_image: 'user_image',
       banner_main: 'banner_main',
       banners: 'banners',
@@ -376,7 +375,7 @@ app.post("/v1/api/SignUpBarbearia", async (req, res) => {
       bairro: neighborhood,
       cidade: city
     };
-    // Inserção no banco de dados
+
     db.query('INSERT INTO barbearia SET ?', barbearia, (error, results) => {
       if (error) {
         console.error(error);
