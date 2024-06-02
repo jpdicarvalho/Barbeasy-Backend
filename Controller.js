@@ -32,8 +32,18 @@ morgan.token('user-agent', function(req) {
   return `${ua.browser.name} ${ua.browser.version}`;
 });
 
+// Adicione um token personalizado para o corpo da requisição
+morgan.token('body', function(req) {
+  return JSON.stringify(req.body);
+});
+
+// Adicione um token personalizado para os parâmetros da rota
+morgan.token('params', function(req) {
+  return JSON.stringify(req.params);
+});
+
 // Use o Morgan com o formato personalizado
-const logFormat = ':remote-addr - [:date[clf]] ":method :url HTTP/:http-version" :status :res[content-length] ":user-agent"';
+const logFormat = ':remote-addr - [:date[clf]] ":method :url HTTP/:http-version" :status :res[content-length] ":user-agent" Body: :body Params: :params';
 app.use(morgan(logFormat, {
   stream: {
     write: (message) => logger.info(message.trim())
