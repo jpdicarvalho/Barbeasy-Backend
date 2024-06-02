@@ -363,7 +363,7 @@ app.post('/v1/api/SignInBarbearia', async (req, res) => {
   }
 
   // Buscar usuário pelo email
-  db.query('SELECT * FROM barbearia WHERE email = ? AND senha = ?', [email, senha],
+  db.query('SELECT id, name, usuario, status, user_image, banner_main, banners, rua, N, bairro, cidade FROM barbearia WHERE email = ? AND senha = ?', [email, senha],
   (err, result) => {
     if(err){
       res.send({err: err});
