@@ -13,7 +13,7 @@ import { S3Client, PutObjectCommand, GetObjectCommand, DeleteObjectCommand } fro
 
 import morgan from 'morgan';
 import winston from 'winston';
-import useragent from 'useragent';
+import UAParser from 'ua-parser-js';
 
 //import { serveSwaggerUI, setupSwaggerUI } from './swaggerConfig.js';
 
@@ -27,8 +27,9 @@ morgan.token('remote-addr', function(req) {
 });
 
 morgan.token('user-agent', function(req) {
-  const agent = useragent.parse(req.headers['user-agent']);
-  return `${agent.family} ${agent.major}.${agent.minor}.${agent.patch}`;
+  const parser = new UAParser();
+  const ua = parser.setUA(req.headers['user-agent']).getResult();
+  return `${ua.browser.name} ${ua.browser.version}`;
 });
 
 // Use o Morgan com o formato personalizado
