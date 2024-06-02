@@ -92,9 +92,11 @@ db.connect((error) => {
 });
 //regex to valided values of input
 const isNameValided = (input) => /^[a-zA-Z]+$/.test(input);
-const isPhoneValided = (input) => /^[0-9]*$/.test(input);
+const isOnlyNumberValided = (input) => /^[0-9]*$/.test(input);
 const isEmailValided = (input) => /^[a-z0-9.@]+$/i.test(input);
-const isPasswordValided = (input) => /^[a-zA-Z0-9]+$/.test(input);
+const isPasswordValided = (input) => /^[a-zA-Z0-9@.#%]+$/.test(input);
+const isSignUpBarbeariaValid = (input) => /^[a-zA-Z\s]*$/.test(input);
+
 
 /* Inicializando o Swagger
 app.use('/api-docs', serveSwaggerUI, setupSwaggerUI);*/
@@ -312,10 +314,43 @@ app.post('/api/Checkout', async (req, res) => {
 
 //Cadastro de ususário Barbearia
 app.post("/v1/api/SignUpBarbearia", async (req, res) => {
-  const { name, email, usuario, senha, endereco } = req.body;
+  const { name, street, number, neighborhood, city, usuario, email, senha } = req.body;
+
+  // Verifica se name contém apenas letras maiúsculas e minúsculas
+  if (!isSignUpBarbeariaValid(name)) {
+    return res.status(400).json({ error: 'Error in values' });
+  }
+  // Verifica se street contém apenas letras maiúsculas e minúsculas
+  if (!isSignUpBarbeariaValid(street)) {
+    return res.status(400).json({ error: 'Error in values' });
+  }
+  // Verifica se number contém apenas números
+  if (!isOnlyNumberValided(number)) {
+    return res.status(400).json({ error: 'Error in values' });
+  }
+  // Verifica se neighborhood contém apenas letras maiúsculas e minúsculas
+  if (!isSignUpBarbeariaValid(neighborhood)) {
+    return res.status(400).json({ error: 'Error in values' });
+  }
+  // Verifica se city contém apenas letras maiúsculas e minúsculas
+  if (!isSignUpBarbeariaValid(city)) {
+    return res.status(400).json({ error: 'Error in values' });
+  }
+  // Verifica se usuario contém apenas letras maiúsculas e minúsculas
+  if (!isSignUpBarbeariaValid(usuario)) {
+    return res.status(400).json({ error: 'Error in values' });
+  }
+  // Verifica se email contém apenas letras maiúsculas e minúsculas
+  if (!isEmailValided(email)) {
+    return res.status(400).json({ error: 'Error in values' });
+  }
+  // Verifica se senha contém apenas letras maiúsculas e minúsculas e alguns caracteres especiais
+  if (!isPasswordValided(senha)) {
+    return res.status(400).json({ error: 'Error in values' });
+  }
 
   // Verificação se o e-mail já está cadastrado
-  db.query('SELECT * FROM barbearia WHERE email = ?', [email], (error, results) => {
+  db.query('SELECT email, rua, N, bairro, cidade FROM barbearia WHERE email = ? AND rua = ? AND N = ? AND bairro = ? AND cidade = ?', [email, street, number, neighborhood, city,], (error, results) => {
     if (error) {
       console.error(error);
       return res.status(500).send('Erro ao verificar o e-mail');
@@ -323,7 +358,7 @@ app.post("/v1/api/SignUpBarbearia", async (req, res) => {
 
     // Se já houver resultados, significa que o e-mail já está cadastrado
     if (results.length > 0) {
-      return res.status(400).send('E-mail já cadastrado. Por favor, escolha outro e-mail.');
+      return res.status(400).send('E-mail ou endereço já cadastrado.');
     }
 
     const barbearia = {
@@ -336,14 +371,21 @@ app.post("/v1/api/SignUpBarbearia", async (req, res) => {
       user_image: 'user_image',
       banner_main: 'banner_main',
       banners: 'banners',
+      rua: street,
+      N: number,
+      bairro: neighborhood,
+      cidade: city
     };
     // Inserção no banco de dados
     db.query('INSERT INTO barbearia SET ?', barbearia, (error, results) => {
       if (error) {
         console.error(error);
         return res.status(500).send('Erro ao registrar usuário');
+      }else{
+        if(results){
+          res.status(201).send('Usuário registrado com sucesso');
+        }
       }
-      res.status(201).send('Usuário registrado com sucesso');
     });
   });
 });
@@ -1143,7 +1185,7 @@ app.post('/v1/api/create-professional/:barbeariaId', (req, res) => {
   }
 
   // Verifica se newPhoneProfessional contém apenas letras maiúsculas e minúsculas
-  if (!isPhoneValided(newPhoneProfessional)) {
+  if (!isOnlyNumberValided(newPhoneProfessional)) {
     return res.status(400).json({ error: 'Error in values' });
   }
 
