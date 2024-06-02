@@ -13,6 +13,7 @@ import { S3Client, PutObjectCommand, GetObjectCommand, DeleteObjectCommand } fro
 
 import morgan from 'morgan';
 import winston from 'winston';
+import useragent from 'useragent';
 
 //import { serveSwaggerUI, setupSwaggerUI } from './swaggerConfig.js';
 
