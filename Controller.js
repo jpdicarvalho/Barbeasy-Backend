@@ -22,7 +22,7 @@ const app = express();
 
 // Defina o formato personalizado para o Morgan
 morgan.token('remote-addr', function(req) {
-  return req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+  return req.headers['x-forwarded-for'] || req.socket.remoteAddress;
 });
 
 morgan.token('user-agent', function(req) {
@@ -33,6 +33,21 @@ morgan.token('date', function() {
   return new Date().toISOString();
 });
 
+// Configuração do Winston para registrar logs em um arquivo e no console
+const logger = winston.createLogger({
+  level: 'info',
+  format: winston.format.combine(
+    winston.format.timestamp(),
+    winston.format.printf(({ timestamp, level, message }) => {
+      return `${timestamp} ${level}: ${message}`;
+    })
+  ),
+  transports: [
+    new winston.transports.Console(), // Log no console
+    new winston.transports.File({ filename: 'combined.log' }) // Log no arquivo
+  ]
+});
+
 // Use o Morgan com o formato personalizado
 const logFormat = ':remote-addr - [:date] ":method :url HTTP/:http-version" :status - ":user-agent"';
 app.use(morgan(logFormat, {
@@ -41,17 +56,6 @@ app.use(morgan(logFormat, {
   }
 }));
 
-// Configuração do Winston para registrar logs em um arquivo
-const logger = winston.createLogger({
-  level: 'info',
-  format: winston.format.combine(
-    winston.format.timestamp(),
-    winston.format.json()
-  ),
-  transports: [
-    new winston.transports.File({ filename: 'combined.log' })
-  ]
-});
 
 const port = process.env.PORT || 3000;
 
