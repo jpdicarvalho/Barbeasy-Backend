@@ -347,6 +347,10 @@ app.post('/v1/api/SignInBarbearia', async (req, res) => {
   if (!isEmailValided(email)) {
     return res.status(400).json({ error: 'Error in values' });
   }
+  // Verifica se newSenha contém apenas letras maiúsculas e minúsculas
+  if (!isPasswordValided(senha)) {
+    return res.status(400).json({ error: 'Error in values' });
+  }
 
   // Buscar usuário pelo email
   db.query('SELECT * FROM barbearia WHERE email = ? AND senha = ?', [email, senha],
