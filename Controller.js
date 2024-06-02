@@ -315,7 +315,6 @@ app.post('/api/Checkout', async (req, res) => {
 //Cadastro de ususário Barbearia
 app.post("/v1/api/SignUpBarbearia", async (req, res) => {
   const { name, street, number, neighborhood, city, usuario, email, senha } = req.body;
-  console.log(name, street, number, neighborhood, city, usuario, email, senha)
 
   // Verifica se name contém apenas letras maiúsculas e minúsculas
   if (!isSignUpBarbeariaValid(name)) {
@@ -350,9 +349,8 @@ app.post("/v1/api/SignUpBarbearia", async (req, res) => {
     return res.status(400).json({ error: 'Error in values' });
   }
 
-
   // Verificação se o e-mail já está cadastrado
-  db.query('SELECT email, rua, N, bairro, cidade FROM barbearia WHERE email = ? AND rua = ? AND N = ? AND bairro = ? AND cidade = ?', [email, street, number, neighborhood, city], (error, results) => {
+  db.query('SELECT email, rua, N, bairro, cidade FROM barbearia WHERE email = ? OR rua = ? AND N = ? AND bairro = ? AND cidade = ?', [email, street, number, neighborhood, city], (error, results) => {
     if (error) {
       console.error(error);
       return res.status(500).send('Erro ao verificar o e-mail');
