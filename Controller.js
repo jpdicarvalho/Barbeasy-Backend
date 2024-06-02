@@ -53,7 +53,6 @@ const logger = winston.createLogger({
   ]
 });
 
-
 const port = process.env.PORT || 3000;
 
 //CORS Settings to Only Allow Frontend Deployment to Netlify
@@ -364,9 +363,6 @@ app.post('/v1/api/SignInBarbearia', async (req, res) => {
       res.status(404).json({success: false, message: 'Usuário não encontrado'});
     }
   });
-  const userAgent = req.headers['user-agent'];
-  req.logger.info('Página inicial acessada.', { 'x-forwarded-for': req.headers['x-forwarded-for'] || req.socket.remoteAddress });
-  console.log(userAgent)
 });
 
 //Upload de Imagem do Usuário Barbearia, na AWS S3
