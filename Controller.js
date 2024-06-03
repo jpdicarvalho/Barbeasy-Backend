@@ -186,7 +186,7 @@ app.post('/api/SignIn', async (req, res) => {
 });
 
 //Route to get all barbearias
-app.get('/v1/api/getAllBarbearias', async (req, res) => {
+app.get('/v1/api/getAllBarbearias', AuthenticateJWT, async (req, res) => {
   try {
     const sql="SELECT id, name, status, banner_main, banners, rua, N, bairro, cidade FROM barbearia";
     db.query(sql, (err, rows) => {
