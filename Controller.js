@@ -188,7 +188,7 @@ app.post('/api/SignIn', async (req, res) => {
 //Route to get all barbearias
 app.get('/v1/api/getAllBarbearias', async (req, res) => {
   try {
-    const sql="SELECT id, name, banner_main, banners, status, endereco FROM barbearia";
+    const sql="SELECT id, name, status, banner_main, banners, rua, N, bairro, cidade FROM barbearia";
     db.query(sql, (err, rows) => {
       if (err){
         console.error("Erro ao buscar barbearias:", err);
