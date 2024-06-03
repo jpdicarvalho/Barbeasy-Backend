@@ -313,7 +313,7 @@ app.post('/api/Checkout', async (req, res) => {
 
 //======================================= ROTAS USER-BARBEARIA ====================================
 
-//Cadastro de ususário Barbearia
+//Cadastro de ususário Barbearia   #VERIFIED
 app.post("/v1/api/SignUpBarbearia", async (req, res) => {
   const { name, street, number, neighborhood, city, usuario, email, senha } = req.body;
 
@@ -390,7 +390,7 @@ app.post("/v1/api/SignUpBarbearia", async (req, res) => {
   });
 });
 
-//Realizando Login e Gerando Token de autenticação
+//Realizando Login e Gerando Token de autenticação  #VERIFIED
 app.post('/v1/api/SignInBarbearia', async (req, res) => {
   const email = req.body.email;
   const senha = req.body.senha;
@@ -424,10 +424,11 @@ app.post('/v1/api/SignInBarbearia', async (req, res) => {
   });
 });
 
-//Upload de Imagem do Usuário Barbearia, na AWS S3
+//Upload de Imagem do Usuário Barbearia, na AWS S3  #VERIFIED
 app.put('/v1/api/updateUserImageBarbearia', AuthenticateJWT, upload.single('image'), (req, res) => {
   const barbeariaId = req.body.barbeariaId;
   const newImageUser = req.file.originalname;
+  console.log(newImageUser)
 
   //Buscando imagem atual salva no BD MySQL
   const currentImg = "SELECT user_image FROM barbearia WHERE id = ?";
@@ -478,7 +479,7 @@ app.put('/v1/api/updateUserImageBarbearia', AuthenticateJWT, upload.single('imag
   });
 });
 
-//Rota para obter a imagem de usuário
+//Rota para obter a imagem de usuário #VERIFIED
 app.get('/v1/api/userImageBarbearia', AuthenticateJWT, (req, res) =>{
   const barbeariaId = req.query.barbeariaId; 
 
@@ -489,7 +490,7 @@ app.get('/v1/api/userImageBarbearia', AuthenticateJWT, (req, res) =>{
       return res.status(500).json({ error: 'Internal Server Error' });
     }else{
       if(result.length > 0) {
-        const url = "https://d15o6h0uxpz56g.cloudfront.net/" + result[0].user_image;
+        const url = process.env.URL_CLOUD_FRONT + result[0].user_image;
         return res.json({url});
         }
     }
