@@ -490,7 +490,7 @@ app.get('/v1/api/userImageBarbearia', AuthenticateJWT, (req, res) =>{
       return res.status(500).json({ error: 'Internal Server Error' });
     }else{
       if(result.length > 0) {
-        const url = process.env.URL_CLOUD_FRONT + result[0].user_image;
+        const url = "https://d15o6h0uxpz56g.cloudfront.net/" + result[0].user_image;
         return res.json({url});
         }
     }
