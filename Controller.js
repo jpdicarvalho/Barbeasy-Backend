@@ -6,6 +6,7 @@ import bodyParser from "body-parser";
 import mysql from "mysql2";
 
 import jwt  from 'jsonwebtoken';
+import authenticateJWT from './AuthenticateJWT';
 import MercadoPago from "mercadopago";
 
 import multer from 'multer';
@@ -407,18 +408,18 @@ app.post('/v1/api/SignInBarbearia', async (req, res) => {
   db.query('SELECT id, name, usuario, status, user_image, banner_main, banners, rua, N, bairro, cidade FROM barbearia WHERE email = ? AND senha = ?', [email, senha],
   (err, result) => {
     if(err){
-      res.send({err: err});
+      return res.send({err: err});
     }
     if (result.length > 0) {
       const barbearia = result[0];
       // Criação do token
       const token = jwt.sign({ barbeariaId: barbearia.id, barbeariaEmail: barbearia.email }, process.env.tokenWordSecret, { expiresIn: "1h" });
       // Envie o token no corpo da resposta
-      res.status(200).json({ success: true, token: token, barbearia: result });
+      return res.status(200).json({ success: true, token: token, barbearia: result });
       
     } else {
       // Usuário não encontrado
-      res.status(404).json({success: false, message: 'Usuário não encontrado'});
+      return res.status(404).json({success: false, message: 'Usuário não encontrado'});
     }
   });
 });
@@ -478,7 +479,7 @@ app.post('/api/upload-image-user-barbearia', upload.single('image'), (req, res) 
 });
 
 //Rota para obter a imagem de usuário
-app.get('/v1/api/userImageBarbearia', (req, res) =>{
+app.get('/v1/api/userImageBarbearia', authenticateJWT, (req, res) =>{
   const barbeariaId = req.query.barbeariaId; 
 
   const sql = "SELECT user_image from barbearia WHERE id = ?";
