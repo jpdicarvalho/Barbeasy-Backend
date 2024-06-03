@@ -25,4 +25,4 @@ if (!SECRET_KEY) {
     }
   };
   
-  export default authenticateJWT;
+  export default AuthenticateJWT;
