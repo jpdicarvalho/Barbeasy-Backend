@@ -425,7 +425,7 @@ app.post('/v1/api/SignInBarbearia', async (req, res) => {
 });
 
 //Upload de Imagem do Usuário Barbearia, na AWS S3
-app.post('/api/upload-image-user-barbearia', upload.single('image'), (req, res) => {
+app.put('/v1/api/updateUserImageBarbearia', AuthenticateJWT, upload.single('image'), (req, res) => {
   const barbeariaId = req.body.barbeariaId;
   const newImageUser = req.file.originalname;
 
