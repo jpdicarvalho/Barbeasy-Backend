@@ -6,7 +6,7 @@ import bodyParser from "body-parser";
 import mysql from "mysql2";
 
 import jwt  from 'jsonwebtoken';
-import authenticateJWT from './AuthenticateJWT';
+import AuthenticateJWT from './AuthenticateJWT.js'
 import MercadoPago from "mercadopago";
 
 import multer from 'multer';
@@ -479,7 +479,7 @@ app.post('/api/upload-image-user-barbearia', upload.single('image'), (req, res) 
 });
 
 //Rota para obter a imagem de usuário
-app.get('/v1/api/userImageBarbearia', authenticateJWT, (req, res) =>{
+app.get('/v1/api/userImageBarbearia', AuthenticateJWT, (req, res) =>{
   const barbeariaId = req.query.barbeariaId; 
 
   const sql = "SELECT user_image from barbearia WHERE id = ?";
