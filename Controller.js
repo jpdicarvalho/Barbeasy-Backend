@@ -1406,7 +1406,7 @@ app.post('/api/update-dayOff/:barbeariaId/:professionalId', (req, res) => {
 });
 
 //Route to get bookings of barbearia
-app.get('/api/bookings/:barbeariaId/:selectedDate', AuthenticateJWT, (req, res) =>{
+app.get('/v1/api/bookings/:barbeariaId/:selectedDate', AuthenticateJWT, (req, res) =>{
   const barbeariaId = req.params.barbeariaId;
   const selectedDate = req.params.selectedDate;
 
