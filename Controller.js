@@ -428,7 +428,6 @@ app.post('/v1/api/SignInBarbearia', async (req, res) => {
 app.put('/v1/api/updateUserImageBarbearia', AuthenticateJWT, upload.single('image'), (req, res) => {
   const barbeariaId = req.body.barbeariaId;
   const newImageUser = req.file.originalname;
-  console.log(newImageUser)
 
   //Buscando imagem atual salva no BD MySQL
   const currentImg = "SELECT user_image FROM barbearia WHERE id = ?";
@@ -594,6 +593,7 @@ app.get('/v1/api/bannerImages', AuthenticateJWT, (req, res) => {
         const url = "https://d15o6h0uxpz56g.cloudfront.net/" + imageName;// Salvando a URL da imagem obtida pelo Cloud Front AWS-S3
         urls.push(url);//Adicionando a nova imagem no Array de URLs
       }
+      console.log(urls)
       return res.json({ urls });
     }
   });
