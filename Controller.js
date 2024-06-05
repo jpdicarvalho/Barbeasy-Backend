@@ -412,8 +412,10 @@ app.post('/v1/api/SignInBarbearia', async (req, res) => {
     }
     if (result.length > 0) {
       const barbearia = result[0];
+      console.log(barbearia)
+      const secretWord = 'abaporujucaiba'
       // Criação do token
-      const token = jwt.sign({ barbeariaId: barbearia.id, barbeariaEmail: barbearia.email }, process.env.tokenWordSecret, { expiresIn: "1h" });
+      const token = jwt.sign({ barbeariaId: barbearia.id, barbeariaEmail: barbearia.email }, secretWord, { expiresIn: "1h" });
       // Envie o token no corpo da resposta
       return res.status(200).json({ success: true, token: token, barbearia: result });
       
