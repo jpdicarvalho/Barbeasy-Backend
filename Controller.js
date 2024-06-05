@@ -498,7 +498,7 @@ app.get('/v1/api/userImageBarbearia', AuthenticateJWT, (req, res) =>{
 });
 
 // Rota para lidar com o upload de imagens de banners
-app.post('/api/upload-banners-images', upload.array('images'), (req, res) => {
+app.put('/v1/api/updateBannersImages', AuthenticateJWT, upload.array('images'), (req, res) => {
 
   const barbeariaId = req.body.barbeariaId;
 
@@ -575,7 +575,7 @@ app.post('/api/upload-banners-images', upload.array('images'), (req, res) => {
 });
 
 //Rota para obter as imagens para o banner
-app.get('/api/banner-images', AuthenticateJWT, (req, res) => {
+app.get('/v1/api/bannerImages', AuthenticateJWT, (req, res) => {
   const barbeariaId = req.query.barbeariaId;
 
   const sql = "SELECT banners FROM barbearia WHERE id = ?";
