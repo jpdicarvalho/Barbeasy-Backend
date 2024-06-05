@@ -592,6 +592,7 @@ app.get('/v1/api/bannerImages', AuthenticateJWT, (req, res) => {
         const imageName = bannerImagesArray[i];//Pegando o nome de cada imagem salva no array anterior
         const url = "https://d15o6h0uxpz56g.cloudfront.net/" + imageName;// Salvando a URL da imagem obtida pelo Cloud Front AWS-S3
         urls.push(url);//Adicionando a nova imagem no Array de URLs
+        console.log(urls)
       }
       
       return res.json({ urls });
