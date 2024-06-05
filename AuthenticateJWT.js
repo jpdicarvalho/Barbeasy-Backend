@@ -2,7 +2,7 @@ import jwt  from 'jsonwebtoken';
 
 import 'dotenv/config'
 
-const SECRET_KEY = process.env.tokenWordSecret;
+const SECRET_KEY = process.env.TOKEN_SECRET_WORD;
 
 if (!SECRET_KEY) {
     throw new Error('TOKEN_SECRET is not defined in environment variables.');
