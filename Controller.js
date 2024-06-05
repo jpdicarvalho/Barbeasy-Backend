@@ -574,7 +574,7 @@ app.put('/v1/api/updateBannersImages', AuthenticateJWT, upload.array('images'), 
 });
 
 //Rota para obter as imagens para o banner
-app.get('/v1/api/bannerImages', AuthenticateJWT, (req, res) => {
+app.get('/v1/api/bannerImages', (req, res) => {
   const barbeariaId = req.query.barbeariaId;
 
   const sql = "SELECT banners FROM barbearia WHERE id = ?";
@@ -592,8 +592,9 @@ app.get('/v1/api/bannerImages', AuthenticateJWT, (req, res) => {
         const imageName = bannerImagesArray[i];//Pegando o nome de cada imagem salva no array anterior
         const url = "https://d15o6h0uxpz56g.cloudfront.net/" + imageName;// Salvando a URL da imagem obtida pelo Cloud Front AWS-S3
         urls.push(url);//Adicionando a nova imagem no Array de URLs
+        console.log(urls)
       }
-      console.log(urls)
+      
       return res.json({ urls });
     }
   });
