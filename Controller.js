@@ -399,7 +399,7 @@ app.post('/v1/api/SignInBarbearia', async (req, res) => {
   if (!isEmailValided(email)) {
     return res.status(400).json({ error: 'Error in values' });
   }
-  // Verifica se newSenha contém apenas letras maiúsculas e minúsculas
+  // Verifica se newSenha contém apenas letras maiúsculas, minúsculas e @#%$ como caracteres especiais
   if (!isPasswordValided(senha)) {
     return res.status(400).json({ error: 'Error in values' });
   }
@@ -424,6 +424,28 @@ app.post('/v1/api/SignInBarbearia', async (req, res) => {
   });
 });
 
+//Route to Auth action change data of user barbearia
+app.get('/v1/api/AuthToUpdateData/:barbeariaId/:password', AuthenticateJWT, (req, res) =>{
+  const barbeariaId = req.params.barbeariaId;
+  const password = req.params.password;
+
+  // Verifica se newSenha contém apenas letras maiúsculas, minúsculas e @#%$ como caracteres especiais
+  if (!isPasswordValided(password)) {
+    return res.status(400).json({ error: 'Error in values' });
+  }
+
+  const sql='SELECT senha FROM barbearia WHERE id = ? AND senha = ?';
+  db.query(sql, [barbeariaId, password], (err, result) =>{
+    if (err) {
+      console.error('Erro ao verificar senha:', err);
+      return res.status(500).json({ error: 'Internal Server Error' });
+    }
+
+    if(result.length > 0){
+      res.status(200).json({Success: true})
+    }
+  })
+})
 //Upload de Imagem do Usuário Barbearia, na AWS S3  #VERIFIED
 app.put('/v1/api/updateUserImageBarbearia', AuthenticateJWT, upload.single('image'), (req, res) => {
   const barbeariaId = req.body.barbeariaId;
