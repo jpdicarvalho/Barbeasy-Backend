@@ -425,9 +425,9 @@ app.post('/v1/api/SignInBarbearia', async (req, res) => {
 });
 
 //Route to Auth action change data of user barbearia
-app.get('/v1/api/AuthToUpdateData/:barbeariaId/:password', AuthenticateJWT, (req, res) =>{
-  const barbeariaId = req.params.barbeariaId;
-  const password = req.params.password;
+app.get('/v1/api/AuthToUpdateData/', AuthenticateJWT, (req, res) =>{
+  const barbeariaId = req.query.barbeariaId;
+  const password = req.query.password;
 
   // Verifica se newSenha contém apenas letras maiúsculas, minúsculas e @#%$ como caracteres especiais
   if (!isPasswordValided(password)) {
