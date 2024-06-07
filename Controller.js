@@ -677,7 +677,7 @@ app.put('/v1/api/updateBarbeariaName/:barbeariaId', AuthenticateJWT, (req, res) 
 });
 
 //Rota para obter o nome da barbearia
-app.get('/api/nome-barbearia/:barbeariaId', AuthenticateJWT, (req, res) => {
+app.get('/v1/api/nameBarbearia/:barbeariaId', AuthenticateJWT, (req, res) => {
   const barbeariaId = req.params.barbeariaId;
 
   const sql = "SELECT name FROM barbearia WHERE id = ?";
