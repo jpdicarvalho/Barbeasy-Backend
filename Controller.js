@@ -442,7 +442,9 @@ app.get('/v1/api/AuthToUpdateData/', AuthenticateJWT, (req, res) =>{
     }
 
     if(result.length > 0){
-      res.status(200).json({Success: true})
+      res.status(200).json({Success: 'true'})
+    }else{
+      res.status(200).json({Success: 'false'})
     }
   })
 })
