@@ -659,7 +659,7 @@ app.get('/api/status-barbearia/:barbeariaId', AuthenticateJWT, (req, res) =>{
 });
 
 //Rota para atualizar o nome da barbearia
-app.post('/api/update-barbearia-name/:barbeariaId', (req, res) => {
+app.put('/v1/api/updateBarbeariaName/:barbeariaId', AuthenticateJWT, (req, res) => {
   const barbeariaId = req.params.barbeariaId;
   const novoNomeBarbearia = req.body.novoNome;
 
