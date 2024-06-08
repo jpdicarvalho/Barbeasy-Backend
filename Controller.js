@@ -520,7 +520,7 @@ app.get('/v1/api/userImageBarbearia', AuthenticateJWT, (req, res) =>{
   })
 });
 
-// Rota para lidar com o upload de imagens de banners
+// Rota para lidar com o upload de imagens de banners #VERIFIED
 app.put('/v1/api/updateBannersImages', AuthenticateJWT, upload.array('images'), (req, res) => {
 
   const barbeariaId = req.body.barbeariaId;
@@ -597,7 +597,7 @@ app.put('/v1/api/updateBannersImages', AuthenticateJWT, upload.array('images'), 
   })
 });
 
-//Rota para obter as imagens para o banner
+//Rota para obter as imagens para o banner #VERIFIED
 app.get('/v1/api/bannerImages', AuthenticateJWT, (req, res) => {
   const barbeariaId = req.query.barbeariaId;
 
@@ -676,7 +676,7 @@ app.put('/v1/api/updateBarbeariaName/:barbeariaId', AuthenticateJWT, (req, res) 
   })
 });
 
-//Rota para obter o nome da barbearia
+//Rota para obter o nome da barbearia #VERIFIED
 app.get('/v1/api/nameBarbearia/:barbeariaId', AuthenticateJWT, (req, res) => {
   const barbeariaId = req.params.barbeariaId;
 
@@ -739,7 +739,7 @@ app.put('/v1/api/updateAddress/:barbeariaId', AuthenticateJWT, (req, res) => {
   });
 });
 
-//Rota para obter o endereço da barbearia
+//Rota para obter o endereço da barbearia #VERIFIED
 app.get('/v1/api/address/:barbeariaId', AuthenticateJWT, (req, res) => {
   const barbeariaId = req.params.barbeariaId;
 
