@@ -699,7 +699,7 @@ app.post('/api/update-endereco/:barbeariaId', (req, res) => {
   const barbeariaId = req.params.barbeariaId;
   const values = req.body.Values;
 
-  
+
   // Verificando se os valores necessários estão presentes no corpo da requisição
   if (!values || !values.street || !values.number || !values.neighborhood || !values.city) {
     return res.status(400).json({ error: "Valores de endereço incompletos" });
@@ -730,19 +730,17 @@ app.post('/api/update-endereco/:barbeariaId', (req, res) => {
 });
 
 //Rota para obter o endereço da barbearia
-app.get('/api/endereco/:barbeariaId', AuthenticateJWT, (req, res) => {
+app.get('/v1/api/address/:barbeariaId', AuthenticateJWT, (req, res) => {
   const barbeariaId = req.params.barbeariaId;
 
-  const sql = "SELECT endereco FROM barbearia WHERE id = ?";
+  const sql = "SELECT rua, N, bairro, cidade FROM barbearia WHERE id = ?";
   db.query(sql, [barbeariaId], (err, result) => {
     if(err) {
       console.error("Erro ao buscar o nome da barbearia", err);
       return res.status(500).json({Error: "Internal Server Error"});
     }else{
       if(result.length > 0) {
-        const enderecoString = result[0].endereco;
-        const endereco = enderecoString.split(',');
-        return res.status(200).json({ Endereco: endereco});
+        return res.status(200).json({ Endereco: result});
       }
     }
   })
