@@ -706,25 +706,25 @@ app.put('/v1/api/updateAddress/:barbeariaId', AuthenticateJWT, (req, res) => {
   const values = [];
 
   if(street){
-    query += `rua = ?, `;
+    query += ` rua = ?,`;
     values.push(street);
   }
   if(number){
-    query += `N = ?, `;
+    query += ` N = ?,`;
     values.push(number);
   }
   if(neighborhood){
-    query += `bairro = ?, `;
+    query += ` bairro = ?,`;
     values.push(neighborhood);
   }
   if(city){
-    query += `cidade = ? `;
+    query += ` cidade = ?`;
     values.push(city);
   }
   // Remova a última vírgula da query
   query = query.slice(0, -1);
 
-  query += `WHERE id = ?`;
+  query += ` WHERE id = ?`;
   values.push(barbeariaId)
 
   db.query(query, values, (err, result) =>{
