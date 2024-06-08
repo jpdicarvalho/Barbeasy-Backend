@@ -695,7 +695,7 @@ app.get('/v1/api/nameBarbearia/:barbeariaId', AuthenticateJWT, (req, res) => {
 });
 
 // Rota para obter atualizar o endereço da barbearia
-app.post('/v1/api/updateAddress/:barbeariaId', AuthenticateJWT, (req, res) => {
+app.put('/v1/api/updateAddress/:barbeariaId', AuthenticateJWT, (req, res) => {
   const barbeariaId = req.params.barbeariaId;
   const street = req.body.street;
   const number = req.body.number;
