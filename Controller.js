@@ -326,27 +326,27 @@ app.post("/v1/api/SignUpBarbearia", async (req, res) => {
     return res.status(400).json({ error: 'Error in values' });
   }
   // Verifica se number contém apenas números
-  if (!isOnlyNumberValided(number) && street.length <= 5) {
+  if (!isOnlyNumberValided(number) && number.length <= 5) {
     return res.status(400).json({ error: 'Error in values' });
   }
   // Verifica se neighborhood contém apenas letras maiúsculas e minúsculas
-  if (!isSignUpBarbeariaValid(neighborhood) && street.length <= 30) {
+  if (!isSignUpBarbeariaValid(neighborhood) && neighborhood.length <= 30) {
     return res.status(400).json({ error: 'Error in values' });
   }
   // Verifica se city contém apenas letras maiúsculas e minúsculas
-  if (!isSignUpBarbeariaValid(city) && street.length <= 30) {
+  if (!isSignUpBarbeariaValid(city) && city.length <= 30) {
     return res.status(400).json({ error: 'Error in values' });
   }
   // Verifica se usuario contém apenas letras maiúsculas e minúsculas
-  if (!isSignUpBarbeariaValid(usuario) && street.length <= 30) {
+  if (!isSignUpBarbeariaValid(usuario) && usuario.length <= 30) {
     return res.status(400).json({ error: 'Error in values' });
   }
   // Verifica se email contém apenas letras maiúsculas e minúsculas
-  if (!isEmailValided(email) && street.length <= 50) {
+  if (!isEmailValided(email) && email.length <= 50) {
     return res.status(400).json({ error: 'Error in values' });
   }
   // Verifica se senha contém apenas letras maiúsculas e minúsculas e alguns caracteres especiais
-  if (!isPasswordValided(senha) && street.length <= 8) {
+  if (!isPasswordValided(senha) && senha.length <= 8) {
     return res.status(400).json({ error: 'Error in values' });
   }
 
@@ -778,9 +778,14 @@ app.get('/v1/api/address/:barbeariaId', AuthenticateJWT, (req, res) => {
   })
 });
 
-app.post('/api/upload-user-name-barbearia/:barbeariaId', (req, res) => {
+app.put('/v1/api/uploadUserNameBarbearia/:barbeariaId', AuthenticateJWT, (req, res) => {
   const barbeariaId = req.params.barbeariaId;
   const newUserName = req.body.newUserName;
+
+  // Verifica se usuario contém apenas letras maiúsculas e minúsculas
+  if (!isSignUpBarbeariaValid(newUserName) && newUserName.length <= 30) {
+    return res.status(400).json({ error: 'Error in values' });
+  }
 
   const sql = "UPDATE barbearia SET usuario = ? WHERE id = ?";
   db.query(sql, [newUserName, barbeariaId], (err, result) =>{
