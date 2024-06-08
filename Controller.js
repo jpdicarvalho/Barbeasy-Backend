@@ -699,6 +699,7 @@ app.post('/api/update-endereco/:barbeariaId', (req, res) => {
   const barbeariaId = req.params.barbeariaId;
   const values = req.body.Values;
 
+  
   // Verificando se os valores necessários estão presentes no corpo da requisição
   if (!values || !values.street || !values.number || !values.neighborhood || !values.city) {
     return res.status(400).json({ error: "Valores de endereço incompletos" });
