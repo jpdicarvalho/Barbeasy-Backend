@@ -718,7 +718,7 @@ app.put('/v1/api/updateAddress/:barbeariaId', AuthenticateJWT, (req, res) => {
     values.push(neighborhood);
   }
   if(city){
-    query += ` cidade = ?`;
+    query += ` cidade = ?,`;
     values.push(city);
   }
   // Remova a última vírgula da query
