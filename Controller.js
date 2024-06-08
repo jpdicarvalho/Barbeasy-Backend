@@ -701,7 +701,31 @@ app.put('/v1/api/updateAddress/:barbeariaId', AuthenticateJWT, (req, res) => {
   const number = req.body.number;
   const neighborhood = req.body.neighborhood;
   const city = req.body.city;
-  console.log(street, number, neighborhood, city)
+
+  let query = 'UPDATE barbearia SET'
+  const values = [];
+
+  if(street){
+    query + 'rua = ?';
+    values.push(street);
+  }
+  if(number){
+    query + 'N = ?';
+    values.push(number);
+  }
+  if(neighborhood){
+    query + 'bairro = ?';
+    values.push(neighborhood);
+  }
+  if(city){
+    query + 'cidade = ?';
+    values.push(city);
+  }
+
+  query + 'WHERE id = ?'
+  values.push(barbeariaId)
+
+  console.log(query, values)
 
   /*const sql = "UPDATE barbearia SET endereco = ? WHERE id = ?";
   db.query(sql, [newEndereco, barbeariaId], (err, result) =>{
