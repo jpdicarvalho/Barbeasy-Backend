@@ -396,11 +396,11 @@ app.post('/v1/api/SignInBarbearia', async (req, res) => {
   const senha = req.body.senha;
 
   // Verifica se newEmail contém apenas letras maiúsculas e minúsculas
-  if (!isEmailValided(email)) {
+  if (!isEmailValided(email) && email.length <= 50) {
     return res.status(400).json({ error: 'Error in values' });
   }
   // Verifica se newSenha contém apenas letras maiúsculas, minúsculas e @#%$ como caracteres especiais
-  if (!isPasswordValided(senha)) {
+  if (!isPasswordValided(senha) && senha.length <= 8) {
     return res.status(400).json({ error: 'Error in values' });
   }
 
@@ -779,7 +779,7 @@ app.get('/v1/api/address/:barbeariaId', AuthenticateJWT, (req, res) => {
 });
 
 //Route to update user name barbearia #VERIFIED
-app.put('/v1/api/uploadUserNameBarbearia/:barbeariaId', AuthenticateJWT, (req, res) => {
+app.put('/v1/api/updateUserNameBarbearia/:barbeariaId', AuthenticateJWT, (req, res) => {
   const barbeariaId = req.params.barbeariaId;
   const newUserName = req.body.newUserName;
 
@@ -820,9 +820,14 @@ app.get('/v1/api/userNameBarbearia/:barbeariaId', AuthenticateJWT, (req, res) =>
 });
 
 //Rota para atualizar o email de usuário da barbearia
-app.post('/v1/api/upload-email-barbearia/:barbeariaId', (req, res) => {
+app.put('/v1/api/updateEmailBarbearia/:barbeariaId', AuthenticateJWT, (req, res) => {
   const barbeariaId = req.params.barbeariaId;
   const newEmail = req.body.NewEmail;
+
+  // Verifica se newEmail contém apenas letras maiúsculas e minúsculas
+  if (!isEmailValided(newEmail) && newEmail.length <= 50) {
+    return res.status(400).json({ error: 'Error in values' });
+  }
 
   const sql = "UPDATE barbearia SET email = ? WHERE id = ?";
   db.query(sql, [newEmail, barbeariaId], (err, result) =>{
@@ -838,7 +843,7 @@ app.post('/v1/api/upload-email-barbearia/:barbeariaId', (req, res) => {
 });
 
 //Rota para obter o email de usuário da barbearia
-app.get('/api/email-barbearia/:barbeariaId', AuthenticateJWT, (req, res) => {
+app.get('/v1/api/emailBarbearia/:barbeariaId', AuthenticateJWT, (req, res) => {
   const barbeariaId = req.params.barbeariaId;
 
   const sql = "SELECT email FROM barbearia WHERE id = ?";
