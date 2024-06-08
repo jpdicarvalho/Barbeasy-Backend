@@ -819,7 +819,7 @@ app.get('/v1/api/userNameBarbearia/:barbeariaId', AuthenticateJWT, (req, res) =>
   })
 });
 
-//Rota para atualizar o email de usuário da barbearia
+//Rota para atualizar o email de usuário da barbearia #VERIFIED
 app.put('/v1/api/updateEmailBarbearia/:barbeariaId', AuthenticateJWT, (req, res) => {
   const barbeariaId = req.params.barbeariaId;
   const newEmail = req.body.NewEmail;
@@ -842,7 +842,7 @@ app.put('/v1/api/updateEmailBarbearia/:barbeariaId', AuthenticateJWT, (req, res)
   })
 });
 
-//Rota para obter o email de usuário da barbearia
+//Rota para obter o email de usuário da barbearia #VERIFIED
 app.get('/v1/api/emailBarbearia/:barbeariaId', AuthenticateJWT, (req, res) => {
   const barbeariaId = req.params.barbeariaId;
 
@@ -861,10 +861,20 @@ app.get('/v1/api/emailBarbearia/:barbeariaId', AuthenticateJWT, (req, res) => {
 });
 
 //Rota para atualizar a senha de usuário da barbearia
-app.get('/api/update-password-barbearia', AuthenticateJWT, (req, res) => {
+app.get('/v1/api/updatePasswordBarbearia', AuthenticateJWT, (req, res) => {
   const barbeariaId = req.query.barbeariaId;
   const passwordConfirm = req.query.passwordConfirm;
   const newPassword = req.query.newPassword;
+
+  // Verifica se senha contém apenas letras maiúsculas e minúsculas e alguns caracteres especiais
+  if (!isPasswordValided(passwordConfirm) && passwordConfirm.length <= 8) {
+    return res.status(400).json({ error: 'Error in values' });
+  }
+
+  // Verifica se senha contém apenas letras maiúsculas e minúsculas e alguns caracteres especiais
+  if (!isPasswordValided(newPassword) && newPassword.length <= 8) {
+    return res.status(400).json({ error: 'Error in values' });
+  }
   
   const sql = "SELECT senha FROM barbearia WHERE id = ? AND senha = ?";
   db.query(sql, [barbeariaId, passwordConfirm], (err, result) => {
