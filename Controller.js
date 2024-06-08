@@ -695,28 +695,15 @@ app.get('/v1/api/nameBarbearia/:barbeariaId', AuthenticateJWT, (req, res) => {
 });
 
 // Rota para obter atualizar o endereço da barbearia
-app.post('/api/update-endereco/:barbeariaId', (req, res) => {
+app.post('/v1/api/updateAddress/:barbeariaId', AuthenticateJWT, (req, res) => {
   const barbeariaId = req.params.barbeariaId;
-  const values = req.body.Values;
+  const street = req.body.street;
+  const number = req.body.number;
+  const neighborhood = req.body.neighborhood;
+  const city = req.body.city;
+  console.log(street, number, neighborhood, city)
 
-
-  // Verificando se os valores necessários estão presentes no corpo da requisição
-  if (!values || !values.street || !values.number || !values.neighborhood || !values.city) {
-    return res.status(400).json({ error: "Valores de endereço incompletos" });
-  }
-
-  const enderocoArray = [];
-
-  // Adicionando os valores no array
-  enderocoArray.push(values.street);
-  enderocoArray.push(values.number);
-  enderocoArray.push(values.neighborhood);
-  enderocoArray.push(values.city);
-
-  // Usando o método join para criar uma string com vírgula e espaço como separadores
-  const newEndereco = enderocoArray.join(', ');
-
-  const sql = "UPDATE barbearia SET endereco = ? WHERE id = ?";
+  /*const sql = "UPDATE barbearia SET endereco = ? WHERE id = ?";
   db.query(sql, [newEndereco, barbeariaId], (err, result) =>{
     if(err){
       console.error("Erro ao atualizar o endereço da barbearia", err);
@@ -726,7 +713,7 @@ app.post('/api/update-endereco/:barbeariaId', (req, res) => {
         return res.status(200).json({ Success: "Success" });
       }
     }
-  });
+  });*/
 });
 
 //Rota para obter o endereço da barbearia
