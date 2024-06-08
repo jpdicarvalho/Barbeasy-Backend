@@ -801,7 +801,7 @@ app.put('/v1/api/uploadUserNameBarbearia/:barbeariaId', AuthenticateJWT, (req, r
 });
 
 //Rota para obter o nome de usuário da barbearia
-app.get('/api/user-name-barbearia/:barbeariaId', AuthenticateJWT, (req, res) => {
+app.get('/v1/api/userNameBarbearia/:barbeariaId', AuthenticateJWT, (req, res) => {
   const barbeariaId = req.params.barbeariaId;
   
   const sql = "SELECT usuario FROM barbearia WHERE id = ?";
