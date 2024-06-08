@@ -778,6 +778,7 @@ app.get('/v1/api/address/:barbeariaId', AuthenticateJWT, (req, res) => {
   })
 });
 
+//Route to update user name barbearia #VERIFIED
 app.put('/v1/api/uploadUserNameBarbearia/:barbeariaId', AuthenticateJWT, (req, res) => {
   const barbeariaId = req.params.barbeariaId;
   const newUserName = req.body.newUserName;
@@ -800,7 +801,7 @@ app.put('/v1/api/uploadUserNameBarbearia/:barbeariaId', AuthenticateJWT, (req, r
   })
 });
 
-//Rota para obter o nome de usuário da barbearia
+//Rota para obter o nome de usuário da barbearia #VERIFIED
 app.get('/v1/api/userNameBarbearia/:barbeariaId', AuthenticateJWT, (req, res) => {
   const barbeariaId = req.params.barbeariaId;
   
@@ -819,7 +820,7 @@ app.get('/v1/api/userNameBarbearia/:barbeariaId', AuthenticateJWT, (req, res) =>
 });
 
 //Rota para atualizar o email de usuário da barbearia
-app.post('/api/upload-email-barbearia/:barbeariaId', (req, res) => {
+app.post('/v1/api/upload-email-barbearia/:barbeariaId', (req, res) => {
   const barbeariaId = req.params.barbeariaId;
   const newEmail = req.body.NewEmail;
 
