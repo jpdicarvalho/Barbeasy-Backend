@@ -706,29 +706,28 @@ app.put('/v1/api/updateAddress/:barbeariaId', AuthenticateJWT, (req, res) => {
   const values = [];
 
   if(street){
-    query += 'rua = ?,';
+    query += 'rua = ?, ';
     values.push(street);
   }
   if(number){
-    query += 'N = ?,';
+    query += 'N = ?, ';
     values.push(number);
   }
   if(neighborhood){
-    query += 'bairro = ?,';
+    query += 'bairro = ?, ';
     values.push(neighborhood);
   }
   if(city){
-    query += 'cidade = ?,';
+    query += 'cidade = ? ';
     values.push(city);
   }
 
-  query + 'WHERE id = ?'
+  query += 'WHERE id = ?'
   values.push(barbeariaId)
 
   console.log(query, values)
 
-  /*const sql = "UPDATE barbearia SET endereco = ? WHERE id = ?";
-  db.query(sql, [newEndereco, barbeariaId], (err, result) =>{
+  db.query(query, [values], (err, result) =>{
     if(err){
       console.error("Erro ao atualizar o endereço da barbearia", err);
       return res.status(500).json({Error: "Internal Server Error"});
@@ -737,7 +736,7 @@ app.put('/v1/api/updateAddress/:barbeariaId', AuthenticateJWT, (req, res) => {
         return res.status(200).json({ Success: "Success" });
       }
     }
-  });*/
+  });
 });
 
 //Rota para obter o endereço da barbearia
