@@ -549,13 +549,12 @@ app.put('/v1/api/updateBannersImages', AuthenticateJWT, upload.array('images'), 
         originalname: file.originalname
       };
     });
-    console.log(imagesBanners)
     // Itera sobre os arquivos enviados
     for (let i = 0; i < imagesBanners.length; i++) {
       const file = imagesBanners[i].originalname;
 
       // Obtém a extensão do arquivo original
-      const fileExtension = file ? file.name.split('.').pop() : '';
+      const fileExtension = file ? file.split('.').pop() : '';
 
       // Verifica se a extensão é permitida
       if (!allowedExtensions.includes(fileExtension)) {
