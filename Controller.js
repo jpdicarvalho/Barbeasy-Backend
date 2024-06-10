@@ -15,6 +15,7 @@ import { S3Client, PutObjectCommand, GetObjectCommand, DeleteObjectCommand } fro
 import morgan from 'morgan';
 import winston from 'winston';
 import UAParser from 'ua-parser-js';
+import rateLimit from 'express-rate-limit';
 
 //import { serveSwaggerUI, setupSwaggerUI } from './swaggerConfig.js';
 
@@ -22,8 +23,9 @@ import 'dotenv/config'
 
 const app = express();
 
-// Defina o formato personalizado para o Morgan
-morgan.token('remote-addr', function(req) {
+//===================== MIDDLEWARE TO CREATE LOGS =====================
+
+morgan.token('remote-addr', function(req) {// Defina o formato personalizado para o Morgan
   return req.headers['x-forwarded-for'] || req.socket.remoteAddress;
 });
 
@@ -33,13 +35,12 @@ morgan.token('user-agent', function(req) {
   return `${ua.browser.name} ${ua.browser.version}`;
 });
 
-// Adicione um token personalizado para o corpo da requisição
-morgan.token('body', function(req) {
+
+morgan.token('body', function(req) {// Adicione um token personalizado para o corpo da requisição
   return JSON.stringify(req.body);
 });
 
-// Adicione um token personalizado para os parâmetros da rota
-morgan.token('params', function(req) {
+morgan.token('params', function(req) {// Adicione um token personalizado para os parâmetros da rota
   return JSON.stringify(req.params);
 });
 
@@ -51,8 +52,7 @@ app.use(morgan(logFormat, {
   }
 }));
 
-// Configuração do Winston para registrar logs em um arquivo e no console
-const logger = winston.createLogger({
+const logger = winston.createLogger({// Configuração do Winston para registrar logs em um arquivo e no console
   level: 'info',
   format: winston.format.combine(
     winston.format.timestamp(),
@@ -65,17 +65,22 @@ const logger = winston.createLogger({
     new winston.transports.File({ filename: 'combined.log' }) // Log no arquivo
   ]
 });
+//===================== MIDDLEWARE TO RATE LIMIT =====================
+const limiter = rateLimit({// Configurar limitação de taxa
+  windowMs: 15 * 60 * 1000, // 15 minutos
+  max: 100, // Limite de 100 requisições por IP
+  message: 'Error in request'
+});
 
 
 const port = process.env.PORT || 3000;
 
 //CORS Settings to Only Allow Frontend Deployment to Netlify
-const corsOptions = {
-  origin: 'http://localhost:5173',
-  optionsSuccessStatus: 200, // Some browser versions may need this code
+const corsOptions = { origin: 'http://localhost:5173', optionsSuccessStatus: 200, // Some browser versions may need this code
 };
 
 app.use(cors(corsOptions));
+app.use(limiter);// Aplicar limitação de taxa a todas as requisições
 app.use(cors());
 app.use(express.json());
 app.use(bodyParser.json());
