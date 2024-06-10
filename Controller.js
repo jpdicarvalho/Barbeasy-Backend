@@ -381,6 +381,8 @@ app.post("/v1/api/SignUpBarbearia", async (req, res) => {
       bairro: neighborhood,
       cidade: city
     };
+console.log(barbearia.banner_main)
+console.log(barbearia.banners)
 
     db.query('INSERT INTO barbearia SET ?', barbearia, (error, results) => {
       if (error) {
@@ -457,7 +459,7 @@ app.get('/v1/api/AuthToUpdateData/', AuthenticateJWT, (req, res) =>{
 app.put('/v1/api/updateUserImageBarbearia', AuthenticateJWT, upload.single('image'), (req, res) => {
   const barbeariaId = req.body.barbeariaId;
   const newImageUser = req.file.originalname;
-
+console.log(newImageUser)
   //Buscando imagem atual salva no BD MySQL
   const currentImg = "SELECT user_image FROM barbearia WHERE id = ?";
   db.query(currentImg, [barbeariaId], (err, result) => {
@@ -568,6 +570,8 @@ app.put('/v1/api/updateBannersImages', AuthenticateJWT, upload.array('images'), 
                 Body: bannerImages[i].buffer,
                 ContentType: bannerImages[i].mimetype,
               }
+console.log(params.Key)
+
               // Cria um comando PutObject para enviar o arquivo para o AWS S3
               const command = new PutObjectCommand(params)
               // Envia o comando para o Amazon S3 usando a instância do serviço S3
