@@ -552,7 +552,7 @@ app.put('/v1/api/updateBannersImages', AuthenticateJWT, upload.array('images'), 
     console.log(imagesBanners)
     // Itera sobre os arquivos enviados
     for (let i = 0; i < imagesBanners.length; i++) {
-      const file = imagesBanners[i];
+      const file = imagesBanners[i].originalname;
 
       // Obtém a extensão do arquivo original
       const fileExtension = file ? file.name.split('.').pop() : '';
@@ -560,7 +560,7 @@ app.put('/v1/api/updateBannersImages', AuthenticateJWT, upload.array('images'), 
       // Verifica se a extensão é permitida
       if (!allowedExtensions.includes(fileExtension)) {
         console.error('Error to update image')
-        return res.status(400).json({ error: 'extentios is not allowed'});
+        return res.status(400).json({ error: 'extensions are not allowed'});
       }
     }
   const currentBannerImg = "SELECT banners FROM barbearia WHERE id IN (?)";
