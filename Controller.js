@@ -461,7 +461,19 @@ app.get('/v1/api/AuthToUpdateData/', AuthenticateJWT, (req, res) =>{
 app.put('/v1/api/updateUserImageBarbearia', AuthenticateJWT, upload.single('image'), (req, res) => {
   const barbeariaId = req.body.barbeariaId;
   const newImageUser = req.file.originalname;
-console.log(newImageUser)
+
+  const allowedExtensions = ['jpg', 'jpeg', 'png'];
+  // Obtém a extensão do arquivo original
+  const fileExtension = newImageUser ? newImageUser.split('.').pop() : '';//operador ternário para garantir que name não seja vazio
+  console.log(fileExtension)
+  if(fileExtension.length > 0){
+    // Verifica se a extensão é permitida
+    if (!allowedExtensions.includes(fileExtension)) {
+      console.error('Error on Update Image');
+      return res.status(400).json({ Error: 'extension not allowed' });
+    }
+  }
+
   //Buscando imagem atual salva no BD MySQL
   const currentImg = "SELECT user_image FROM barbearia WHERE id = ?";
   db.query(currentImg, [barbeariaId], (err, result) => {
