@@ -23,7 +23,7 @@ import 'dotenv/config'
 
 const app = express();
 // Configurar a confiança no proxy
-app.set('trust proxy', true);
+app.set('trust proxy', 1);
 
 //===================== MIDDLEWARE TO CREATE LOGS =====================
 
