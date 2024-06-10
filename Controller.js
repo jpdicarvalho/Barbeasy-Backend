@@ -319,7 +319,7 @@ app.post('/api/Checkout', async (req, res) => {
 //======================================= ROTAS USER-BARBEARIA ====================================
 
 //Cadastro de ususário Barbearia   #VERIFIED
-app.post("/v1/api/SignUpBarbearia", AuthenticateJWT, async (req, res) => {
+app.post("/v1/api/SignUpBarbearia", async (req, res) => {
   const { name, street, number, neighborhood, city, usuario, email, senha } = req.body;
 
   // Verifica se name contém apenas letras maiúsculas e minúsculas
