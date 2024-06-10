@@ -383,8 +383,6 @@ app.post("/v1/api/SignUpBarbearia", async (req, res) => {
       bairro: neighborhood,
       cidade: city
     };
-console.log(barbearia.banner_main)
-console.log(barbearia.banners)
 
     db.query('INSERT INTO barbearia SET ?', barbearia, (error, results) => {
       if (error) {
@@ -465,7 +463,6 @@ app.put('/v1/api/updateUserImageBarbearia', AuthenticateJWT, upload.single('imag
   const allowedExtensions = ['jpg', 'jpeg', 'png'];
   // Obtém a extensão do arquivo original
   const fileExtension = newImageUser ? newImageUser.split('.').pop() : '';//operador ternário para garantir que name não seja vazio
-  console.log(fileExtension)
   if(fileExtension.length > 0){
     // Verifica se a extensão é permitida
     if (!allowedExtensions.includes(fileExtension)) {
@@ -543,9 +540,29 @@ app.get('/v1/api/userImageBarbearia', AuthenticateJWT, (req, res) =>{
 
 // Rota para lidar com o upload de imagens de banners #VERIFIED
 app.put('/v1/api/updateBannersImages', AuthenticateJWT, upload.array('images'), (req, res) => {
-
   const barbeariaId = req.body.barbeariaId;
+    //Array with allowed extensions
+    const allowedExtensions = ['jpg', 'jpeg', 'png'];
+    //array with names images
+    const imagesBanners = req.files.map((file) => {
+      return {
+        originalname: file.originalname
+      };
+    });
+    console.log(imagesBanners)
+    // Itera sobre os arquivos enviados
+    for (let i = 0; i < imagesBanners.length; i++) {
+      const file = imagesBanners[i];
 
+      // Obtém a extensão do arquivo original
+      const fileExtension = file ? file.name.split('.').pop() : '';
+
+      // Verifica se a extensão é permitida
+      if (!allowedExtensions.includes(fileExtension)) {
+        console.error('Error to update image')
+        return res.status(400).json({ error: 'extentios is not allowed'});
+      }
+    }
   const currentBannerImg = "SELECT banners FROM barbearia WHERE id IN (?)";
   db.query(currentBannerImg, [barbeariaId], (currentErr, currentResult) =>{
     if(currentErr){
@@ -584,8 +601,6 @@ app.put('/v1/api/updateBannersImages', AuthenticateJWT, upload.array('images'), 
                 Body: bannerImages[i].buffer,
                 ContentType: bannerImages[i].mimetype,
               }
-console.log(params.Key)
-
               // Cria um comando PutObject para enviar o arquivo para o AWS S3
               const command = new PutObjectCommand(params)
               // Envia o comando para o Amazon S3 usando a instância do serviço S3
