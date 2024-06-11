@@ -1362,7 +1362,7 @@ app.post('/api/v1/create-professional/:barbeariaId', AuthenticateJWT, (req, res)
 });
 
 //Rota para obter os profissionais da barbearia em específico
-app.get('/api/professional/:barbeariaId', AuthenticateJWT, (req, res) => {
+app.get('/api/v1/professional/:barbeariaId', AuthenticateJWT, (req, res) => {
   const barbeariaId = req.params.barbeariaId;
 
   const sql="SELECT professional.id, professional.name, professional.cell_phone, professional.user_image FROM professional INNER JOIN Barb_Professional ON barbearia_id = ? AND professional.id = professional_id;"
@@ -1379,7 +1379,7 @@ app.get('/api/professional/:barbeariaId', AuthenticateJWT, (req, res) => {
 });
 
 //Route to get all professional
-app.get('/api/list-professional/:searchProfessional', AuthenticateJWT, (req, res) => {
+app.get('/api/v1/list-professional/:searchProfessional', AuthenticateJWT, (req, res) => {
   const searchProfessional = req.params.searchProfessional;
 
   const sql = "SELECT id, name, user_image, cell_phone, email FROM professional WHERE name = ?";
@@ -1398,7 +1398,7 @@ app.get('/api/list-professional/:searchProfessional', AuthenticateJWT, (req, res
 });
 
 //Rota obter os serviços cadastrados
-app.get('/api/list-service/:barbeariaId', AuthenticateJWT, (req, res) =>{
+app.get('/api/v1/list-service/:barbeariaId', AuthenticateJWT, (req, res) =>{
   const barbeariaId = req.params.barbeariaId;
 
   const sql="SELECT * FROM servico WHERE barbearia_id = ?"
@@ -1415,7 +1415,7 @@ app.get('/api/list-service/:barbeariaId', AuthenticateJWT, (req, res) =>{
 });
 
 //Rota para realizar o agendamento
-app.post('/api/create-booking/', AuthenticateJWT, (req, res) => {
+app.post('/api/v1/create-booking/', AuthenticateJWT, (req, res) => {
   //Create object to make a toke for booking
   const values = [
     req.body.userId,
@@ -1452,7 +1452,7 @@ app.post('/api/create-booking/', AuthenticateJWT, (req, res) => {
 });
 
 // Rota para buscar todos os agendamentos de uma barbearia específica
-app.get('/api/bookings-times/:barbeariaId/:professionalId/:selectedDate', AuthenticateJWT, (req, res) => {
+app.get('/api/v1/bookings-times/:barbeariaId/:professionalId/:selectedDate', AuthenticateJWT, (req, res) => {
   const barbeariaId = req.params.barbeariaId;
   const professionalId = req.params.professionalId;
   const selectedDate = req.params.selectedDate;
@@ -1485,7 +1485,7 @@ app.get('/api/bookings-times/:barbeariaId/:professionalId/:selectedDate', Authen
 });
 
 //Route to save days-off
-app.post('/api/update-dayOff/:barbeariaId/:professionalId', AuthenticateJWT, (req, res) => {
+app.post('/api/v1/update-dayOff/:barbeariaId/:professionalId', AuthenticateJWT, (req, res) => {
   const barbeariaId = req.params.barbeariaId;
   const professionalId = req.params.professionalId;
   const selectedDay = req.body.selectedDay;
