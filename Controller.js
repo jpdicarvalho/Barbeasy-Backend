@@ -454,13 +454,15 @@ app.get('/v1/api/AuthToUpdateData/', AuthenticateJWT, (req, res) =>{
       res.status(200).json({Success: 'false'})
     }
   })
-})
+});
+
 //Upload de Imagem do Usuário Barbearia, na AWS S3  #VERIFIED
 app.put('/v1/api/updateUserImageBarbearia', AuthenticateJWT, upload.single('image'), (req, res) => {
   const barbeariaId = req.body.barbeariaId;
   const newImageUser = req.file.originalname;
 
   const allowedExtensions = ['jpg', 'jpeg', 'png'];
+
   // Obtém a extensão do arquivo original
   const fileExtension = newImageUser ? newImageUser.split('.').pop() : '';//operador ternário para garantir que name não seja vazio
   if(fileExtension.length > 0){
@@ -541,8 +543,10 @@ app.get('/v1/api/userImageBarbearia', AuthenticateJWT, (req, res) =>{
 // Rota para lidar com o upload de imagens de banners #VERIFIED
 app.put('/v1/api/updateBannersImages', AuthenticateJWT, upload.array('images'), (req, res) => {
   const barbeariaId = req.body.barbeariaId;
+
     //Array with allowed extensions
     const allowedExtensions = ['jpg', 'jpeg', 'png'];
+
     //array with names images
     const imagesBanners = req.files.map((file) => {
       return {
@@ -562,6 +566,7 @@ app.put('/v1/api/updateBannersImages', AuthenticateJWT, upload.array('images'), 
         return res.status(400).json({ error: 'extensions are not allowed'});
       }
     }
+
   const currentBannerImg = "SELECT banners FROM barbearia WHERE id IN (?)";
   db.query(currentBannerImg, [barbeariaId], (currentErr, currentResult) =>{
     if(currentErr){
@@ -660,7 +665,7 @@ app.get('/v1/api/bannerImages', AuthenticateJWT, (req, res) => {
 });
 
 //Rota para atualizar o status da barbearia 'Aberta' ou 'Fechada' #VERIFIED
-app.post('/v1/api/updateStatus/:barbeariaId', (req, res) =>{
+app.post('/v1/api/updateStatus/:barbeariaId', AuthenticateJWT, (req, res) =>{
   const barbeariaId = req.params.barbeariaId;
   const status = req.body.Status === 'Aberta' ? 'Fechada': 'Aberta';
 
