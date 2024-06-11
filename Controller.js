@@ -67,6 +67,7 @@ const logger = winston.createLogger({// Configuração do Winston para registrar
     new winston.transports.File({ filename: 'combined.log' }) // Log no arquivo
   ]
 });
+
 //===================== MIDDLEWARE TO RATE LIMIT =====================
 const limiter = rateLimit({// Configurar limitação de taxa
   windowMs: 15 * 60 * 1000, // 15 minutos
