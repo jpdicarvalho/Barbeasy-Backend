@@ -75,7 +75,6 @@ const limiter = rateLimit({// Configurar limitação de taxa
   message: 'Error in request'
 });
 
-
 const port = process.env.PORT || 3000;
 
 //CORS Settings to Only Allow Frontend Deployment to Netlify
