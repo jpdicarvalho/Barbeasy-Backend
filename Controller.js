@@ -665,7 +665,7 @@ app.get('/api/v1/bannerImages', AuthenticateJWT, (req, res) => {
 });
 
 //Rota para atualizar o status da barbearia 'Aberta' ou 'Fechada' #VERIFIED
-app.post('/api/v1/updateStatus/:barbeariaId', AuthenticateJWT, (req, res) =>{
+app.put('/api/v1/updateStatus/:barbeariaId', AuthenticateJWT, (req, res) =>{
   const barbeariaId = req.params.barbeariaId;
   const status = req.body.Status === 'Aberta' ? 'Fechada': 'Aberta';
 
