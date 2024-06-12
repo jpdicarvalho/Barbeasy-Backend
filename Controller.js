@@ -321,7 +321,7 @@ app.post('/api/Checkout', async (req, res) => {
 //======================================= ROTAS USER-BARBEARIA ====================================
 
 //Cadastro de ususário Barbearia   #VERIFIED
-app.post("/api/v1/SignUpBarbearia", async (req, res) => {
+app.post("/api/v1/SignUpBarbearia", AuthenticateJWT, async (req, res) => {
   const { name, street, number, neighborhood, city, usuario, email, senha } = req.body;
 
   // Verifica se name contém apenas letras maiúsculas e minúsculas
@@ -398,7 +398,7 @@ app.post("/api/v1/SignUpBarbearia", async (req, res) => {
 });
 
 //Realizando Login e Gerando Token de autenticação  #VERIFIED
-app.post('/api/v1/SignInBarbearia', async (req, res) => {
+app.post('/api/v1/SignInBarbearia', AuthenticateJWT, async (req, res) => {
   const email = req.body.email;
   const senha = req.body.senha;
 
@@ -940,7 +940,7 @@ app.get('/api/v1/updatePasswordBarbearia', AuthenticateJWT, (req, res) => {
 });
 
 //Route to update the 'agenda' of professional
-app.put('/api/v1/updateAgenda/:barbeariaId/:professionalId', (req, res) => {
+app.put('/api/v1/updateAgenda/:barbeariaId/:professionalId', AuthenticateJWT, (req, res) => {
   //Obtendo as variáveis enviadas
   const barbeariaId = req.params.barbeariaId;
   const professionalId = req.params.professionalId;
@@ -1014,7 +1014,7 @@ app.get('/api/v1/agenda/:barbeariaId/:professionalId', AuthenticateJWT, (req, re
 });
 
 // Routa to save times of day selected of professional
-app.put('/api/v1/updateAgendaDiaSelecionado/:barbeariaId/:professionalId', (req, res) => {
+app.put('/api/v1/updateAgendaDiaSelecionado/:barbeariaId/:professionalId', AuthenticateJWT, (req, res) => {
   const barbeariaId = req.params.barbeariaId;
   const professionalId = req.params.professionalId;
 
@@ -1088,7 +1088,7 @@ app.get('/api/v1/agendaDiaSelecionado/:barbeariaId/:professionalId', Authenticat
 });
 
 //Rota para salvar a genda de horários para todos os dias definidos
-app.put('/api/v1/updateHorariosTodosOsDias/:barbeariaId/:professionalId', (req, res) => {
+app.put('/api/v1/updateHorariosTodosOsDias/:barbeariaId/:professionalId', AuthenticateJWT, (req, res) => {
   const barbeariaId = req.params.barbeariaId;
   const professionalId = req.params.professionalId;
 
@@ -1128,7 +1128,7 @@ app.put('/api/v1/updateHorariosTodosOsDias/:barbeariaId/:professionalId', (req, 
 });
 
 //Rota para cadastrar um novo serviço
-app.post('/api/v1/addService/:barbeariaId/:professionalId', (req, res) => {
+app.post('/api/v1/addService/:barbeariaId/:professionalId', AuthenticateJWT, (req, res) => {
   const barbearia_id = req.params.barbeariaId;
   const professional_id = req.params.professionalId;
 
