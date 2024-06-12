@@ -169,7 +169,7 @@ app.post("/api/v1/Sign-Up", async (req, res) => {
 });
 
 //Realizando Login e Gerando Token de autenticação
-app.post('/api/SignIn', async (req, res) => {
+app.post('/api/v1/SignIn', async (req, res) => {
   const {email, senha} = req.body;
 
   // Buscar usuário pelo email
@@ -233,7 +233,7 @@ app.get('/api/v1/getAllServices', AuthenticateJWT, async (req, res)=>{
 });
 
 //Cadastrando a avaliação do usuário
-app.post("/api/avaliacao", (req, res) => {
+app.post("/api/v1/avaliacao", (req, res) => {
   const sql = "INSERT INTO avaliacoes (`user_name`,`barbearia_id`, `estrelas`, `comentarios`, `data_avaliacao`) VALUES (?)";
   const values = [
     req.body.userName, //String
@@ -253,7 +253,7 @@ app.post("/api/avaliacao", (req, res) => {
 });
 
 //Buscando a avaliação da barbearia em especifico
-app.get('/api/SearchAvaliation', AuthenticateJWT, async(req, res)=>{
+app.get('/api/v1/SearchAvaliation', AuthenticateJWT, async(req, res)=>{
   try {
     db.query('SELECT * FROM avaliacoes', (err, rows) => {
       if (err) throw err;
@@ -265,7 +265,7 @@ app.get('/api/SearchAvaliation', AuthenticateJWT, async(req, res)=>{
 });
 
 //Salvando o agendamento feito pelo cliente
-app.post('/api/agendamento', (req, res) => {
+app.post('/api/v1/agendamento', (req, res) => {
   const { selectedDate, selectedTime, selectedService, barbeariaId, userId} = req.body;
   db.query('INSERT INTO agendamentos (dia_agendamento, horario, user_id, barbearia_id, servico_id) VALUES (?, ?, ?, ?, ?)', 
     [selectedDate, selectedTime, userId, barbeariaId, selectedService], 
@@ -1228,7 +1228,7 @@ app.put('/api/v1/updateService/:barbeariaId/:professionalId', AuthenticateJWT, (
 });
 
 // Rota para deletar um serviço específico
-app.delete('/api/deleteService/:barbeariaId/:professionalId/:servicoId', AuthenticateJWT, (req, res) => {
+app.delete('/api/v1/deleteService/:barbeariaId/:professionalId/:servicoId', AuthenticateJWT, (req, res) => {
   const barbeariaId = req.params.barbeariaId;
   const professionalId = req.params.professionalId;
   const servicoId = req.params.servicoId;
@@ -1246,7 +1246,7 @@ app.delete('/api/deleteService/:barbeariaId/:professionalId/:servicoId', Authent
 });
 
 //Route to create link between barbearia and professional
-app.post('/api/send-request-barbeariaToprofessional/', AuthenticateJWT, (req, res) =>{
+app.post('/api/v1/sendSolicitation/', AuthenticateJWT, (req, res) =>{
   
   //get all params send from front-end
   const barbeariaId = req.body.barbeariaId;
@@ -1267,7 +1267,7 @@ app.post('/api/send-request-barbeariaToprofessional/', AuthenticateJWT, (req, re
 });
 
 //Route to get all link requests for a specific barbershop
-app.get('/api/all-request-link/:barbeariaId/:professional_id', AuthenticateJWT, (req, res) =>{
+app.get('/api/v1/allSolicitation/:barbeariaId/:professional_id', AuthenticateJWT, (req, res) =>{
   const barbeariaId = req.params.barbeariaId;
   const professionalId = req.params.professional_id;
 
@@ -1287,7 +1287,7 @@ app.get('/api/all-request-link/:barbeariaId/:professional_id', AuthenticateJWT, 
 })
 
 //Route to create a new professional
-app.post('/api/v1/create-professional/:barbeariaId', AuthenticateJWT, (req, res) => {
+app.post('/api/v1/createProfessional/:barbeariaId', AuthenticateJWT, (req, res) => {
   
   const barbeariaId = req.params.barbeariaId;
   const newNameProfessional = req.body.newNameProfessional;
@@ -1379,7 +1379,7 @@ app.get('/api/v1/professional/:barbeariaId', AuthenticateJWT, (req, res) => {
 });
 
 //Route to get all professional
-app.get('/api/v1/list-professional/:searchProfessional', AuthenticateJWT, (req, res) => {
+app.get('/api/v1/listProfessional/:searchProfessional', AuthenticateJWT, (req, res) => {
   const searchProfessional = req.params.searchProfessional;
 
   const sql = "SELECT id, name, user_image, cell_phone, email FROM professional WHERE name = ?";
@@ -1398,7 +1398,7 @@ app.get('/api/v1/list-professional/:searchProfessional', AuthenticateJWT, (req, 
 });
 
 //Rota obter os serviços cadastrados
-app.get('/api/v1/list-service/:barbeariaId', AuthenticateJWT, (req, res) =>{
+app.get('/api/v1/listService/:barbeariaId', AuthenticateJWT, (req, res) =>{
   const barbeariaId = req.params.barbeariaId;
 
   const sql="SELECT * FROM servico WHERE barbearia_id = ?"
@@ -1415,7 +1415,7 @@ app.get('/api/v1/list-service/:barbeariaId', AuthenticateJWT, (req, res) =>{
 });
 
 //Rota para realizar o agendamento
-app.post('/api/v1/create-booking/', AuthenticateJWT, (req, res) => {
+app.post('/api/v1/createBooking/', AuthenticateJWT, (req, res) => {
   //Create object to make a toke for booking
   const values = [
     req.body.userId,
@@ -1452,7 +1452,7 @@ app.post('/api/v1/create-booking/', AuthenticateJWT, (req, res) => {
 });
 
 // Rota para buscar todos os agendamentos de uma barbearia específica
-app.get('/api/v1/bookings-times/:barbeariaId/:professionalId/:selectedDate', AuthenticateJWT, (req, res) => {
+app.get('/api/v1/bookingsTimes/:barbeariaId/:professionalId/:selectedDate', AuthenticateJWT, (req, res) => {
   const barbeariaId = req.params.barbeariaId;
   const professionalId = req.params.professionalId;
   const selectedDate = req.params.selectedDate;
@@ -1485,7 +1485,7 @@ app.get('/api/v1/bookings-times/:barbeariaId/:professionalId/:selectedDate', Aut
 });
 
 //Route to save days-off
-app.post('/api/v1/update-dayOff/:barbeariaId/:professionalId', AuthenticateJWT, (req, res) => {
+app.put('/api/v1/updateDayOff/:barbeariaId/:professionalId', AuthenticateJWT, (req, res) => {
   const barbeariaId = req.params.barbeariaId;
   const professionalId = req.params.professionalId;
   const selectedDay = req.body.selectedDay;
