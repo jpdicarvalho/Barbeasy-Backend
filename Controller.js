@@ -321,7 +321,7 @@ app.post('/api/Checkout', async (req, res) => {
 //======================================= ROTAS USER-BARBEARIA ====================================
 
 //Cadastro de ususário Barbearia   #VERIFIED
-app.post("/api/v1/SignUpBarbearia", AuthenticateJWT, async (req, res) => {
+app.post("/api/v1/SignUpBarbearia", async (req, res) => {
   const { name, street, number, neighborhood, city, usuario, email, senha } = req.body;
 
   // Verifica se name contém apenas letras maiúsculas e minúsculas
@@ -398,7 +398,7 @@ app.post("/api/v1/SignUpBarbearia", AuthenticateJWT, async (req, res) => {
 });
 
 //Realizando Login e Gerando Token de autenticação  #VERIFIED
-app.post('/api/v1/SignInBarbearia', AuthenticateJWT, async (req, res) => {
+app.post('/api/v1/SignInBarbearia', async (req, res) => {
   const email = req.body.email;
   const senha = req.body.senha;
 
