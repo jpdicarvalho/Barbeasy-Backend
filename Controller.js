@@ -1294,7 +1294,6 @@ app.post('/api/v1/createProfessional/:barbeariaId', AuthenticateJWT, (req, res) 
   const newPhoneProfessional = req.body.newPhoneProfessional;
   const newEmailProfessional = req.body.newEmailProfessional;
   const newPasswordProfessional = req.body.newPasswordProfessional;
-  const token = req.body.token;
   const fakeNameUserImage = 'default.png';
 
   // Verifica se newNameProfessional contém apenas letras maiúsculas e minúsculas
@@ -1326,8 +1325,8 @@ app.post('/api/v1/createProfessional/:barbeariaId', AuthenticateJWT, (req, res) 
     if(resul.length > 0){
       return res.status(401).json({ Unauthorized: "Unauthorized"});
     }else{
-      const sqlInsertOnProfessional="INSERT INTO professional (name, email, password, cell_phone, user_image, token) VALUES (?, ?, ?, ?, ?, ?);"
-      db.query(sqlInsertOnProfessional, [newNameProfessional, newEmailProfessional, newPasswordProfessional, newPhoneProfessional, fakeNameUserImage, token], (erro, result) =>{
+      const sqlInsertOnProfessional="INSERT INTO professional (name, email, password, cell_phone, user_image) VALUES (?, ?, ?, ?, ?);"
+      db.query(sqlInsertOnProfessional, [newNameProfessional, newEmailProfessional, newPasswordProfessional, newPhoneProfessional, fakeNameUserImage], (erro, result) =>{
         if(erro){
           console.error('Erro ao criar profissional:', erro);
           return res.status(500).json({ Error: "Error" });
