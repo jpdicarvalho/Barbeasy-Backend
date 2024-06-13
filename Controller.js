@@ -1137,6 +1137,23 @@ app.post('/api/v1/addService/:barbeariaId/:professionalId', AuthenticateJWT, (re
   const commission_fee = req.body.newCommissionFee;
   const duracao = req.body.newDuration;
 
+  // Verifica se number contém apenas números
+  if (!isSignUpBarbeariaValid(name) && name.length <= 100) {
+    return res.status(400).json({ error: 'Error in values' });
+  }
+  // Verifica se number contém apenas números
+  if (preco.length > 10) {
+    return res.status(400).json({ error: 'Error in values' });
+  }
+  // Verifica se number contém apenas números
+  if (commission_fee.length > 10) {
+    return res.status(400).json({ error: 'Error in values' });
+  }
+  // Verifica se number contém apenas números
+  if (duracao.length > 5) {
+    return res.status(400).json({ error: 'Error in values' });
+  }
+
   const service = {
     name,
     preco,
