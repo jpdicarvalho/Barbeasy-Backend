@@ -1160,7 +1160,7 @@ app.post('/api/v1/addService/:barbeariaId/:professionalId', AuthenticateJWT, (re
 })
 
 //Rota obter os serviços cadastrados
-app.get('/api/getService/:barbeariaId/:professionalId', AuthenticateJWT, (req, res) =>{
+app.get('/api/v1/getService/:barbeariaId/:professionalId', AuthenticateJWT, (req, res) =>{
   const barbeariaId = req.params.barbeariaId;
   const professionalId = req.params.professionalId;
 
