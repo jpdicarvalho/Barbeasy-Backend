@@ -446,7 +446,7 @@ app.get('/api/v1/SignInProfessional/:email/:senha', async (req, res) => {
   }
 
   // Buscar usuário pelo email
-  db.query('SELECT id, name, user_image FROM professional WHERE email = ? AND senha = ?', [email, senha],
+  db.query('SELECT id, name, user_image FROM professional WHERE email = ? AND password = ?', [email, senha],
   (err, result) => {
     if(err){
       return res.send({err: err});
@@ -456,7 +456,7 @@ app.get('/api/v1/SignInProfessional/:email/:senha', async (req, res) => {
       // Criação do token
       const token = jwt.sign({ professionalId: professional.id, professionalEmail: professional.email }, process.env.TOKEN_SECRET_WORD, { expiresIn: "3h" });
       // Envie o token no corpo da resposta
-      return res.status(200).json({ Success: 'Success', token: token, professional: result });
+      return res.status(200).json({Success: 'Success', token: token, professional: result });
       
     } else {
       // Usuário não encontrado
