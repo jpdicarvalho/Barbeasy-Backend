@@ -422,11 +422,11 @@ app.get('/api/v1/SignInBarbearia/:email/:senha', async (req, res) => {
       // Criação do token
       const token = jwt.sign({ barbeariaId: barbearia.id, barbeariaEmail: barbearia.email }, process.env.TOKEN_SECRET_WORD, { expiresIn: "3h" });
       // Envie o token no corpo da resposta
-      return res.status(200).json({ success: true, token: token, barbearia: result });
+      return res.status(200).json({ success: 'Success', token: token, barbearia: result });
       
     } else {
       // Usuário não encontrado
-      return res.status(404).json({success: false, message: 'Usuário não encontrado'});
+      return res.status(404).json({success: 'Falied', message: 'Usuário não encontrado'});
     }
   });
 });
