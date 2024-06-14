@@ -1337,6 +1337,25 @@ app.get('/api/v1/allSolicitation/:barbeariaId/:professional_id', AuthenticateJWT
   })
 })
 
+//Route to get all link requests for a specific professional  
+app.get('/api/v1/allNotification/:professional_id', AuthenticateJWT, (req, res) =>{
+  const professionalId = req.params.professional_id;
+
+  const sql="SELECT * FROM requestBarbToProfe WHERE professional_id = ?";
+  db.query(sql, [professionalId], (err, result) =>{
+    if(err){
+      console.error('Erro ao buscar solicitação de vinculo:', err);
+      return res.status(500).json({ Error: "Error" });
+    }else{
+      if(result.length > 0){
+        return res.status(200).json({ Success: "true"});
+      }else{
+        return res.status(200).json({ Success: "false"});
+      }
+    }
+  })
+})
+
 //Route to create a new professional
 app.post('/api/v1/createProfessional/:barbeariaId', AuthenticateJWT, (req, res) => {
   
