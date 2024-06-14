@@ -397,7 +397,7 @@ app.post("/api/v1/SignUpBarbearia", async (req, res) => {
   });
 });
 
-//Realizando Login e Gerando Token de autenticação  #VERIFIED
+//Realizando Login e Gerando Token de autenticação para a barbearia  #VERIFIED
 app.get('/api/v1/SignInBarbearia/:email/:senha', async (req, res) => {
   const email = req.params.email;
   const senha = req.params.senha;
@@ -423,6 +423,40 @@ app.get('/api/v1/SignInBarbearia/:email/:senha', async (req, res) => {
       const token = jwt.sign({ barbeariaId: barbearia.id, barbeariaEmail: barbearia.email }, process.env.TOKEN_SECRET_WORD, { expiresIn: "3h" });
       // Envie o token no corpo da resposta
       return res.status(200).json({ Success: 'Success', token: token, barbearia: result });
+      
+    } else {
+      // Usuário não encontrado
+      return res.status(404).json({Success: 'Falied', message: 'Usuário não encontrado'});
+    }
+  });
+});
+
+//Realizando Login e Gerando Token de autenticação para a barbearia  #VERIFIED
+app.get('/api/v1/SignInProfessional/:email/:senha', async (req, res) => {
+  const email = req.params.email;
+  const senha = req.params.senha;
+
+  // Verifica se newEmail contém apenas letras maiúsculas e minúsculas
+  if (!isEmailValided(email) && email.length <= 50) {
+    return res.status(400).json({ error: 'Error in values' });
+  }
+  // Verifica se newSenha contém apenas letras maiúsculas, minúsculas e @#%$ como caracteres especiais
+  if (!isPasswordValided(senha) && senha.length <= 8) {
+    return res.status(400).json({ error: 'Error in values' });
+  }
+
+  // Buscar usuário pelo email
+  db.query('SELECT id, name, user_image FROM professional WHERE email = ? AND senha = ?', [email, senha],
+  (err, result) => {
+    if(err){
+      return res.send({err: err});
+    }
+    if (result.length > 0) {
+      const professional = result[0];
+      // Criação do token
+      const token = jwt.sign({ professionalId: professional.id, professionalEmail: professional.email }, process.env.TOKEN_SECRET_WORD, { expiresIn: "3h" });
+      // Envie o token no corpo da resposta
+      return res.status(200).json({ Success: 'Success', token: token, professional: result });
       
     } else {
       // Usuário não encontrado
