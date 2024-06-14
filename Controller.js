@@ -398,9 +398,9 @@ app.post("/api/v1/SignUpBarbearia", async (req, res) => {
 });
 
 //Realizando Login e Gerando Token de autenticação  #VERIFIED
-app.post('/api/v1/SignInBarbearia', async (req, res) => {
-  const email = req.body.email;
-  const senha = req.body.senha;
+app.get('/api/v1/SignInBarbearia/:email/:senha', async (req, res) => {
+  const email = req.params.email;
+  const senha = req.params.senha;
 
   // Verifica se newEmail contém apenas letras maiúsculas e minúsculas
   if (!isEmailValided(email) && email.length <= 50) {
