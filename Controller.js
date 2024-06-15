@@ -1304,7 +1304,7 @@ app.post('/api/v1/sendSolicitation/', AuthenticateJWT, (req, res) =>{
   const professionalId = req.body.professionalId;
   const textRequest = req.body.textRequest;
 
-  const sql="INSERT INTO requestBarbToProfe (barbearia_id, professional_id, text_request) VALUES (?, ?, ?)";
+  const sql="INSERT INTO notificationProfessional (barbearia_id, professional_id, text_request) VALUES (?, ?, ?)";
   db.query(sql, [barbeariaId, professionalId, textRequest], (err, result) =>{
     if(err){
       console.error('Erro ao salvar solicitação de vinculo:', err);
@@ -1322,7 +1322,7 @@ app.get('/api/v1/allSolicitation/:barbeariaId/:professional_id', AuthenticateJWT
   const barbeariaId = req.params.barbeariaId;
   const professionalId = req.params.professional_id;
 
-  const sql="SELECT * FROM requestBarbToProfe WHERE barbearia_id = ? AND professional_id = ?";
+  const sql="SELECT * FROM notificationProfessional WHERE barbearia_id = ? AND professional_id = ?";
   db.query(sql, [barbeariaId, professionalId], (err, result) =>{
     if(err){
       console.error('Erro ao buscar solicitação de vinculo:', err);
@@ -1341,7 +1341,17 @@ app.get('/api/v1/allSolicitation/:barbeariaId/:professional_id', AuthenticateJWT
 app.get('/api/v1/allNotification/:professional_id', AuthenticateJWT, (req, res) =>{
   const professionalId = req.params.professional_id;
 
-  const sql="SELECT * FROM requestBarbToProfe WHERE professional_id = ?";
+  const sql=`SELECT notificationProfessional.barbearia_id AS barbeariaId,
+                    notificationProfessional.professional_id AS professionalId,
+                    barbearia.name AS nameBarbearia,
+                    barbearia.banner_main AS bannerBarbearia,
+                    barbearia.rua AS ruaBarbearia,
+                    barbearia.N AS nRuaBarbearia,
+                    barbearia.bairro AS bairroBarbearia,
+                    barbearia.cidade AS cidadeBarbearia
+              FROM notificationProfessional
+              INNER JOIN barbearia ON barbearia.id = notificationProfessional.barbearia_id
+              WHERE professional_id = ?`;
   db.query(sql, [professionalId], (err, result) =>{
     if(err){
       console.error('Erro ao buscar solicitação de vinculo:', err);
