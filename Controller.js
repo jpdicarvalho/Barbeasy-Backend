@@ -70,8 +70,8 @@ const logger = winston.createLogger({// Configuração do Winston para registrar
 
 //===================== MIDDLEWARE TO RATE LIMIT =====================
 const limiter = rateLimit({// Configurar limitação de taxa
-  windowMs: 30 * 60 * 1000, // 15 minutos
-  max: 100, // Limite de 100 requisições por IP
+  windowMs: 10 * 60 * 1000, // 15 minutos
+  max: 1000, // Limite de 100 requisições por IP
   message: 'Error in request'
 });
 
@@ -1342,7 +1342,6 @@ app.get('/api/v1/allNotification/:professional_id', AuthenticateJWT, (req, res) 
   const professionalId = req.params.professional_id;
 
   const sql=`SELECT notificationProfessional.barbearia_id AS barbeariaId,
-                    notificationProfessional.professional_id AS professionalId,
                     barbearia.name AS nameBarbearia,
                     barbearia.banner_main AS bannerBarbearia,
                     barbearia.rua AS ruaBarbearia,
@@ -1352,6 +1351,7 @@ app.get('/api/v1/allNotification/:professional_id', AuthenticateJWT, (req, res) 
               FROM notificationProfessional
               INNER JOIN barbearia ON barbearia.id = notificationProfessional.barbearia_id
               WHERE professional_id = ?`;
+
   db.query(sql, [professionalId], (err, result) =>{
     if(err){
       console.error('Erro ao buscar solicitação de vinculo:', err);
