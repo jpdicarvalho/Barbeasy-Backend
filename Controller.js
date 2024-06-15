@@ -1358,7 +1358,7 @@ app.get('/api/v1/allNotification/:professional_id', AuthenticateJWT, (req, res) 
       return res.status(500).json({ Error: "Error" });
     }else{
       if(result.length > 0){
-        return res.status(200).json({ Success: "true"});
+        return res.status(200).json({ Success: "true", AllNotification: result});
       }else{
         return res.status(200).json({ Success: "false"});
       }
