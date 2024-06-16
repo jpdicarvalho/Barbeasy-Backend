@@ -1304,7 +1304,7 @@ app.post('/api/v1/sendNotificationToProfe', AuthenticateJWT, (req, res) =>{
   const professionalId = req.body.professionalId;
 
   const sql="INSERT INTO notificationProfessional (barbearia_id, professional_id) VALUES (?, ?)";
-  db.query(sql, [barbeariaId, professionalId, textRequest], (err, result) =>{
+  db.query(sql, [barbeariaId, professionalId], (err, result) =>{
     if(err){
       console.error('Erro ao salvar solicitação de vinculo:', err);
       return res.status(500).json({ Error: "Error" });
