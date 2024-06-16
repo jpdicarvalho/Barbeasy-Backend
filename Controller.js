@@ -181,7 +181,7 @@ app.post('/api/v1/SignIn', async (req, res) => {
     if (result.length > 0) {
       const user = result[0];
       // Criação do token
-      const token = jwt.sign({ userId: user.id, userEmail: user.email }, process.env.tokenWordSecret, { expiresIn: "1h" });
+      const token = jwt.sign({ userId: user.id, userEmail: user.email }, process.env.TOKEN_SECRET_WORD, { expiresIn: "3h" });
       // Envie o token no corpo da resposta
       res.status(200).json({ success: true, token: token, user: result });
       
