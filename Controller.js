@@ -1297,7 +1297,7 @@ app.delete('/api/v1/deleteService/:barbeariaId/:professionalId/:servicoId', Auth
 });
 
 //Route to create link between barbearia and professional
-app.post('/api/v1/sendNotificationToProfe/', AuthenticateJWT, (req, res) =>{
+app.post('/api/v1/sendNotificationToProfe', AuthenticateJWT, (req, res) =>{
   
   //get all params send from front-end
   const barbeariaId = req.body.barbeariaId;
@@ -1366,9 +1366,9 @@ app.get('/api/v1/notificationToProfe/:professional_id', AuthenticateJWT, (req, r
 })
 
 //Route to create a new professional
-app.post('/api/v1/createProfessional/:barbeariaId', AuthenticateJWT, (req, res) => {
+app.post('/api/v1/createProfessional', AuthenticateJWT, (req, res) => {
   
-  const barbeariaId = req.params.barbeariaId;
+  const barbeariaId = req.body.barbeariaId;
   const newNameProfessional = req.body.newNameProfessional;
   const newPhoneProfessional = req.body.newPhoneProfessional;
   const newEmailProfessional = req.body.newEmailProfessional;
@@ -1440,7 +1440,7 @@ app.post('/api/v1/createProfessional/:barbeariaId', AuthenticateJWT, (req, res) 
 });
 
 //Route to accept notification
-app.post('/api/v1/acceptNotification/:barbeariaId/:professionalId', AuthenticateJWT, (req, res) => {
+app.post('/api/v1/acceptNotification', AuthenticateJWT, (req, res) => {
     const barbeariaId = req.body.barbeariaId;
     const professionalId = req.body.professionalId;
 console.log(barbeariaId, professionalId)
