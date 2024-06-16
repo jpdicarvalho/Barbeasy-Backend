@@ -1297,14 +1297,13 @@ app.delete('/api/v1/deleteService/:barbeariaId/:professionalId/:servicoId', Auth
 });
 
 //Route to create link between barbearia and professional
-app.post('/api/v1/sendSolicitation/', AuthenticateJWT, (req, res) =>{
+app.post('/api/v1/sendNotificationToProfe/', AuthenticateJWT, (req, res) =>{
   
   //get all params send from front-end
   const barbeariaId = req.body.barbeariaId;
   const professionalId = req.body.professionalId;
-  const textRequest = req.body.textRequest;
 
-  const sql="INSERT INTO notificationProfessional (barbearia_id, professional_id, text_request) VALUES (?, ?, ?)";
+  const sql="INSERT INTO notificationProfessional (barbearia_id, professional_id) VALUES (?, ?)";
   db.query(sql, [barbeariaId, professionalId, textRequest], (err, result) =>{
     if(err){
       console.error('Erro ao salvar solicitação de vinculo:', err);
@@ -1318,7 +1317,7 @@ app.post('/api/v1/sendSolicitation/', AuthenticateJWT, (req, res) =>{
 });
 
 //Route to get all link requests for a specific barbershop
-app.get('/api/v1/allSolicitation/:barbeariaId/:professional_id', AuthenticateJWT, (req, res) =>{
+app.get('/api/v1/notificationToBarb/:barbeariaId/:professional_id', AuthenticateJWT, (req, res) =>{
   const barbeariaId = req.params.barbeariaId;
   const professionalId = req.params.professional_id;
 
@@ -1338,7 +1337,7 @@ app.get('/api/v1/allSolicitation/:barbeariaId/:professional_id', AuthenticateJWT
 })
 
 //Route to get all link requests for a specific professional  
-app.get('/api/v1/allNotification/:professional_id', AuthenticateJWT, (req, res) =>{
+app.get('/api/v1/notificationToProfe/:professional_id', AuthenticateJWT, (req, res) =>{
   const professionalId = req.params.professional_id;
 
   const sql=`SELECT notificationProfessional.barbearia_id AS barbeariaId,
@@ -1440,6 +1439,32 @@ app.post('/api/v1/createProfessional/:barbeariaId', AuthenticateJWT, (req, res) 
   })
 });
 
+//Route to accept notification
+app.post('/api/v1/acceptNotification/:barbeariaId/:professionalId', AuthenticateJWT, (req, res) => {
+    const barbeariaId = req.body.barbeariaId;
+    const professionalId = req.body.professionalId;
+console.log(barbeariaId, professionalId)
+    const sql="INSERT INTO Barb_Professional (barbearia_id, professional_id) VALUES (?, ?)"
+    db.query(sql, [barbeariaId, professionalId], (err, resul) =>{
+      if(err){
+        console.error('Erro ao criar vinculo do profissional com a barbearia:', err);
+        return res.status(500).json({ Error: "Error" });
+      }
+      if(resul){
+        const sqlDelete = "DELETE FROM notificationProfessional WHERE barbearia_id = ? AND professional_id = ?"
+        db.query(sqlDelete, [barbeariaId, professionalId], (erro, result) =>{
+          if(erro){
+            console.error('Erro ao apagar notificação:', erro);
+            return res.status(500).json({ Error: "Error" });
+          }else{
+            if(result){
+              return res.status(200).json({ Success: "Success"});
+            }
+          }
+        })
+      }
+    })
+})
 //Rota para obter os profissionais da barbearia em específico
 app.get('/api/v1/professional/:barbeariaId', AuthenticateJWT, (req, res) => {
   const barbeariaId = req.params.barbeariaId;
