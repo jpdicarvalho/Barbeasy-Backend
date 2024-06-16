@@ -1024,7 +1024,7 @@ app.put('/api/v1/updateAgenda/:barbeariaId/:professionalId', AuthenticateJWT, (r
   })
 });
 
-//Rota to get 'Agenda' of professional
+//Route to get professional 'agenda' of especific barbearia
 app.get('/api/v1/agenda/:barbeariaId/:professionalId', AuthenticateJWT, (req, res) => {
   const barbeariaId = req.params.barbeariaId;
   const professionalId = req.params.professionalId;
@@ -1042,6 +1042,24 @@ app.get('/api/v1/agenda/:barbeariaId/:professionalId', AuthenticateJWT, (req, re
         agenda.push(result[0].qnt_dias);
 
         return res.status(200).json({ Agenda: agenda});
+      }
+    }
+  })
+});
+
+//Route to get all professional's agenda
+app.get('/api/v1/allProfessionalAgenda/:barbeariaId/:professionalId', AuthenticateJWT, (req, res) => {
+  const barbeariaId = req.params.barbeariaId;
+  const professionalId = req.params.professionalId;
+
+  const sql = "SELECT id, barbearia_id, professional_id, dias, qnt_dias FROM agenda WHERE barbearia_id != ? AND professional_id = ?";
+  db.query(sql, [barbeariaId, professionalId], (err, result) => {
+    if(err) {
+      console.error("Erro ao buscar as informações da agenda do professional", err);
+      return res.status(500).json({Error: "Internal Server Error"});
+    }else{
+      if(result.length > 0) {
+        return res.status(200).json({ Agenda: result});
       }
     }
   })
