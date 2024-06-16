@@ -1465,11 +1465,19 @@ console.log(barbeariaId, professionalId)
       }
     })
 })
+
 //Rota para obter os profissionais da barbearia em específico
-app.get('/api/v1/professional/:barbeariaId', AuthenticateJWT, (req, res) => {
+app.get('/api/v1/listProfessionalToBarbearia/:barbeariaId', AuthenticateJWT, (req, res) => {
   const barbeariaId = req.params.barbeariaId;
 
-  const sql="SELECT professional.id, professional.name, professional.cell_phone, professional.user_image FROM professional INNER JOIN Barb_Professional ON barbearia_id = ? AND professional.id = professional_id;"
+  const sql=`SELECT professional.id,
+                    professional.name,
+                    professional.cell_phone,
+                    professional.user_image
+              FROM professional
+              INNER JOIN Barb_Professional
+              ON barbearia_id = ? AND professional.id = professional_id`
+
   db.query(sql, [barbeariaId], (err, result) =>{
     if(err){
       console.error('Erro ao buscar profissionais da barbearia:', err);
@@ -1478,6 +1486,28 @@ app.get('/api/v1/professional/:barbeariaId', AuthenticateJWT, (req, res) => {
     if(result){
       //console.log(result)
       return res.status(200).json({ Success: "Success", Professional: result});//Enviando o array com os profissionais
+    }
+  })
+});
+
+//Route to gell especific barbshop to professional
+app.get('/api/v1/listBarbeariaToProfessional/:professionalId', AuthenticateJWT, (req, res) => {
+  const professionalId = req.params.professionalId;
+
+  const sql=`SELECT barbearia_id AS barbeariaId,
+                barbearia.name AS nameBarbearia,
+                barbearia.status AS statusBarbearia
+             FROM Barb_Professional
+             INNER JOIN barbearia ON barbearia.id = Barb_Professional.barbearia_id
+             WHERE professional_id = ?`
+
+  db.query(sql, [professionalId], (err, result) =>{
+    if(err){
+      console.error('Erro ao buscar barbearias do profissional:', err);
+      return res.status(500).json({ Error: 'Erro ao buscar barbearias do profissional:' });
+    }
+    if(result.length > 0){
+      return res.status(200).json({ Success: "Success", Barbearias: result});//Enviando o array com os profissionais
     }
   })
 });
