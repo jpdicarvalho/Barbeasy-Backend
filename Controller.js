@@ -1443,7 +1443,6 @@ app.post('/api/v1/createProfessional', AuthenticateJWT, (req, res) => {
 app.post('/api/v1/acceptNotification', AuthenticateJWT, (req, res) => {
     const barbeariaId = req.body.barbeariaId;
     const professionalId = req.body.professionalId;
-console.log(barbeariaId, professionalId)
     const sql="INSERT INTO Barb_Professional (barbearia_id, professional_id) VALUES (?, ?)"
     db.query(sql, [barbeariaId, professionalId], (err, resul) =>{
       if(err){
@@ -1681,6 +1680,44 @@ app.get('/api/v1/bookings/:barbeariaId/:selectedDate', AuthenticateJWT, (req, re
       INNER JOIN professional ON professional.id = booking.professional_id
       INNER JOIN servico ON servico.id = booking.service_id`;
       db.query(sql, [barbeariaId, selectedDate], (err, result) =>{
+        if(err){
+          console.error("Erro ao obter agendamentos", err);
+          return res.status(500).json({ Error: "Internal Server Error" });
+        }else{
+          if(result.length > 0){
+            return res.status(200).json({ Message: "true", bookings: result });
+          }else{
+            return res.status(200).json({ Message: "false"});
+          }
+        }
+      })
+})
+
+//Route to get bookings of professional
+app.get('/api/v1/professionalBookings/:barbeariaId/:professionalId/:selectedDate', AuthenticateJWT, (req, res) =>{
+  const barbeariaId = req.params.barbeariaId;
+  const professionalId = req.params.professionalId;
+  const selectedDate = req.params.selectedDate;
+
+  const sql=`
+        SELECT
+          user.id AS user_id,
+          user.name user_name,
+          user.celular AS user_phone,
+          booking.id AS booking_id,
+          booking.booking_time AS booking_time,
+          professional.id AS professional_id,
+          professional.name AS professional_name,
+          servico.id AS service_id,
+          servico.name AS service_name,
+          servico.preco AS service_price,
+          servico.duracao AS service_duration,
+          servico.commission_fee AS service_commission_fee
+      FROM user
+      INNER JOIN booking ON user.id = booking.user_id AND booking.barbearia_id = ? AND booking.booking_date = ?
+      INNER JOIN professional ON professional.id = ?
+      INNER JOIN servico ON servico.id = booking.service_id`;
+      db.query(sql, [barbeariaId, selectedDate, professionalId], (err, result) =>{
         if(err){
           console.error("Erro ao obter agendamentos", err);
           return res.status(500).json({ Error: "Internal Server Error" });
