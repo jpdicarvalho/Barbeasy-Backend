@@ -71,7 +71,7 @@ const logger = winston.createLogger({// Configuração do Winston para registrar
 //===================== MIDDLEWARE TO RATE LIMIT =====================
 const limiter = rateLimit({// Configurar limitação de taxa
   windowMs: 10 * 60 * 1000, // 15 minutos
-  max: 3500, // Limite de 100 requisições por IP
+  max: 2500, // Limite de 100 requisições por IP
   message: 'Error in request'
 });
 
@@ -1052,7 +1052,7 @@ app.get('/api/v1/allProfessionalAgenda/:barbeariaId/:professionalId', Authentica
   const barbeariaId = req.params.barbeariaId;
   const professionalId = req.params.professionalId;
 
-  const sql = "SELECT id, barbearia_id, professional_id, dias, qnt_dias FROM agenda WHERE barbearia_id != ? AND professional_id = ?";
+  const sql = "SELECT * FROM agenda WHERE barbearia_id != ? AND professional_id = ?";
   db.query(sql, [barbeariaId, professionalId], (err, result) => {
     if(err) {
       console.error("Erro ao buscar as informações da agenda do professional", err);
@@ -1110,14 +1110,14 @@ app.put('/api/v1/updateAgendaDiaSelecionado/:barbeariaId/:professionalId', Authe
 });
 
 //Rota para obter os horarios definidos para cada dia em específico
-app.get('/api/v1/agendaDiaSelecionado/:professionalId', AuthenticateJWT, (req, res) =>{
+app.get('/api/v1/agendaDiaSelecionado/:barbeariaId/:professionalId', AuthenticateJWT, (req, res) =>{
   const barbeariaId = req.params.barbeariaId;
   const professionalId = req.params.professionalId;
 
 
   //Consultando as colunas que possuem os horários de trabalho da barbearia
-  const sql = "SELECT barbearia_id, dom, seg, ter, qua, qui, sex, sab FROM agenda WHERE AND professional_id = ?";
-  db.query(sql, [professionalId], (err, result) => {
+  const sql = "SELECT dom, seg, ter, qua, qui, sex, sab FROM agenda WHERE barbearia_id = ? AND professional_id = ?";
+  db.query(sql, [barbeariaId, professionalId], (err, result) => {
     //Verifição de erro na consulta
     if(err){
       console.error("Erro ao buscar os horários da agenda da barbearia", err);
