@@ -1059,7 +1059,29 @@ app.get('/api/v1/allProfessionalAgenda/:barbeariaId/:professionalId', Authentica
       return res.status(500).json({Error: "Internal Server Error"});
     }else{
       if(result.length > 0) {
-        return res.status(200).json({ Agenda: result});
+        const filterDaysWithTimes = (result) => {
+          // Array para armazenar a agenda filtrada
+          const filteredAgenda = result.map(item => {
+              // Criar um novo objeto para armazenar os dias com horários disponíveis
+              const newItem = { ...item };
+      
+              // Lista de chaves dos dias da semana
+              const daysOfWeek = ["dom", "seg", "ter", "qua", "qui", "sex", "sab"];
+      
+              // Iterar sobre os dias da semana e remover aqueles que não têm horários disponíveis
+              daysOfWeek.forEach(day => {
+                  if (newItem[day] === "Não há horários disponíveis para esse dia") {
+                      delete newItem[day];
+                  }
+              });
+      
+              return newItem;
+          });
+      
+          return filteredAgenda;
+        };
+        const filteredFullAgenda = filterDaysWithTimes(result);
+        return res.status(200).json({ Agenda: filteredFullAgenda});
       }
     }
   })
