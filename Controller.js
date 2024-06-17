@@ -1116,8 +1116,8 @@ app.get('/api/v1/agendaDiaSelecionado/:barbeariaId/:professionalId', Authenticat
 
 
   //Consultando as colunas que possuem os horários de trabalho da barbearia
-  const sql = "SELECT dom, seg, ter, qua, qui, sex, sab FROM agenda WHERE barbearia_id = ? AND professional_id = ?";
-  db.query(sql, [barbeariaId, professionalId], (err, result) => {
+  const sql = "SELECT dom, seg, ter, qua, qui, sex, sab FROM agenda WHERE AND professional_id = ?";
+  db.query(sql, [professionalId], (err, result) => {
     //Verifição de erro na consulta
     if(err){
       console.error("Erro ao buscar os horários da agenda da barbearia", err);
