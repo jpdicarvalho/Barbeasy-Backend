@@ -1110,7 +1110,7 @@ app.put('/api/v1/updateAgendaDiaSelecionado/:barbeariaId/:professionalId', Authe
 });
 
 //Rota para obter os horarios definidos para cada dia em específico
-app.get('/api/v1/agendaDiaSelecionado/:barbeariaId/:professionalId', AuthenticateJWT, (req, res) =>{
+app.get('/api/v1/agendaDiaSelecionado/:professionalId', AuthenticateJWT, (req, res) =>{
   const barbeariaId = req.params.barbeariaId;
   const professionalId = req.params.professionalId;
 
