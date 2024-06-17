@@ -1052,7 +1052,10 @@ app.get('/api/v1/allProfessionalAgenda/:barbeariaId/:professionalId', Authentica
   const barbeariaId = req.params.barbeariaId;
   const professionalId = req.params.professionalId;
 
-  const sql = "SELECT * FROM agenda WHERE barbearia_id != ? AND professional_id = ?";
+  const sql = `SELECT agenda.*, barbearia.name
+                FROM agenda
+                INNER JOIN barbearia ON barbearia.id = agenda.barbearia_id
+                WHERE agenda.barbearia_id != ? AND agenda.professional_id = ?`;
   db.query(sql, [barbeariaId, professionalId], (err, result) => {
     if(err) {
       console.error("Erro ao buscar as informações da agenda do professional", err);
