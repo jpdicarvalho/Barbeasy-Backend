@@ -1206,11 +1206,20 @@ app.put('/api/v1/updateHorariosTodosOsDias/:barbeariaId/:professionalId', Authen
 });
 
 app.put('/api/v1/clearTimes/:barbeariaId/:professionalId', AuthenticateJWT, (req, res) =>{
+  const barbeariaId = req.params.barbeariaId;
+  const professionalId = req.params.professionalId;
   const daySelected = req.body.day;
 
-  console.log(barbeariaId)
-  console.log(professionalId)
-  console.log(daySelected)
+
+  let query = "UPDATE agenda SET";
+
+  if(daySelected){
+    query += ` ${daySelected} = ?`;
+  }
+
+  // Adicionando as condições WHERE na query
+  query += ` WHERE barbearia_id = ? AND professional_id = ?`;
+console.log(query)
   return res.status(200).json({ Success: "Success" });
 });
 
