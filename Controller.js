@@ -1184,7 +1184,7 @@ app.put('/api/v1/updateHorariosTodosOsDias/:barbeariaId/:professionalId', Authen
       values.push(strAllTimes);
     } else {
       query += ` ${day} = ?,`;
-      values.push('Não há horários disponíveis para esse dia');
+      values.push('Não há horários definidos.');
     }
   });
 
