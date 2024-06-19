@@ -1208,7 +1208,7 @@ app.put('/api/v1/updateHorariosTodosOsDias/:barbeariaId/:professionalId', Authen
 app.put('/api/v1/clearTimes/:barbeariaId/:professionalId', AuthenticateJWT, (req, res) =>{
   const barbeariaId = req.params.barbeariaId;
   const professionalId = req.params.professionalId;
-  const daySelected = req.body.day;
+  const daySelected = req.body.daySelected;
 
 
   let query = "UPDATE agenda SET";
