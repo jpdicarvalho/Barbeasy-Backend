@@ -1205,6 +1205,14 @@ app.put('/api/v1/updateHorariosTodosOsDias/:barbeariaId/:professionalId', Authen
 
 });
 
+app.put('/api/v1/clearTimes/:barbeariaId/:professionalId', AuthenticateJWT, (req, res) =>{
+  const daySelected = req.body.day;
+  
+  console.log(barbeariaId)
+  console.log(professionalId)
+  console.log(daySelected)
+
+});
 //Rota para cadastrar um novo serviço
 app.post('/api/v1/addService/:barbeariaId/:professionalId', AuthenticateJWT, (req, res) => {
   const barbearia_id = req.params.barbeariaId;
