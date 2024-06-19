@@ -1209,7 +1209,7 @@ app.put('/api/v1/clearTimes/:barbeariaId/:professionalId', AuthenticateJWT, (req
   const barbeariaId = req.params.barbeariaId;
   const professionalId = req.params.professionalId;
   const daySelected = req.body.daySelected;
-
+  const defautlText = 'Não há horários definidos.'
 
   let query = "UPDATE agenda SET";
 
@@ -1219,8 +1219,16 @@ app.put('/api/v1/clearTimes/:barbeariaId/:professionalId', AuthenticateJWT, (req
 
   // Adicionando as condições WHERE na query
   query += ` WHERE barbearia_id = ? AND professional_id = ?`;
-console.log(query)
-  return res.status(200).json({ Success: "Success" });
+  db.query(query, [defautlText, barbeariaId, professionalId], (err, resul) =>{
+    if (err) {
+      console.error("Erro ao remover horário de trabalho", err);
+      return res.status(500).json({ Error: "Internal Server Error" });
+    }else{
+      if(resul){
+        return res.status(200).json({ Success: "Success" });
+      }
+    }
+  })
 });
 
 //Rota para cadastrar um novo serviço
