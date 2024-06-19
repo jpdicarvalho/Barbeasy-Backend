@@ -1211,7 +1211,7 @@ app.put('/api/v1/clearTimes/:barbeariaId/:professionalId', AuthenticateJWT, (req
   console.log(barbeariaId)
   console.log(professionalId)
   console.log(daySelected)
-
+  return res.status(200).json({ Success: "Success" });
 });
 
 //Rota para cadastrar um novo serviço
