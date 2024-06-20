@@ -81,7 +81,7 @@ const port = process.env.PORT || 3000;
 const corsOptions = { origin: 'http://localhost:5173', optionsSuccessStatus: 200, // Some browser versions may need this code
 };
 
-app.use(cors(corsOptions));
+app.use(cors(/*corsOptions*/));
 app.use(limiter);// Aplicar limitação de taxa a todas as requisições
 app.use(cors());
 app.use(express.json());
