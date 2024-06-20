@@ -491,7 +491,7 @@ app.get('/api/v1/AuthToUpdateData/', AuthenticateJWT, (req, res) =>{
 });
 
 //Upload de Imagem do Usuário Barbearia, na AWS S3  #VERIFIED
-app.put('/api/v1/userImageProfessional', AuthenticateJWT, upload.single('image'), (req, res) => {
+app.put('/api/v1/updateUserImageProfessional', AuthenticateJWT, upload.single('image'), (req, res) => {
   const professionalId = req.body.professionalId;
   const newImageUser = req.file.originalname;
 
