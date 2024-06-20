@@ -491,8 +491,8 @@ app.get('/api/v1/AuthToUpdateData/', AuthenticateJWT, (req, res) =>{
 });
 
 //Upload de Imagem do Usuário Barbearia, na AWS S3  #VERIFIED
-app.put('/api/v1/updateUserImageBarbearia', AuthenticateJWT, upload.single('image'), (req, res) => {
-  const barbeariaId = req.body.barbeariaId;
+app.put('/api/v1/userImageProfessional', AuthenticateJWT, upload.single('image'), (req, res) => {
+  const professionalId = req.body.professionalId;
   const newImageUser = req.file.originalname;
 
   const allowedExtensions = ['jpg', 'jpeg', 'png'];
@@ -508,8 +508,8 @@ app.put('/api/v1/updateUserImageBarbearia', AuthenticateJWT, upload.single('imag
   }
 
   //Buscando imagem atual salva no BD MySQL
-  const currentImg = "SELECT user_image FROM barbearia WHERE id = ?";
-  db.query(currentImg, [barbeariaId], (err, result) => {
+  const currentImg = "SELECT user_image FROM professional WHERE id = ?";
+  db.query(currentImg, [professionalId], (err, result) => {
     if(err){
       console.error('Error on Update Image:', err);
       return res.status(500).json({ error: 'Current Image - Internal Server Error' });
@@ -531,8 +531,8 @@ app.put('/api/v1/updateUserImageBarbearia', AuthenticateJWT, upload.single('imag
           console.error('Send Error:', sendErr);
         }else{
           //Atualizando a coluna 'user_image' com a nova imagem do usuário
-          const sql = "UPDATE barbearia SET user_image=? WHERE id=?";
-          db.query(sql, [newImageUser, barbeariaId], (updateErr, updateResult) => {
+          const sql = "UPDATE professional SET user_image = ? WHERE id=?";
+          db.query(sql, [newImageUser, professionalId], (updateErr, updateResult) => {
             if (updateErr) {
               //Mensagem de erro caso não seja possuível realizar a atualização da imagem no Banco de Dados
               console.error('Error on Update Image:', updateErr);
