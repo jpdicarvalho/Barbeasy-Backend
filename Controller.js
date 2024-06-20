@@ -557,11 +557,11 @@ app.put('/api/v1/updateUserImageProfessional', AuthenticateJWT, upload.single('i
 });
 
 //Rota para obter a imagem de usuário #VERIFIED
-app.get('/api/v1/userImageBarbearia', AuthenticateJWT, (req, res) =>{
-  const barbeariaId = req.query.barbeariaId; 
+app.get('/api/v1/userImageProfessional', AuthenticateJWT, (req, res) =>{
+  const professionalId = req.query.professionalId; 
 
-  const sql = "SELECT user_image from barbearia WHERE id = ?";
-  db.query(sql, [barbeariaId], async (err, result) => {
+  const sql = "SELECT user_image from professional WHERE id = ?";
+  db.query(sql, [professionalId], async (err, result) => {
     if(err){
       console.error('Erro ao buscar imagem no banco de dados:', err);
       return res.status(500).json({ error: 'Internal Server Error' });
