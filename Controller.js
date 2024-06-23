@@ -71,17 +71,17 @@ const logger = winston.createLogger({// Configuração do Winston para registrar
 //===================== MIDDLEWARE TO RATE LIMIT =====================
 const limiter = rateLimit({// Configurar limitação de taxa
   windowMs: 30 * 60 * 1000, // 15 minutos
-  max: 5, // Limite de 100 requisições por IP
+  max: 1000, // Limite de 100 requisições por IP
   message: 'Error in request'
 });
 
 const port = process.env.PORT || 3000;
 
 //CORS Settings to Only Allow Frontend Deployment to Netlify
-const corsOptions = { origin: 'http://localhost:5173', optionsSuccessStatus: 200, // Some browser versions may need this code
+const corsOptions = { origin: process.env.FRONTEND_URL, optionsSuccessStatus: 200, // Some browser versions may need this code
 };
 
-app.use(cors(/*corsOptions*/));
+app.use(cors(corsOptions));
 app.use(limiter);// Aplicar limitação de taxa a todas as requisições
 app.use(cors());
 app.use(express.json());
