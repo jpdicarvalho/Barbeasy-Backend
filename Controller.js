@@ -591,6 +591,7 @@ app.put('/api/v1/updateBannersImages', UseBarbeariaAuthenticateJWT, upload.array
     // Itera sobre os arquivos enviados
     for (let i = 0; i < imagesBanners.length; i++) {
       const file = imagesBanners[i].originalname;
+      //barbeariaId_1_banner_1_2024 0611_200314.jpg
 
       // Obtém a extensão do arquivo original
       const fileExtension = file ? file.split('.').pop() : '';
