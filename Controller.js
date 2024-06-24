@@ -591,12 +591,13 @@ app.put('/api/v1/updateBannersImages', UseBarbeariaAuthenticateJWT, upload.array
     // Itera sobre os arquivos enviados
     for (let i = 0; i < imagesBanners.length; i++) {
       const file = imagesBanners[i].originalname;
-
+console.log(barbeariaId)
       const nameImgaSubstring = file.substring(0, 31)
       const formatNameBanner = `barbeariaId_${barbeariaId}_banner_${i+1}_${currentDateTime.getFullYear()}${(currentDateTime.getMonth() + 1).toString().padStart(2, '0')}${currentDateTime.getDate().toString().padStart(2, '0')}_`
       
       console.log('nameImgaSubstring', nameImgaSubstring)
       console.log('formatNameBanner', formatNameBanner)
+
       //verify if pre-fix name is valided
       if(nameImgaSubstring != formatNameBanner){
         console.error('Error to update image')
