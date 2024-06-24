@@ -8,7 +8,7 @@ if (!SECRET_KEY) {
     throw new Error('TOKEN_SECRET is not defined in environment variables.');
   }
   
-  const AuthenticateJWT = (req, res, next) => {
+  const UseBarbeariaAuthenticateJWT = (req, res, next) => {
     const authHeader = req.headers.authorization;
   
     if (authHeader) {
@@ -27,4 +27,4 @@ if (!SECRET_KEY) {
     }
   };
   
-  export default AuthenticateJWT;
+  export default UseBarbeariaAuthenticateJWT;
