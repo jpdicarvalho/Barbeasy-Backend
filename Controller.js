@@ -26,6 +26,7 @@ const app = express();
 // Configurar a confiança no proxy
 app.set('trust proxy', 1);
 
+const currentDateTime = new Date();
 //===================== MIDDLEWARE TO CREATE LOGS =====================
 
 morgan.token('remote-addr', function(req) {// Defina o formato personalizado para o Morgan
@@ -37,7 +38,6 @@ morgan.token('user-agent', function(req) {
   const ua = parser.setUA(req.headers['user-agent']).getResult();
   return `${ua.browser.name} ${ua.browser.version}`;
 });
-
 
 morgan.token('body', function(req) {// Adicione um token personalizado para o corpo da requisição
   return JSON.stringify(req.body);
@@ -591,8 +591,10 @@ app.put('/api/v1/updateBannersImages', UseBarbeariaAuthenticateJWT, upload.array
     // Itera sobre os arquivos enviados
     for (let i = 0; i < imagesBanners.length; i++) {
       const file = imagesBanners[i].originalname;
-      //barbeariaId_1_banner_1_2024 0611_200314.jpg
-
+      
+      console.log(file)
+      console.log(`barbeariaId_${barbeariaId}_banner_${i}_${currentDateTime.getFullYear()}${(currentDateTime.getMonth() + 1).toString().padStart(2, '0')}${currentDateTime.getDate().toString().padStart(2, '0')}_`)
+      
       // Obtém a extensão do arquivo original
       const fileExtension = file ? file.split('.').pop() : '';
 
