@@ -591,10 +591,17 @@ app.put('/api/v1/updateBannersImages', UseBarbeariaAuthenticateJWT, upload.array
     // Itera sobre os arquivos enviados
     for (let i = 0; i < imagesBanners.length; i++) {
       const file = imagesBanners[i].originalname;
+
+      const nameImgaSubstring = file.substring(0, 30)
+      const formatNameBanner = `barbeariaId_${barbeariaId}_banner_${i+1}_${currentDateTime.getFullYear()}${(currentDateTime.getMonth() + 1).toString().padStart(2, '0')}${currentDateTime.getDate().toString().padStart(2, '0')}_`
       
-      console.log(file)
-      console.log(`barbeariaId_${barbeariaId}_banner_${i}_${currentDateTime.getFullYear()}${(currentDateTime.getMonth() + 1).toString().padStart(2, '0')}${currentDateTime.getDate().toString().padStart(2, '0')}_`)
+      console.log(nameImgaSubstring)
+      console.log(formatNameBanner)
       
+      if(nameImgaSubstring != formatNameBanner){
+        console.error('Error to update image')
+        return res.status(400).json({ error: 'name are not allowed'});
+      }
       // Obtém a extensão do arquivo original
       const fileExtension = file ? file.split('.').pop() : '';
 
