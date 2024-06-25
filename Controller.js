@@ -620,11 +620,13 @@ app.put('/api/v1/updateBannersImages', UseBarbeariaAuthenticateJWT, upload.array
     }
 
   const currentBannerImg = "SELECT banners FROM barbearia WHERE id = ? AND senha = ?";
+  
   db.query(currentBannerImg, [barbeariaId[0], confirmPassword[0]], (currentErr, currentResult) =>{
     if(currentErr){
       console.error('Erro ao buscar o nome das imagens banners no banco de dados:', currentErr);
       return res.status(500).json({ error: 'Internal Server Error' });
     }
+    console.log(barbeariaId[0], confirmPassword[0])
     if(currentResult.length > 0) {
       const bannerImagesName = currentResult[0].banners;
       const bannerImagesArray = bannerImagesName.split(',');
@@ -688,7 +690,7 @@ app.put('/api/v1/updateBannersImages', UseBarbeariaAuthenticateJWT, upload.array
         })
       }
     }else{
-      res.status(404).json({ Status: 'Falied' });
+      res.status(200).json({ Status: 'Falied' });
     }
   })
 });
