@@ -800,8 +800,9 @@ app.get('/api/v1/nameBarbearia/:barbeariaId', UseBarbeariaAuthenticateJWT, (req,
 });
 
 // Rota para obter atualizar o endereço da barbearia #VERIFIED
-app.put('/api/v1/updateAddress/:barbeariaId', UseBarbeariaAuthenticateJWT, (req, res) => {
-  const barbeariaId = req.params.barbeariaId;
+app.put('/api/v1/updateAddress', UseBarbeariaAuthenticateJWT, (req, res) => {
+  const barbeariaId = req.body.barbeariaId;
+  const confirmPassword = req.body.confirmPassword;
   const street = req.body.street;
   const number = req.body.number;
   const neighborhood = req.body.neighborhood;
@@ -846,8 +847,8 @@ app.put('/api/v1/updateAddress/:barbeariaId', UseBarbeariaAuthenticateJWT, (req,
   // Remova a última vírgula da query
   query = query.slice(0, -1);
 
-  query += ` WHERE id = ?`;
-  values.push(barbeariaId)
+  query += ` WHERE id = ? AND senha = ?`;
+  values.push(barbeariaId, confirmPassword)
 
   db.query(query, values, (err, result) =>{
     if(err){
