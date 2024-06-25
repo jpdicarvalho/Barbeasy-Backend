@@ -923,17 +923,18 @@ app.get('/api/v1/userNameBarbearia/:barbeariaId', UseBarbeariaAuthenticateJWT, (
 });
 
 //Rota para atualizar o email de usuário da barbearia #VERIFIED
-app.put('/api/v1/updateEmailBarbearia/:barbeariaId', UseBarbeariaAuthenticateJWT, (req, res) => {
-  const barbeariaId = req.params.barbeariaId;
-  const newEmail = req.body.NewEmail;
+app.put('/api/v1/updateEmailBarbearia', UseBarbeariaAuthenticateJWT, (req, res) => {
+  const barbeariaId = req.body.barbeariaId;
+  const confirmPassword = req.body.confirmPassword;
+  const newEmail = req.body.newEmail;
 
   // Verifica se newEmail contém apenas letras maiúsculas e minúsculas
   if (!isEmailValided(newEmail) && newEmail.length <= 50) {
     return res.status(400).json({ error: 'Error in values' });
   }
 
-  const sql = "UPDATE barbearia SET email = ? WHERE id = ?";
-  db.query(sql, [newEmail, barbeariaId], (err, result) =>{
+  const sql = "UPDATE barbearia SET email = ? WHERE id = ? AND senha = ?";
+  db.query(sql, [newEmail, barbeariaId, confirmPassword], (err, result) =>{
     if(err){
       console.error("Erro ao atualizar o email de usuário barbearia", err);
       return res.status(500).json({Error: "Internal Server Error"});
