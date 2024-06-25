@@ -941,8 +941,10 @@ app.put('/api/v1/updateEmailBarbearia', UseBarbeariaAuthenticateJWT, (req, res) 
     }else{
       if(result){
         console.log(result)
-        console.log('result[0].changedRows', result[0].changedRows)
-        console.log('result[0].affectedRows', result[0].affectedRows)
+        console.log(result.changedRows)
+        console.log(result.affectedRows)
+        console.log(result[0].changedRows)
+        console.log(result[0].affectedRows)
 
         //return res.status(200).json({Success: "Success"});
       }else{
