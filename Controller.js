@@ -578,6 +578,7 @@ app.get('/api/v1/userImageProfessional', UseBarbeariaAuthenticateJWT, (req, res)
 // Rota para lidar com o upload de imagens de banners #VERIFIED
 app.put('/api/v1/updateBannersImages', UseBarbeariaAuthenticateJWT, upload.array('images'), (req, res) => {
   const barbeariaId = req.body.barbeariaId;
+  const confirmPassword = req.body.confirmPassword;
 
     //Array with allowed extensions
     const allowedExtensions = ['jpg', 'jpeg', 'png'];
@@ -589,17 +590,18 @@ app.put('/api/v1/updateBannersImages', UseBarbeariaAuthenticateJWT, upload.array
       };
     });
 
-    console.log(imagesBanners.length)
-    
+    //check if the image array has up to 5 files
+    if(imagesBanners.length > 5){
+        console.error('Error to update image')
+        return res.status(400).json({ error: 'size are not allowed'});
+    }
+
     // Itera sobre os arquivos enviados
     for (let i = 0; i < imagesBanners.length; i++) {
       const file = imagesBanners[i].originalname;
       
       const nameImgaSubstring = file.substring(0, 32)
-      const formatNameBanner = `barbeariaId_${barbeariaId[0]}_banner_${i+1}_${currentDateTime.getFullYear()}${(currentDateTime.getMonth() + 1).toString().padStart(2, '0')}${currentDateTime.getDate().toString().padStart(2, '0')}_`
-      
-      console.log('nameImgaSubstring', nameImgaSubstring)
-      console.log('formatNameBanner', formatNameBanner)
+      const formatNameBanner = `barbeariaId_${barbeariaId[0]}_banner_${i+1}_${currentDateTime.getFullYear()}${(currentDateTime.getMonth() + 1).toString().padStart(2, '0')}${currentDateTime.getDate().toString().padStart(2, '0')}_`;
 
       //verify if pre-fix name is valided
       if(nameImgaSubstring != formatNameBanner){
@@ -617,7 +619,7 @@ app.put('/api/v1/updateBannersImages', UseBarbeariaAuthenticateJWT, upload.array
       }
     }
 
-  const currentBannerImg = "SELECT banners FROM barbearia WHERE id IN (?)";
+  const currentBannerImg = "SELECT banners FROM barbearia WHERE id IN (?) AND ";
   db.query(currentBannerImg, [barbeariaId], (currentErr, currentResult) =>{
     if(currentErr){
       console.error('Erro ao buscar o nome das imagens banners no banco de dados:', currentErr);
