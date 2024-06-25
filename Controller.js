@@ -619,8 +619,8 @@ app.put('/api/v1/updateBannersImages', UseBarbeariaAuthenticateJWT, upload.array
       }
     }
 
-  const currentBannerImg = "SELECT banners FROM barbearia WHERE id IN (?) AND ";
-  db.query(currentBannerImg, [barbeariaId], (currentErr, currentResult) =>{
+  const currentBannerImg = "SELECT banners FROM barbearia WHERE id = ? AND senha = ?";
+  db.query(currentBannerImg, [barbeariaId[0], confirmPassword[0]], (currentErr, currentResult) =>{
     if(currentErr){
       console.error('Erro ao buscar o nome das imagens banners no banco de dados:', currentErr);
       return res.status(500).json({ error: 'Internal Server Error' });
@@ -675,8 +675,8 @@ app.put('/api/v1/updateBannersImages', UseBarbeariaAuthenticateJWT, upload.array
             const bannerImagesNameString = bannerImagesName.join(','); 
 
             //Atualizando o nome das imagens banner no BD MySQL
-            const sql = "UPDATE barbearia SET banner_main = ?, banners = ? WHERE id IN (?)";
-            db.query(sql, [bannerMain, bannerImagesNameString, barbeariaId], (err, result) => {
+            const sql = "UPDATE barbearia SET banner_main = ?, banners = ? WHERE id = ?";
+            db.query(sql, [bannerMain, bannerImagesNameString, barbeariaId[0]], (err, result) => {
               if (err) {
                 console.error('Erro ao atualizar o nome das imagens no banco de dados:', err);
                 return res.status(500).json({ error: 'Internal Server Error' });
@@ -687,6 +687,8 @@ app.put('/api/v1/updateBannersImages', UseBarbeariaAuthenticateJWT, upload.array
           res.status(200).json({ Status: 'Success' });
         })
       }
+    }else{
+      res.status(404).json({ Status: 'Falied' });
     }
   })
 });
