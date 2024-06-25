@@ -601,7 +601,7 @@ app.put('/api/v1/updateBannersImages', UseBarbeariaAuthenticateJWT, upload.array
       const file = imagesBanners[i].originalname;
       
       const nameImgaSubstring = file.substring(0, 32)
-      const formatNameBanner = `barbeariaId_${barbeariaId[0]}_banner_${i+1}_${currentDateTime.getFullYear()}${(currentDateTime.getMonth() + 1).toString().padStart(2, '0')}${currentDateTime.getDate().toString().padStart(2, '0')}_`;
+      const formatNameBanner = `barbeariaId_${barbeariaId}_banner_${i+1}_${currentDateTime.getFullYear()}${(currentDateTime.getMonth() + 1).toString().padStart(2, '0')}${currentDateTime.getDate().toString().padStart(2, '0')}_`;
 
       //verify if pre-fix name is valided
       if(nameImgaSubstring != formatNameBanner){
@@ -621,12 +621,12 @@ app.put('/api/v1/updateBannersImages', UseBarbeariaAuthenticateJWT, upload.array
 
   const currentBannerImg = "SELECT banners FROM barbearia WHERE id = ? AND senha = ?";
   
-  db.query(currentBannerImg, [barbeariaId[0], confirmPassword[0]], (currentErr, currentResult) =>{
+  db.query(currentBannerImg, [barbeariaId, confirmPassword], (currentErr, currentResult) =>{
     if(currentErr){
       console.error('Erro ao buscar o nome das imagens banners no banco de dados:', currentErr);
       return res.status(500).json({ error: 'Internal Server Error' });
     }
-    console.log(barbeariaId[0], confirmPassword[0])
+    console.log(barbeariaId, confirmPassword)
     if(currentResult.length > 0) {
       const bannerImagesName = currentResult[0].banners;
       const bannerImagesArray = bannerImagesName.split(',');
@@ -678,7 +678,7 @@ app.put('/api/v1/updateBannersImages', UseBarbeariaAuthenticateJWT, upload.array
 
             //Atualizando o nome das imagens banner no BD MySQL
             const sql = "UPDATE barbearia SET banner_main = ?, banners = ? WHERE id = ?";
-            db.query(sql, [bannerMain, bannerImagesNameString, barbeariaId[0]], (err, result) => {
+            db.query(sql, [bannerMain, bannerImagesNameString, barbeariaId], (err, result) => {
               if (err) {
                 console.error('Erro ao atualizar o nome das imagens no banco de dados:', err);
                 return res.status(500).json({ error: 'Internal Server Error' });
