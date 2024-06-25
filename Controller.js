@@ -941,6 +941,8 @@ app.put('/api/v1/updateEmailBarbearia', UseBarbeariaAuthenticateJWT, (req, res) 
     }else{
       if(result){
         return res.status(200).json({Success: "Success"});
+      }else{
+        return res.status(400).json({Success: "Falied"});
       }
     }
   })
