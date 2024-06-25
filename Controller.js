@@ -940,6 +940,7 @@ app.put('/api/v1/updateEmailBarbearia', UseBarbeariaAuthenticateJWT, (req, res) 
       return res.status(500).json({Error: "Internal Server Error"});
     }else{
       if(result){
+        console.log(result)
         return res.status(200).json({Success: "Success"});
       }else{
         return res.status(400).json({Success: "Falied"});
