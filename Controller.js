@@ -757,17 +757,19 @@ app.get('/api/v1/statusBarbearia/:barbeariaId', UseBarbeariaAuthenticateJWT, (re
 });
 
 //Rota para atualizar o nome da barbearia #VERIFIED
-app.put('/api/v1/updateBarbeariaName/:barbeariaId', UseBarbeariaAuthenticateJWT, (req, res) => {
-  const barbeariaId = req.params.barbeariaId;
+app.put('/api/v1/updateBarbeariaName', UseBarbeariaAuthenticateJWT, (req, res) => {
+  const barbeariaId = req.body.barbeariaId;
   const newNameBarbearia = req.body.novoNome;
+  const confirmPassword = req.body.confirmPassword;
+
 
   // Verifica se name contém apenas letras maiúsculas e minúsculas
   if (!isSignUpBarbeariaValid(newNameBarbearia) && newNameBarbearia.length <= 30) {
     return res.status(400).json({ error: 'Error in values' });
   }
 
-  const sql = "UPDATE barbearia SET name = ? WHERE id = ?";
-  db.query(sql, [newNameBarbearia, barbeariaId], (err, result) =>{
+  const sql = "UPDATE barbearia SET name = ? WHERE id = ? AND senha = ?";
+  db.query(sql, [newNameBarbearia, barbeariaId, confirmPassword], (err, result) =>{
     if(err){
       console.error("Erro ao atualizar o nome da barbearia", err);
       return res.status(500).json({Error: "Internal Server Error"});
