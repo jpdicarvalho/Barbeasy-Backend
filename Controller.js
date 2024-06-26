@@ -774,8 +774,10 @@ app.put('/api/v1/updateBarbeariaName', UseBarbeariaAuthenticateJWT, (req, res) =
       console.error("Erro ao atualizar o nome da barbearia", err);
       return res.status(500).json({Error: "Internal Server Error"});
     }else{
-      if(result) {
+      if(result.changedRows.length > 0) {
         return res.status(200).json({Success: "Success"});
+      }else{
+        return res.status(200).json({Success: "Falied"});
       }
     }
   })
@@ -855,8 +857,10 @@ app.put('/api/v1/updateAddress', UseBarbeariaAuthenticateJWT, (req, res) => {
       console.error("Erro ao atualizar o endereço da barbearia", err);
       return res.status(500).json({Error: "Internal Server Error"});
     } else {
-      if(result) {
+      if(result.changedRows.length > 0) {
         return res.status(200).json({ Success: "Success" });
+      }else{
+        return res.status(200).json({ Success: "Falied" });
       }
     }
   });
@@ -897,8 +901,10 @@ app.put('/api/v1/updateUserNameBarbearia', UseBarbeariaAuthenticateJWT, (req, re
       console.error("Erro ao atualizar o nome de usuário da barbearia", err);
       return res.status(500).json({ Error: "Internal Server Error" });
     } else {
-      if(result) {
+      if(result.changedRows.length > 0) {
         return res.status(200).json({ Success: "Success" });
+      }else{
+        return res.status(200).json({ Success: "Falied" });
       }
     }
   })
@@ -939,16 +945,10 @@ app.put('/api/v1/updateEmailBarbearia', UseBarbeariaAuthenticateJWT, (req, res) 
       console.error("Erro ao atualizar o email de usuário barbearia", err);
       return res.status(500).json({Error: "Internal Server Error"});
     }else{
-      if(result){
-        console.log(result)
-        console.log(result.changedRows)
-        console.log(result.affectedRows)
-        console.log(result[0].changedRows)
-        console.log(result[0].affectedRows)
-
-        //return res.status(200).json({Success: "Success"});
+      if(result.changedRows.length > 0){
+        return res.status(200).json({Success: "Success"});
       }else{
-        return res.status(400).json({Success: "Falied"});
+        return res.status(200).json({Success: "Falied"});
       }
     }
   })
