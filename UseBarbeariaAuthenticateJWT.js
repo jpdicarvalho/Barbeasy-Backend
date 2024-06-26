@@ -2,9 +2,11 @@ import jwt  from 'jsonwebtoken';
 
 import 'dotenv/config'
 
-const SECRET_KEY = process.env.TOKEN_SECRET_WORD_OF_USER_BARBEARIA;
+const SECRET_TOKEN_BARBEARIA = process.env.TOKEN_SECRET_WORD_OF_USER_BARBEARIA;
+const SECRET_TOKEN_USER_CLIENT = process.env.TOKEN_SECRET_WORD_OF_USER_CLIENT;
 
-if (!SECRET_KEY) {
+
+if (!SECRET_TOKEN_BARBEARIA) {
     throw new Error('TOKEN_SECRET is not defined in environment variables.');
   }
   
@@ -14,11 +16,18 @@ if (!SECRET_KEY) {
     if (authHeader) {
       const token = authHeader.split(' ')[1];
   
-      jwt.verify(token, SECRET_KEY, (err, user) => {
+      jwt.verify(token, SECRET_TOKEN_BARBEARIA, (err, user) => {
         if (err) {
-          return res.status(403).json({ message: 'Forbidden: Invalid token' });
+          jwt.verify(token, SECRET_TOKEN_USER_CLIENT, (erro, userClient) => {
+            if(erro){
+              return res.status(403).json({ message: 'Forbidden: Invalid token' });
+            }
+          req.userClient = userClient;
+          next();
+          })
+          
         }
-  
+          
         req.user = user;
         next();
       });
