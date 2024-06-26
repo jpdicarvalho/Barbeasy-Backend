@@ -857,9 +857,8 @@ app.put('/api/v1/updateAddress', UseBarbeariaAuthenticateJWT, (req, res) => {
       console.error("Erro ao atualizar o endereço da barbearia", err);
       return res.status(500).json({Error: "Internal Server Error"});
     } else {
-      if(result) {
-        console.log(result)
-        //return res.status(200).json({ Success: "Success" });
+      if(result.changedRows === 1) {
+        return res.status(200).json({ Success: "Success" });
       }else{
         return res.status(200).json({ Success: "Falied" });
       }
