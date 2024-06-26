@@ -455,7 +455,7 @@ app.get('/api/v1/SignInProfessional/:email/:senha', async (req, res) => {
     if (result.length > 0) {
       const professional = result[0];
       // Criação do token
-      const token = jwt.sign({ professionalId: professional.id, professionalEmail: professional.email }, process.env.TOKEN_SECRET_WORD_OF_USER_PROFESSIONAL, { expiresIn: "3h" });
+      const token = jwt.sign({ professionalId: professional.id, professionalEmail: professional.email }, process.env.TOKEN_SECRET_WORD_OF_USER_BARBEARIA, { expiresIn: "3h" });
       // Envie o token no corpo da resposta
       return res.status(200).json({Success: 'Success', token: token, professional: result });
       
