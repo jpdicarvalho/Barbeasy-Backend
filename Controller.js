@@ -945,7 +945,7 @@ app.put('/api/v1/updateEmailBarbearia', UseBarbeariaAuthenticateJWT, (req, res) 
       console.error("Erro ao atualizar o email de usuário barbearia", err);
       return res.status(500).json({Error: "Internal Server Error"});
     }else{
-      if(result.changedRows.length === 1){
+      if(result.changedRows === 1){
         return res.status(200).json({Success: "Success"});
       }else{
         return res.status(200).json({Success: "Falied"});
