@@ -943,7 +943,7 @@ app.get('/api/v1/getContactProfessional/:professionalId', AuthenticateJWT, (req,
       }
     }
   })
-});
+})
 
 //Rota para atualizar o email de usuário da barbearia #VERIFIED
 app.put('/api/v1/updateEmailBarbearia', AuthenticateJWT, (req, res) => {
