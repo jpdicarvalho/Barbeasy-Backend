@@ -970,8 +970,7 @@ app.put('/api/v1/updateDataProfessional', AuthenticateJWT, (req, res) => {
 
   query += ` WHERE id = ? AND password = ?`;
   values.push(professionalId, confirmPassword)
-console.log(query)
-console.log(values)
+
   db.query(query, values, (err, result) =>{
     if(err){
       console.error("Erro ao atualizar informações do profissional", err);
