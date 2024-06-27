@@ -12,7 +12,7 @@ if (!SECRET_TOKEN_USER_CLIENT) {
   throw new Error('TOKEN_SECRET_USER_CLIENT is not defined in environment variables.');
 }
 
-const UseBarbeariaAuthenticateJWT = (req, res, next) => {
+const AuthenticateJWT = (req, res, next) => {
   const authHeader = req.headers.authorization;
 
   if (authHeader) {
@@ -37,4 +37,4 @@ const UseBarbeariaAuthenticateJWT = (req, res, next) => {
   }
 };
 
-export default UseBarbeariaAuthenticateJWT;
+export default AuthenticateJWT;

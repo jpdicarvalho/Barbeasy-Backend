@@ -6,7 +6,7 @@ import bodyParser from "body-parser";
 import mysql from "mysql2";
 
 import jwt  from 'jsonwebtoken';
-import UseBarbeariaAuthenticateJWT from './UseBarbeariaAuthenticateJWT.js'
+import AuthenticateJWT from './AuthenticateJWT.js'
 import UseClientAuthenticateJWT from './UseClientAuthenticateJWT.js';
 import MercadoPago from "mercadopago";
 
@@ -467,7 +467,7 @@ app.get('/api/v1/SignInProfessional/:email/:senha', async (req, res) => {
 });
 
 //Route to Auth action change data of user barbearia #VERIFIED
-app.get('/api/v1/AuthToUpdateData/', UseBarbeariaAuthenticateJWT, (req, res) =>{
+app.get('/api/v1/AuthToUpdateData/', AuthenticateJWT, (req, res) =>{
   const barbeariaId = req.query.barbeariaId;
   const password = req.query.password;
 
@@ -492,7 +492,7 @@ app.get('/api/v1/AuthToUpdateData/', UseBarbeariaAuthenticateJWT, (req, res) =>{
 });
 
 //Upload de Imagem do Usuário Barbearia, na AWS S3  #VERIFIED
-app.put('/api/v1/updateUserImageProfessional', UseBarbeariaAuthenticateJWT, upload.single('image'), (req, res) => {
+app.put('/api/v1/updateUserImageProfessional', AuthenticateJWT, upload.single('image'), (req, res) => {
   const professionalId = req.body.professionalId;
   const newImageUser = req.file.originalname;
 
@@ -558,7 +558,7 @@ app.put('/api/v1/updateUserImageProfessional', UseBarbeariaAuthenticateJWT, uplo
 });
 
 //Rota para obter a imagem de usuário #VERIFIED
-app.get('/api/v1/userImageProfessional', UseBarbeariaAuthenticateJWT, (req, res) =>{
+app.get('/api/v1/userImageProfessional', AuthenticateJWT, (req, res) =>{
   const professionalId = req.query.professionalId; 
 
   const sql = "SELECT user_image from professional WHERE id = ?";
@@ -576,7 +576,7 @@ app.get('/api/v1/userImageProfessional', UseBarbeariaAuthenticateJWT, (req, res)
 });
 
 // Rota para lidar com o upload de imagens de banners #VERIFIED
-app.put('/api/v1/updateBannersImages', UseBarbeariaAuthenticateJWT, upload.array('images'), (req, res) => {
+app.put('/api/v1/updateBannersImages', AuthenticateJWT, upload.array('images'), (req, res) => {
   const barbeariaId = req.body.barbeariaId;
   const confirmPassword = req.body.confirmPassword;
 
@@ -696,7 +696,7 @@ app.put('/api/v1/updateBannersImages', UseBarbeariaAuthenticateJWT, upload.array
 });
 
 //Rota para obter as imagens para o banner #VERIFIED
-app.get('/api/v1/bannerImages', UseBarbeariaAuthenticateJWT, (req, res) => {
+app.get('/api/v1/bannerImages', AuthenticateJWT, (req, res) => {
   const barbeariaId = req.query.barbeariaId;
 
   const sql = "SELECT banners FROM barbearia WHERE id = ?";
@@ -721,7 +721,7 @@ app.get('/api/v1/bannerImages', UseBarbeariaAuthenticateJWT, (req, res) => {
 });
 
 //Rota para atualizar o status da barbearia 'Aberta' ou 'Fechada' #VERIFIED
-app.put('/api/v1/updateStatus/:barbeariaId', UseBarbeariaAuthenticateJWT, (req, res) =>{
+app.put('/api/v1/updateStatus/:barbeariaId', AuthenticateJWT, (req, res) =>{
   const barbeariaId = req.params.barbeariaId;
   const status = req.body.Status === 'Aberta' ? 'Fechada': 'Aberta';
 
@@ -739,7 +739,7 @@ app.put('/api/v1/updateStatus/:barbeariaId', UseBarbeariaAuthenticateJWT, (req, 
 });
 
 //Rota para obter o status da barbearia #VERIFIED
-app.get('/api/v1/statusBarbearia/:barbeariaId', UseBarbeariaAuthenticateJWT, (req, res) =>{
+app.get('/api/v1/statusBarbearia/:barbeariaId', AuthenticateJWT, (req, res) =>{
   const barbeariaId = req.params.barbeariaId;
   
   const sql = "SELECT status FROM barbearia WHERE id = ?";
@@ -757,7 +757,7 @@ app.get('/api/v1/statusBarbearia/:barbeariaId', UseBarbeariaAuthenticateJWT, (re
 });
 
 //Rota para atualizar o nome da barbearia #VERIFIED
-app.put('/api/v1/updateBarbeariaName', UseBarbeariaAuthenticateJWT, (req, res) => {
+app.put('/api/v1/updateBarbeariaName', AuthenticateJWT, (req, res) => {
   const barbeariaId = req.body.barbeariaId;
   const newNameBarbearia = req.body.novoNome;
   const confirmPassword = req.body.confirmPassword;
@@ -784,7 +784,7 @@ app.put('/api/v1/updateBarbeariaName', UseBarbeariaAuthenticateJWT, (req, res) =
 });
 
 //Rota para obter o nome da barbearia #VERIFIED
-app.get('/api/v1/nameBarbearia/:barbeariaId', UseBarbeariaAuthenticateJWT, (req, res) => {
+app.get('/api/v1/nameBarbearia/:barbeariaId', AuthenticateJWT, (req, res) => {
   const barbeariaId = req.params.barbeariaId;
 
   const sql = "SELECT name FROM barbearia WHERE id = ?";
@@ -802,7 +802,7 @@ app.get('/api/v1/nameBarbearia/:barbeariaId', UseBarbeariaAuthenticateJWT, (req,
 });
 
 // Rota para obter atualizar o endereço da barbearia #VERIFIED
-app.put('/api/v1/updateAddress', UseBarbeariaAuthenticateJWT, (req, res) => {
+app.put('/api/v1/updateAddress', AuthenticateJWT, (req, res) => {
   const barbeariaId = req.body.barbeariaId;
   const confirmPassword = req.body.confirmPassword;
   const street = req.body.street;
@@ -867,7 +867,7 @@ app.put('/api/v1/updateAddress', UseBarbeariaAuthenticateJWT, (req, res) => {
 });
 
 //Rota para obter o endereço da barbearia #VERIFIED
-app.get('/api/v1/address/:barbeariaId', UseBarbeariaAuthenticateJWT, (req, res) => {
+app.get('/api/v1/address/:barbeariaId', AuthenticateJWT, (req, res) => {
   const barbeariaId = req.params.barbeariaId;
 
   const sql = "SELECT rua, N, bairro, cidade FROM barbearia WHERE id = ?";
@@ -884,7 +884,7 @@ app.get('/api/v1/address/:barbeariaId', UseBarbeariaAuthenticateJWT, (req, res) 
 });
 
 //Route to update user name barbearia #VERIFIED
-app.put('/api/v1/updateUserNameBarbearia', UseBarbeariaAuthenticateJWT, (req, res) => {
+app.put('/api/v1/updateUserNameBarbearia', AuthenticateJWT, (req, res) => {
   const barbeariaId = req.body.barbeariaId;
   const newUserName = req.body.newUserName;
   const confirmPassword = req.body.confirmPassword;
@@ -911,7 +911,7 @@ app.put('/api/v1/updateUserNameBarbearia', UseBarbeariaAuthenticateJWT, (req, re
 });
 
 //Rota para obter o nome de usuário da barbearia #VERIFIED
-app.get('/api/v1/userNameBarbearia/:barbeariaId', UseBarbeariaAuthenticateJWT, (req, res) => {
+app.get('/api/v1/userNameBarbearia/:barbeariaId', AuthenticateJWT, (req, res) => {
   const barbeariaId = req.params.barbeariaId;
   
   const sql = "SELECT usuario FROM barbearia WHERE id = ?";
@@ -928,8 +928,25 @@ app.get('/api/v1/userNameBarbearia/:barbeariaId', UseBarbeariaAuthenticateJWT, (
   })
 });
 
+//Route to get user name of professional #VERIFIED
+app.get('/api/v1/getContactProfessional/:professionalId', AuthenticateJWT, (req, res) => {
+  const professionalId = req.params.professionalId;
+  
+  const sql = "SELECT name, email, cell_phone FROM professional WHERE id = ?";
+  db.query(sql, [professionalId], (err, result) => {
+    if(err) {
+      console.error("Erro ao buscar os dados dos do professional", err);
+      return res.status(500).json({Error: "Internal Server Error"});
+    }else{
+      if(result.length > 0) {
+        return res.status(200).json({ data_professional: result});
+      }
+    }
+  })
+});
+
 //Rota para atualizar o email de usuário da barbearia #VERIFIED
-app.put('/api/v1/updateEmailBarbearia', UseBarbeariaAuthenticateJWT, (req, res) => {
+app.put('/api/v1/updateEmailBarbearia', AuthenticateJWT, (req, res) => {
   const barbeariaId = req.body.barbeariaId;
   const confirmPassword = req.body.confirmPassword;
   const newEmail = req.body.newEmail;
@@ -955,7 +972,7 @@ app.put('/api/v1/updateEmailBarbearia', UseBarbeariaAuthenticateJWT, (req, res) 
 });
 
 //Rota para obter o email de usuário da barbearia #VERIFIED
-app.get('/api/v1/emailBarbearia/:barbeariaId', UseBarbeariaAuthenticateJWT, (req, res) => {
+app.get('/api/v1/emailBarbearia/:barbeariaId', AuthenticateJWT, (req, res) => {
   const barbeariaId = req.params.barbeariaId;
 
   const sql = "SELECT email FROM barbearia WHERE id = ?";
@@ -973,7 +990,7 @@ app.get('/api/v1/emailBarbearia/:barbeariaId', UseBarbeariaAuthenticateJWT, (req
 });
 
 //Rota para atualizar a senha de usuário da barbearia
-app.get('/api/v1/updatePasswordBarbearia', UseBarbeariaAuthenticateJWT, (req, res) => {
+app.get('/api/v1/updatePasswordBarbearia', AuthenticateJWT, (req, res) => {
   const barbeariaId = req.query.barbeariaId;
   const passwordConfirm = req.query.passwordConfirm;
   const newPassword = req.query.newPassword;
@@ -1010,7 +1027,7 @@ app.get('/api/v1/updatePasswordBarbearia', UseBarbeariaAuthenticateJWT, (req, re
 });
 
 //Route to update the 'agenda' of professional
-app.put('/api/v1/updateAgenda/:barbeariaId/:professionalId', UseBarbeariaAuthenticateJWT, (req, res) => {
+app.put('/api/v1/updateAgenda/:barbeariaId/:professionalId', AuthenticateJWT, (req, res) => {
   //Obtendo as variáveis enviadas
   const barbeariaId = req.params.barbeariaId;
   const professionalId = req.params.professionalId;
@@ -1061,7 +1078,7 @@ app.put('/api/v1/updateAgenda/:barbeariaId/:professionalId', UseBarbeariaAuthent
 });
 
 //Route to get professional 'agenda' of especific barbearia
-app.get('/api/v1/agenda/:barbeariaId/:professionalId', UseBarbeariaAuthenticateJWT, (req, res) => {
+app.get('/api/v1/agenda/:barbeariaId/:professionalId', AuthenticateJWT, (req, res) => {
   const barbeariaId = req.params.barbeariaId;
   const professionalId = req.params.professionalId;
 
@@ -1084,7 +1101,7 @@ app.get('/api/v1/agenda/:barbeariaId/:professionalId', UseBarbeariaAuthenticateJ
 });
 
 //Route to get all professional's agenda
-app.get('/api/v1/allProfessionalAgenda/:barbeariaId/:professionalId', UseBarbeariaAuthenticateJWT, (req, res) => {
+app.get('/api/v1/allProfessionalAgenda/:barbeariaId/:professionalId', AuthenticateJWT, (req, res) => {
   const barbeariaId = req.params.barbeariaId;
   const professionalId = req.params.professionalId;
 
@@ -1128,7 +1145,7 @@ app.get('/api/v1/allProfessionalAgenda/:barbeariaId/:professionalId', UseBarbear
 });
 
 // Routa to save times of day selected of professional
-app.put('/api/v1/updateAgendaDiaSelecionado/:barbeariaId/:professionalId', UseBarbeariaAuthenticateJWT, (req, res) => {
+app.put('/api/v1/updateAgendaDiaSelecionado/:barbeariaId/:professionalId', AuthenticateJWT, (req, res) => {
   const barbeariaId = req.params.barbeariaId;
   const professionalId = req.params.professionalId;
 
@@ -1172,7 +1189,7 @@ app.put('/api/v1/updateAgendaDiaSelecionado/:barbeariaId/:professionalId', UseBa
 });
 
 //Rota para obter os horarios definidos para cada dia em específico
-app.get('/api/v1/agendaDiaSelecionado/:barbeariaId/:professionalId', UseBarbeariaAuthenticateJWT, (req, res) =>{
+app.get('/api/v1/agendaDiaSelecionado/:barbeariaId/:professionalId', AuthenticateJWT, (req, res) =>{
   const barbeariaId = req.params.barbeariaId;
   const professionalId = req.params.professionalId;
 
@@ -1202,7 +1219,7 @@ app.get('/api/v1/agendaDiaSelecionado/:barbeariaId/:professionalId', UseBarbeari
 });
 
 //Rota para salvar a genda de horários para todos os dias definidos
-app.put('/api/v1/updateHorariosTodosOsDias/:barbeariaId/:professionalId', UseBarbeariaAuthenticateJWT, (req, res) => {
+app.put('/api/v1/updateHorariosTodosOsDias/:barbeariaId/:professionalId', AuthenticateJWT, (req, res) => {
   const barbeariaId = req.params.barbeariaId;
   const professionalId = req.params.professionalId;
 
@@ -1241,7 +1258,7 @@ app.put('/api/v1/updateHorariosTodosOsDias/:barbeariaId/:professionalId', UseBar
 
 });
 
-app.put('/api/v1/clearTimes/:barbeariaId/:professionalId', UseBarbeariaAuthenticateJWT, (req, res) =>{
+app.put('/api/v1/clearTimes/:barbeariaId/:professionalId', AuthenticateJWT, (req, res) =>{
   const barbeariaId = req.params.barbeariaId;
   const professionalId = req.params.professionalId;
   const daySelected = req.body.daySelected;
@@ -1268,7 +1285,7 @@ app.put('/api/v1/clearTimes/:barbeariaId/:professionalId', UseBarbeariaAuthentic
 });
 
 //Rota para cadastrar um novo serviço
-app.post('/api/v1/addService/:barbeariaId/:professionalId', UseBarbeariaAuthenticateJWT, (req, res) => {
+app.post('/api/v1/addService/:barbeariaId/:professionalId', AuthenticateJWT, (req, res) => {
   const barbearia_id = req.params.barbeariaId;
   const professional_id = req.params.professionalId;
 
@@ -1317,7 +1334,7 @@ app.post('/api/v1/addService/:barbeariaId/:professionalId', UseBarbeariaAuthenti
 })
 
 //Rota obter os serviços cadastrados
-app.get('/api/v1/getService/:barbeariaId/:professionalId', UseBarbeariaAuthenticateJWT, (req, res) =>{
+app.get('/api/v1/getService/:barbeariaId/:professionalId', AuthenticateJWT, (req, res) =>{
   const barbeariaId = req.params.barbeariaId;
   const professionalId = req.params.professionalId;
 
@@ -1336,7 +1353,7 @@ app.get('/api/v1/getService/:barbeariaId/:professionalId', UseBarbeariaAuthentic
 });
 
 // Rota para atualizar informações de um serviço cadastrado
-app.put('/api/v1/updateService/:barbeariaId/:professionalId', UseBarbeariaAuthenticateJWT, (req, res) => {
+app.put('/api/v1/updateService/:barbeariaId/:professionalId', AuthenticateJWT, (req, res) => {
   const barbeariaId = req.params.barbeariaId;
   const professionalId = req.params.professionalId;
 
@@ -1385,7 +1402,7 @@ app.put('/api/v1/updateService/:barbeariaId/:professionalId', UseBarbeariaAuthen
 });
 
 // Rota para deletar um serviço específico
-app.delete('/api/v1/deleteService/:barbeariaId/:professionalId/:servicoId', UseBarbeariaAuthenticateJWT, (req, res) => {
+app.delete('/api/v1/deleteService/:barbeariaId/:professionalId/:servicoId', AuthenticateJWT, (req, res) => {
   const barbeariaId = req.params.barbeariaId;
   const professionalId = req.params.professionalId;
   const servicoId = req.params.servicoId;
@@ -1403,7 +1420,7 @@ app.delete('/api/v1/deleteService/:barbeariaId/:professionalId/:servicoId', UseB
 });
 
 //Route to create link between barbearia and professional
-app.post('/api/v1/sendNotificationToProfe', UseBarbeariaAuthenticateJWT, (req, res) =>{
+app.post('/api/v1/sendNotificationToProfe', AuthenticateJWT, (req, res) =>{
   
   //get all params send from front-end
   const barbeariaId = req.body.barbeariaId;
@@ -1423,7 +1440,7 @@ app.post('/api/v1/sendNotificationToProfe', UseBarbeariaAuthenticateJWT, (req, r
 });
 
 //Route to get all link requests for a specific barbershop
-app.get('/api/v1/notificationToBarb/:barbeariaId/:professional_id', UseBarbeariaAuthenticateJWT, (req, res) =>{
+app.get('/api/v1/notificationToBarb/:barbeariaId/:professional_id', AuthenticateJWT, (req, res) =>{
   const barbeariaId = req.params.barbeariaId;
   const professionalId = req.params.professional_id;
 
@@ -1443,7 +1460,7 @@ app.get('/api/v1/notificationToBarb/:barbeariaId/:professional_id', UseBarbearia
 })
 
 //Route to get all link requests for a specific professional  
-app.get('/api/v1/notificationToProfe/:professional_id', UseBarbeariaAuthenticateJWT, (req, res) =>{
+app.get('/api/v1/notificationToProfe/:professional_id', AuthenticateJWT, (req, res) =>{
   const professionalId = req.params.professional_id;
 
   const sql=`SELECT notificationProfessional.barbearia_id AS barbeariaId,
@@ -1472,7 +1489,7 @@ app.get('/api/v1/notificationToProfe/:professional_id', UseBarbeariaAuthenticate
 })
 
 //Route to create a new professional
-app.post('/api/v1/createProfessional', UseBarbeariaAuthenticateJWT, (req, res) => {
+app.post('/api/v1/createProfessional', AuthenticateJWT, (req, res) => {
   
   const barbeariaId = req.body.barbeariaId;
   const newNameProfessional = req.body.newNameProfessional;
@@ -1546,7 +1563,7 @@ app.post('/api/v1/createProfessional', UseBarbeariaAuthenticateJWT, (req, res) =
 });
 
 //Route to accept notification
-app.post('/api/v1/acceptNotification', UseBarbeariaAuthenticateJWT, (req, res) => {
+app.post('/api/v1/acceptNotification', AuthenticateJWT, (req, res) => {
     const barbeariaId = req.body.barbeariaId;
     const professionalId = req.body.professionalId;
     const sql="INSERT INTO Barb_Professional (barbearia_id, professional_id) VALUES (?, ?)"
@@ -1572,7 +1589,7 @@ app.post('/api/v1/acceptNotification', UseBarbeariaAuthenticateJWT, (req, res) =
 })
 
 //Rota para obter os profissionais da barbearia em específico
-app.get('/api/v1/listProfessionalToBarbearia/:barbeariaId', UseBarbeariaAuthenticateJWT, (req, res) => {
+app.get('/api/v1/listProfessionalToBarbearia/:barbeariaId', AuthenticateJWT, (req, res) => {
   const barbeariaId = req.params.barbeariaId;
 
   const sql=`SELECT professional.id,
@@ -1596,7 +1613,7 @@ app.get('/api/v1/listProfessionalToBarbearia/:barbeariaId', UseBarbeariaAuthenti
 });
 
 //Route to gell especific barbshop to professional
-app.get('/api/v1/listBarbeariaToProfessional/:professionalId', UseBarbeariaAuthenticateJWT, (req, res) => {
+app.get('/api/v1/listBarbeariaToProfessional/:professionalId', AuthenticateJWT, (req, res) => {
   const professionalId = req.params.professionalId;
 
   const sql=`SELECT barbearia_id AS barbeariaId,
@@ -1618,7 +1635,7 @@ app.get('/api/v1/listBarbeariaToProfessional/:professionalId', UseBarbeariaAuthe
 });
 
 //Route to get all professional
-app.get('/api/v1/listProfessional/:searchProfessional', UseBarbeariaAuthenticateJWT, (req, res) => {
+app.get('/api/v1/listProfessional/:searchProfessional', AuthenticateJWT, (req, res) => {
   const searchProfessional = req.params.searchProfessional;
 
   const sql = "SELECT id, name, user_image, cell_phone, email FROM professional WHERE name = ?";
@@ -1637,7 +1654,7 @@ app.get('/api/v1/listProfessional/:searchProfessional', UseBarbeariaAuthenticate
 });
 
 //Rota obter os serviços cadastrados
-app.get('/api/v1/listService/:barbeariaId', UseBarbeariaAuthenticateJWT, (req, res) =>{
+app.get('/api/v1/listService/:barbeariaId', AuthenticateJWT, (req, res) =>{
   const barbeariaId = req.params.barbeariaId;
 
   const sql="SELECT * FROM servico WHERE barbearia_id = ?"
@@ -1654,7 +1671,7 @@ app.get('/api/v1/listService/:barbeariaId', UseBarbeariaAuthenticateJWT, (req, r
 });
 
 //Rota para realizar o agendamento
-app.post('/api/v1/createBooking/', UseBarbeariaAuthenticateJWT, (req, res) => {
+app.post('/api/v1/createBooking/', AuthenticateJWT, (req, res) => {
   //Create object to make a toke for booking
   const values = [
     req.body.userId,
@@ -1691,7 +1708,7 @@ app.post('/api/v1/createBooking/', UseBarbeariaAuthenticateJWT, (req, res) => {
 });
 
 // Rota para buscar todos os agendamentos de uma barbearia específica
-app.get('/api/v1/bookingsTimes/:barbeariaId/:professionalId/:selectedDate', UseBarbeariaAuthenticateJWT, (req, res) => {
+app.get('/api/v1/bookingsTimes/:barbeariaId/:professionalId/:selectedDate', AuthenticateJWT, (req, res) => {
   const barbeariaId = req.params.barbeariaId;
   const professionalId = req.params.professionalId;
   const selectedDate = req.params.selectedDate;
@@ -1724,7 +1741,7 @@ app.get('/api/v1/bookingsTimes/:barbeariaId/:professionalId/:selectedDate', UseB
 });
 
 //Route to save days-off
-app.put('/api/v1/updateDayOff/:barbeariaId/:professionalId', UseBarbeariaAuthenticateJWT, (req, res) => {
+app.put('/api/v1/updateDayOff/:barbeariaId/:professionalId', AuthenticateJWT, (req, res) => {
   const barbeariaId = req.params.barbeariaId;
   const professionalId = req.params.professionalId;
   const selectedDay = req.body.selectedDay;
@@ -1763,7 +1780,7 @@ app.put('/api/v1/updateDayOff/:barbeariaId/:professionalId', UseBarbeariaAuthent
 });
 
 //Route to get bookings of barbearia
-app.get('/api/v1/bookings/:barbeariaId/:selectedDate', UseBarbeariaAuthenticateJWT, (req, res) =>{
+app.get('/api/v1/bookings/:barbeariaId/:selectedDate', AuthenticateJWT, (req, res) =>{
   const barbeariaId = req.params.barbeariaId;
   const selectedDate = req.params.selectedDate;
 
@@ -1800,7 +1817,7 @@ app.get('/api/v1/bookings/:barbeariaId/:selectedDate', UseBarbeariaAuthenticateJ
 })
 
 //Route to get bookings of professional
-app.get('/api/v1/professionalBookings/:barbeariaId/:professionalId/:selectedDate', UseBarbeariaAuthenticateJWT, (req, res) =>{
+app.get('/api/v1/professionalBookings/:barbeariaId/:professionalId/:selectedDate', AuthenticateJWT, (req, res) =>{
   const barbeariaId = req.params.barbeariaId;
   const professionalId = req.params.professionalId;
   const selectedDate = req.params.selectedDate;
