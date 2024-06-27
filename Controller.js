@@ -935,15 +935,7 @@ app.put('/api/v1/updateDataProfessional', AuthenticateJWT, (req, res) => {
   const newEmail = req.body.newEmail;
   const newPhoneNumber = req.body.newPhoneNumber;
 
-  if (!isSignUpBarbeariaValid(newName) && newName.length <= 30) {
-    return res.status(400).json({ error: 'Error in values' });
-  }
-  if (!isEmailValided(newEmail) && newEmail.length <= 50) {
-    return res.status(400).json({ error: 'Error in values' });
-  }
-  if (!isNameValided(newPhoneNumber) && newPhoneNumber.length === 11) {
-    return res.status(400).json({ error: 'Error in values' });
-  }
+  
   if (!isPasswordValided(confirmPassword) && confirmPassword.length <= 8) {
     return res.status(400).json({ error: 'Error in values' });
   }
@@ -952,14 +944,23 @@ app.put('/api/v1/updateDataProfessional', AuthenticateJWT, (req, res) => {
   const values = [];
 
   if(newName){
+    if (!isSignUpBarbeariaValid(newName) && newName.length <= 30) {
+      return res.status(400).json({ error: 'Error in values' });
+    }
     query += ` rua = ?,`;
     values.push(newName);
   }
   if(newEmail){
+    if (!isEmailValided(newEmail) && newEmail.length <= 50) {
+      return res.status(400).json({ error: 'Error in values' });
+    }
     query += ` N = ?,`;
     values.push(newEmail);
   }
   if(newPhoneNumber){
+    if (!isNameValided(newPhoneNumber) && newPhoneNumber.length === 11) {
+      return res.status(400).json({ error: 'Error in values' });
+    }
     query += ` bairro = ?,`;
     values.push(newPhoneNumber);
   }
@@ -969,7 +970,8 @@ app.put('/api/v1/updateDataProfessional', AuthenticateJWT, (req, res) => {
 
   query += ` WHERE id = ? AND password = ?`;
   values.push(professionalId, confirmPassword)
-
+console.log(query)
+console.log(values)
   db.query(query, values, (err, result) =>{
     if(err){
       console.error("Erro ao atualizar informações do profissional", err);
