@@ -947,21 +947,21 @@ app.put('/api/v1/updateDataProfessional', AuthenticateJWT, (req, res) => {
     if (!isSignUpBarbeariaValid(newName) && newName.length <= 30) {
       return res.status(400).json({ error: 'Error in values' });
     }
-    query += ` rua = ?,`;
+    query += ` name = ?,`;
     values.push(newName);
   }
   if(newEmail){
     if (!isEmailValided(newEmail) && newEmail.length <= 50) {
       return res.status(400).json({ error: 'Error in values' });
     }
-    query += ` N = ?,`;
+    query += ` email = ?,`;
     values.push(newEmail);
   }
   if(newPhoneNumber){
     if (!isNameValided(newPhoneNumber) && newPhoneNumber.length === 11) {
       return res.status(400).json({ error: 'Error in values' });
     }
-    query += ` bairro = ?,`;
+    query += ` cell_phone = ?,`;
     values.push(newPhoneNumber);
   }
   
