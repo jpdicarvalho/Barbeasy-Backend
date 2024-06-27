@@ -7,7 +7,6 @@ import mysql from "mysql2";
 
 import jwt  from 'jsonwebtoken';
 import AuthenticateJWT from './AuthenticateJWT.js'
-import UseClientAuthenticateJWT from './UseClientAuthenticateJWT.js';
 import MercadoPago from "mercadopago";
 
 import multer from 'multer';
@@ -194,7 +193,7 @@ app.post('/api/v1/SignIn', async (req, res) => {
 });
 
 //Route to get all barbearias
-app.get('/api/v1/getAllBarbearias', UseClientAuthenticateJWT, async (req, res) => {
+app.get('/api/v1/getAllBarbearias', AuthenticateJWT, async (req, res) => {
   try {
     const sql="SELECT id, name, status, banner_main, banners, rua, N, bairro, cidade FROM barbearia";
     db.query(sql, (err, rows) => {
@@ -222,7 +221,7 @@ app.get('/api/v1/getAllBarbearias', UseClientAuthenticateJWT, async (req, res) =
 });
 
 /*listando os Serviços cadastrados pelas barbearias*/
-app.get('/api/v1/getAllServices', UseClientAuthenticateJWT, async (req, res)=>{
+app.get('/api/v1/getAllServices', AuthenticateJWT, async (req, res)=>{
   try {
     db.query('SELECT * FROM servico', (err, rows) => {
       if (err) throw err;
@@ -234,7 +233,7 @@ app.get('/api/v1/getAllServices', UseClientAuthenticateJWT, async (req, res)=>{
 });
 
 //Cadastrando a avaliação do usuário
-app.post("/api/v1/avaliacao", UseClientAuthenticateJWT, (req, res) => {
+app.post("/api/v1/avaliacao", AuthenticateJWT, (req, res) => {
   const sql = "INSERT INTO avaliacoes (`user_name`,`barbearia_id`, `estrelas`, `comentarios`, `data_avaliacao`) VALUES (?)";
   const values = [
     req.body.userName, //String
@@ -254,7 +253,7 @@ app.post("/api/v1/avaliacao", UseClientAuthenticateJWT, (req, res) => {
 });
 
 //Buscando a avaliação da barbearia em especifico
-app.get('/api/v1/SearchAvaliation', UseClientAuthenticateJWT, async(req, res)=>{
+app.get('/api/v1/SearchAvaliation', AuthenticateJWT, async(req, res)=>{
   try {
     db.query('SELECT * FROM avaliacoes', (err, rows) => {
       if (err) throw err;
