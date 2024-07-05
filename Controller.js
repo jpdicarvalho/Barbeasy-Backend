@@ -130,9 +130,24 @@ const s3 = new S3Client({
 //=-=-=-=-= ROTAS USER-CLIENT-BARBEARIA =-=-=-=-=
 
 // Cadastro de usuário com senha criptografada
-app.post("/api/v1/Sign-Up", async (req, res) => {
+app.post("/api/v1/SignUp", async (req, res) => {
   const { name, email, senha, celular } = req.body;
 
+  // Verifica se name contém apenas letras maiúsculas e minúsculas
+  if (!isSignUpBarbeariaValid(name) && name.length <= 30) {
+    return res.status(400).json({ error: 'Error in values' });
+  }
+  // Verifica se email contém apenas letras maiúsculas e minúsculas
+  if (!isEmailValided(email) && email.length <= 50) {
+    return res.status(400).json({ error: 'Error in values' });
+  }
+  // Verifica se senha contém apenas letras maiúsculas e minúsculas e alguns caracteres especiais
+  if (!isPasswordValided(senha) && senha.length <= 8) {
+    return res.status(400).json({ error: 'Error in values' });
+  }
+  if (!isOnlyNumberValided(celular) && celular.length > 11 || celular.length < 10) {
+    return res.status(400).json({ error: 'Error in values' });
+  }
   // Verificação se o e-mail ou o número de celular já estão cadastrado
   db.query('SELECT * FROM user WHERE email = ? OR celular = ?', [email, celular], (error, results) => {
     if (error) {
