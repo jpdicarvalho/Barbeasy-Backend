@@ -1645,7 +1645,7 @@ app.post('/api/v1/acceptNotification', AuthenticateJWT, (req, res) => {
     })
 });
 
-//Rota para obter os profissionais da barbearia em específico
+//Rota para obter os profissionais da barbearia em  específico
 app.get('/api/v1/listProfessionalToBarbearia/:barbeariaId', AuthenticateJWT, (req, res) => {
   const barbeariaId = req.params.barbeariaId;
 
