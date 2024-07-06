@@ -169,7 +169,8 @@ app.post("/api/v1/SignUp", async (req, res) => {
       name,
       email,
       senha,
-      celular
+      celular,
+      user_image: 'default.jpg'
     };
 
     db.query('INSERT INTO user SET ?', user, (error, results) => {
