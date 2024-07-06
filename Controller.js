@@ -145,7 +145,7 @@ app.post("/api/v1/SignUp", async (req, res) => {
   if (!isPasswordValided(senha) && senha.length <= 8) {
     return res.status(400).json({ error: 'Error in values' });
   }
-  if (!isOnlyNumberValided(celular) && celular.length > 11 || celular.length < 10) {
+  if (!isOnlyNumberValided(celular) && celular.length > 11 || celular.length < 10 ) {
     return res.status(400).json({ error: 'Error in values' });
   }
   // Verificação se o e-mail ou o número de celular já estão cadastrado
