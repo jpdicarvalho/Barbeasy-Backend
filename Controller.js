@@ -134,7 +134,7 @@ app.post("/api/v1/SignUp", async (req, res) => {
   const { name, email, senha, celular } = req.body;
 
   // Verifica se name contém apenas letras maiúsculas e minúsculas
-  if (!isSignUpBarbeariaValid(name) && name.length <= 30) {
+  if (!isSignUpBarbeariaValid(name) && name.length > 30) {
     return res.status(400).json({ error: 'Error in values' });
   }
   // Verifica se email é válido
@@ -334,7 +334,7 @@ app.put('/api/v1/updateUserData', AuthenticateJWT, (req, res) => {
   const values = [];
 
   if(newName){
-    if (!isSignUpBarbeariaValid(newName) && newName.length <= 30) {
+    if (!isSignUpBarbeariaValid(newName) && newName.length > 30) {
       return res.status(400).json({ error: 'Error in values' });
     }
     query += ` name = ?,`;
