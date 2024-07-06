@@ -137,9 +137,12 @@ app.post("/api/v1/SignUp", async (req, res) => {
   if (!isSignUpBarbeariaValid(name) && name.length <= 30) {
     return res.status(400).json({ error: 'Error in values' });
   }
-  // Verifica se email contém apenas letras maiúsculas e minúsculas
-  if (!isEmailValided(email) && email.length <= 50) {
-    return res.status(400).json({ error: 'Error in values' });
+  // Verifica se email é válido
+  const isValidEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  if(isValidEmail){
+    if (!isEmailValided(email)) {
+      return res.status(400).json({ error: 'Error in values' });
+    }
   }
   // Verifica se senha contém apenas letras maiúsculas e minúsculas e alguns caracteres especiais
   if (!isPasswordValided(senha) && senha.length <= 8) {
@@ -149,7 +152,7 @@ app.post("/api/v1/SignUp", async (req, res) => {
     return res.status(400).json({ error: 'Error in values' });
   }
   // Verificação se o e-mail ou o número de celular já estão cadastrado
-  db.query('SELECT * FROM user WHERE email = ? OR celular = ?', [email, celular], (error, results) => {
+  db.query('SELECT id, name, email, celular, user_image FROM user WHERE email = ? OR celular = ?', [email, celular], (error, results) => {
     if (error) {
       console.error(error);
       return res.status(500).send('Erro ao verificar o e-mail ou o número de celular');
@@ -164,7 +167,7 @@ app.post("/api/v1/SignUp", async (req, res) => {
         return res.status(400).send('Número de celular já cadastrado. Por favor, escolha outro número.');
       }
     }
-   
+    
     const user = {
       name,
       email,
@@ -338,14 +341,17 @@ app.put('/api/v1/updateUserData', AuthenticateJWT, (req, res) => {
     values.push(newName);
   }
   if(newEmail){
-    if (!isEmailValided(newEmail) && newEmail.length <= 50) {
+    if (!isEmailValided(newEmail)) {
       return res.status(400).json({ error: 'Error in values' });
     }
-    query += ` email = ?,`;
-    values.push(newEmail);
+    const isValidEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(newEmail);
+    if(isValidEmail){
+      query += ` email = ?,`;
+      values.push(newEmail);
+    }
   }
   if(newPhoneNumber){
-    if (!isNameValided(newPhoneNumber) && newPhoneNumber.length > 11 || newPhoneNumber.length < 10) {
+    if (!isOnlyNumberValided(newPhoneNumber) && newPhoneNumber.length > 11 || newPhoneNumber.length < 10) {
       return res.status(400).json({ error: 'Error in values' });
     }
     query += ` celular = ?,`;
@@ -1131,14 +1137,17 @@ app.put('/api/v1/updateDataProfessional', AuthenticateJWT, (req, res) => {
     values.push(newName);
   }
   if(newEmail){
-    if (!isEmailValided(newEmail) && newEmail.length <= 50) {
+    if (!isEmailValided(newEmail)) {
       return res.status(400).json({ error: 'Error in values' });
     }
-    query += ` email = ?,`;
-    values.push(newEmail);
+    const isValidEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(newEmail);
+    if(isValidEmail){
+      query += ` email = ?,`;
+      values.push(newEmail);
+    }
   }
   if(newPhoneNumber){
-    if (!isNameValided(newPhoneNumber) && newPhoneNumber.length === 10) {
+    if (!isOnlyNumberValided(newPhoneNumber) && newPhoneNumber.length > 11 || newPhoneNumber.length < 10) {
       return res.status(400).json({ error: 'Error in values' });
     }
     query += ` cell_phone = ?,`;
