@@ -297,6 +297,23 @@ app.put('/api/v1/updateUserImage', AuthenticateJWT, upload.single('image'), (req
   });
 });
 
+//Route to get user data #VERIFIED
+app.get('/api/v1/getUserData/:userId', AuthenticateJWT, (req, res) => {
+  const userId = req.params.userId;
+  
+  const sql = "SELECT name, email, celular FROM user WHERE id = ?";
+  db.query(sql, [userId], (err, result) => {
+    if(err) {
+      console.error("Erro ao buscar os dados dos do usuário", err);
+      return res.status(500).json({Error: "Internal Server Error"});
+    }else{
+      if(result.length > 0) {
+        return res.status(200).json({ User: result});
+      }
+    }
+  })
+})
+
 //Route to get all barbearias
 app.get('/api/v1/getAllBarbearias', AuthenticateJWT, async (req, res) => {
   try {
