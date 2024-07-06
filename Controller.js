@@ -226,6 +226,72 @@ app.get('/api/v1/userImage', AuthenticateJWT, (req, res) =>{
   })
 });
 
+//update user image on AWS S3  #VERIFIED
+app.put('/api/v1/updateUserImage', AuthenticateJWT, upload.single('image'), (req, res) => {
+  const userId = req.body.userId;
+  const newImageUser = req.file.originalname;
+
+  const allowedExtensions = ['jpg', 'jpeg', 'png'];
+
+  // Obtém a extensão do arquivo original
+  const fileExtension = newImageUser ? newImageUser.split('.').pop() : '';//operador ternário para garantir que name não seja vazio
+  if(fileExtension.length > 0){
+    // Verifica se a extensão é permitida
+    if (!allowedExtensions.includes(fileExtension)) {
+      console.error('Error on Update Image');
+      return res.status(400).json({ Error: 'extension not allowed' });
+    }
+  }
+
+  //Buscando imagem atual salva no BD MySQL
+  const currentImg = "SELECT user_image FROM user WHERE id = ?";
+  db.query(currentImg, [userId], (err, result) => {
+    if(err){
+      console.error('Error on Update Image:', err);
+      return res.status(500).json({ error: 'Current Image - Internal Server Error' });
+    }
+    //Verificando se há imagem salva
+    if(result.length > 0){
+      const currentImageName = result[0].user_image; //Nome da imagem salva no BD MySQL
+
+      //Configurando os parâmetros para apagar a imagem salva no bucket da AWS S3
+      const params = {
+        Bucket: awsBucketName,
+        Key: currentImageName
+      }
+      const command = new DeleteObjectCommand(params)//Instânciando o comando que irá apagar a imagem
+
+      //Enviando o comando para apagar a imagem
+      s3.send(command, (sendErr, sendResult) =>{
+        if(sendErr){
+          console.error('Send Error:', sendErr);
+        }else{
+          //Atualizando a coluna 'user_image' com a nova imagem do usuário
+          const sql = "UPDATE user SET user_image = ? WHERE id=?";
+          db.query(sql, [newImageUser, userId], (updateErr, updateResult) => {
+            if (updateErr) {
+              //Mensagem de erro caso não seja possuível realizar a atualização da imagem no Banco de Dados
+              console.error('Error on Update Image:', updateErr);
+              return res.status(500).json({ error: 'Update Image - Internal Server Error' });
+            }else{
+                // Cria os parâmetros para enviar a imagem para o bucket da AWS S3
+                const updateParams = {
+                Bucket: awsBucketName,
+                Key: newImageUser,
+                Body: req.file.buffer,
+                ContentType: req.file.mimetype,
+              }
+              const updateCommand = new PutObjectCommand(updateParams)// Instânciando o comando que irá salvar a imagem
+              s3.send(updateCommand)// Envia o comando para o Amazon S3 usando a instância do serviço S3
+              return res.status(200).json({ Status: "Success" });
+            }
+          });
+        }
+      })
+    }
+  });
+});
+
 //Route to get all barbearias
 app.get('/api/v1/getAllBarbearias', AuthenticateJWT, async (req, res) => {
   try {
