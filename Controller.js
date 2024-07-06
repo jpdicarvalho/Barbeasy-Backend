@@ -345,7 +345,7 @@ app.put('/api/v1/updateUserData', AuthenticateJWT, (req, res) => {
     values.push(newEmail);
   }
   if(newPhoneNumber){
-    if (!isNameValided(newPhoneNumber) && newPhoneNumber.length === 10) {
+    if (!isNameValided(newPhoneNumber) && newPhoneNumber.length > 11 || newPhoneNumber.length < 10) {
       return res.status(400).json({ error: 'Error in values' });
     }
     query += ` celular = ?,`;
