@@ -408,11 +408,11 @@ app.put('/api/v1/updateUserPassword', AuthenticateJWT, (req, res) => {
           return res.status(500).json({Error: "Internal Server Error"});
         }
         if(result){
-          return res.status(200).json({ Success: "Success"});
+          return res.status(201).json({ Success: "Success"});
         }
       })
     }else{
-      return res.status(404).json({ Success: "Falied"});
+      return res.status(200).json({ Success: "Falied"});
     }
   })
 });
