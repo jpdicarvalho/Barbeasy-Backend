@@ -380,9 +380,9 @@ app.put('/api/v1/updateUserData', AuthenticateJWT, (req, res) => {
 
 //Rota para atualizar a senha de usuário da barbearia
 app.get('/api/v1/updateUserPassword', AuthenticateJWT, (req, res) => {
-  const userId = req.query.userId;
-  const passwordConfirm = req.query.passwordConfirm;
-  const newPassword = req.query.newPassword;
+  const userId = req.body.userId;
+  const passwordConfirm = req.body.passwordConfirm;
+  const newPassword = req.body.newPassword;
 
   // Verifica se senha contém apenas letras maiúsculas e minúsculas e alguns caracteres especiais
   if (!isPasswordValided(passwordConfirm) && passwordConfirm.length < 8) {
@@ -390,7 +390,7 @@ app.get('/api/v1/updateUserPassword', AuthenticateJWT, (req, res) => {
   }
 
   // Verifica se senha contém apenas letras maiúsculas e minúsculas e alguns caracteres especiais
-  if (!isPasswordValided(newPassword) && newPassword.length <= 8) {
+  if (!isPasswordValided(newPassword) && newPassword.length < 8) {
     return res.status(400).json({ error: 'Error in values' });
   }
   
