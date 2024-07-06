@@ -314,6 +314,64 @@ app.get('/api/v1/getUserData/:userId', AuthenticateJWT, (req, res) => {
   })
 })
 
+// Route to update information of professional #VERIFIED
+app.put('/api/v1/updateUserData', AuthenticateJWT, (req, res) => {
+  const userId = req.body.userId;
+  const confirmPassword = req.body.confirmPassword;
+  const newName = req.body.newName;
+  const newEmail = req.body.newEmail;
+  const newPhoneNumber = req.body.newPhoneNumber;
+
+  
+  if (!isPasswordValided(confirmPassword) && confirmPassword.length < 8) {
+    return res.status(400).json({ error: 'Error in values' });
+  }
+
+  let query = `UPDATE user SET`
+  const values = [];
+
+  if(newName){
+    if (!isSignUpBarbeariaValid(newName) && newName.length <= 30) {
+      return res.status(400).json({ error: 'Error in values' });
+    }
+    query += ` name = ?,`;
+    values.push(newName);
+  }
+  if(newEmail){
+    if (!isEmailValided(newEmail) && newEmail.length <= 50) {
+      return res.status(400).json({ error: 'Error in values' });
+    }
+    query += ` email = ?,`;
+    values.push(newEmail);
+  }
+  if(newPhoneNumber){
+    if (!isNameValided(newPhoneNumber) && newPhoneNumber.length === 10) {
+      return res.status(400).json({ error: 'Error in values' });
+    }
+    query += ` celular = ?,`;
+    values.push(newPhoneNumber);
+  }
+  
+  // Remova a última vírgula da query
+  query = query.slice(0, -1);
+
+  query += ` WHERE id = ? AND senha = ?`;
+  values.push(userId, confirmPassword)
+
+  db.query(query, values, (err, result) =>{
+    if(err){
+      console.error("Erro ao atualizar informações do profissional", err);
+      return res.status(500).json({Error: "Internal Server Error"});
+    } else {
+      if(result.changedRows === 1) {
+        return res.status(200).json({ Success: "Success" });
+      }else{
+        return res.status(200).json({ Success: "Falied" });
+      }
+    }
+  });
+});
+
 //Route to get all barbearias
 app.get('/api/v1/getAllBarbearias', AuthenticateJWT, async (req, res) => {
   try {
