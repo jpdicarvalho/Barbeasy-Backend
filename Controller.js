@@ -230,6 +230,8 @@ app.get('/api/v1/userImage', AuthenticateJWT, (req, res) =>{
 app.put('/api/v1/updateUserImage', AuthenticateJWT, upload.single('image'), (req, res) => {
   const userId = req.body.userId;
   const newImageUser = req.file.originalname;
+  const password = req.body.password;
+
 
   const allowedExtensions = ['jpg', 'jpeg', 'png'];
 
@@ -244,8 +246,8 @@ app.put('/api/v1/updateUserImage', AuthenticateJWT, upload.single('image'), (req
   }
 
   //Buscando imagem atual salva no BD MySQL
-  const currentImg = "SELECT user_image FROM user WHERE id = ?";
-  db.query(currentImg, [userId], (err, result) => {
+  const currentImg = "SELECT user_image FROM user WHERE id = ? AND senha = ?";
+  db.query(currentImg, [userId, password], (err, result) => {
     if(err){
       console.error('Error on Update Image:', err);
       return res.status(500).json({ error: 'Current Image - Internal Server Error' });
@@ -265,15 +267,18 @@ app.put('/api/v1/updateUserImage', AuthenticateJWT, upload.single('image'), (req
       s3.send(command, (sendErr, sendResult) =>{
         if(sendErr){
           console.error('Send Error:', sendErr);
-        }else{
+          return res.status(500).json({ error: 'Send Update Image - Internal Server Error' });
+        }
+        if(sendResult){
           //Atualizando a coluna 'user_image' com a nova imagem do usuário
-          const sql = "UPDATE user SET user_image = ? WHERE id=?";
-          db.query(sql, [newImageUser, userId], (updateErr, updateResult) => {
+          const sql = "UPDATE user SET user_image = ? WHERE id = ? AND senha = ?";
+          db.query(sql, [newImageUser, userId, password], (updateErr, updateResult) => {
             if (updateErr) {
               //Mensagem de erro caso não seja possuível realizar a atualização da imagem no Banco de Dados
               console.error('Error on Update Image:', updateErr);
               return res.status(500).json({ error: 'Update Image - Internal Server Error' });
-            }else{
+            }
+            if(updateResult){
                 // Cria os parâmetros para enviar a imagem para o bucket da AWS S3
                 const updateParams = {
                 Bucket: awsBucketName,
