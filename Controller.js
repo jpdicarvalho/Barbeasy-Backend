@@ -188,7 +188,7 @@ app.post('/api/v1/SignIn', async (req, res) => {
   const {email, senha} = req.body;
 
   // Buscar usuário pelo email
-  db.query('SELECT * FROM user WHERE email = ? AND senha = ?', [email, senha],
+  db.query('SELECT id, name, email, celular, user_image FROM user WHERE email = ? AND senha = ?', [email, senha],
   (err, result) => {
     if(err){
       res.send({err: err});
@@ -205,6 +205,24 @@ app.post('/api/v1/SignIn', async (req, res) => {
       res.status(404).json({success: false, message: 'Usuário não encontrado'});
     }
   });
+});
+
+//Route to get user image #VERIFIED
+app.get('/api/v1/userImage', AuthenticateJWT, (req, res) =>{
+  const userId = req.query.userId; 
+
+  const sql = "SELECT user_image FROM user WHERE id = ?";
+  db.query(sql, [userId], async (err, result) => {
+    if(err){
+      console.error('Erro ao buscar imagem no banco de dados:', err);
+      return res.status(500).json({ error: 'Internal Server Error' });
+    }else{
+      if(result.length > 0) {
+          const url = "https://d15o6h0uxpz56g.cloudfront.net/" + result[0].user_image;
+          return res.json({url});
+      }
+    }
+  })
 });
 
 //Route to get all barbearias
