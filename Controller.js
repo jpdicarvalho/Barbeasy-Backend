@@ -489,6 +489,33 @@ app.get('/api/v1/SearchAvaliation', AuthenticateJWT, async(req, res)=>{
     }
 });
 
+app.get('/api/v1/bookingsOfUser/:userId', AuthenticateJWT, (req, res) =>{
+  const userId = req.params.userId;
+
+  const sql=`SELECT barbearia.name AS nameBarbearia,
+                    barbearia.banner_main AS bannerBarbearia,
+                    barbearia.rua AS ruaBarbearia,
+                    barbearia.N AS NruaBarbearia,
+                    barbearia.bairro AS bairroBarbearia,
+                    barbearia.cidade AS cidadeBarbearia,
+                    professional.name AS nameProfessional,
+                    professional.cell_phone AS phoneProfessional,
+                    professional.user_image AS userImageProfessional
+              FROM booking
+              INNER JOIN barbearia ON barbearia.id = booking.barbearia_id
+              INNER JOIN professional ON professional.id = booking.professional_id
+              WHERE user_id = ?`
+  db.query(sql, [userId], (err, result) =>{
+    if(err){
+      console.error("Error in search bookings of user", err);
+      return res.status(500).json({Error: "Internal Server Error"});
+    }
+    if(result.length > 0){
+      return res.status(200).json({Success: "Success", Bookings: result[0]});
+    }
+  })
+})
+
 //Salvando o agendamento feito pelo cliente
 app.post('/api/v1/agendamento', (req, res) => {
   const { selectedDate, selectedTime, selectedService, barbeariaId, userId} = req.body;
