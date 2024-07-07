@@ -510,14 +510,14 @@ app.get('/api/v1/bookingsOfUser/:userId', AuthenticateJWT, (req, res) =>{
               INNER JOIN professional ON professional.id = booking.professional_id
               INNER JOIN servico ON servico.id = booking.service_id
               WHERE user_id = ?`
-              
+
   db.query(sql, [userId], (err, result) =>{
     if(err){
       console.error("Error in search bookings of user", err);
       return res.status(500).json({Error: "Internal Server Error"});
     }
     if(result.length > 0){
-      return res.status(200).json({Success: "Success", Bookings: result[0]});
+      return res.status(200).json({Success: "Success", Bookings: result});
     }
   })
 })
