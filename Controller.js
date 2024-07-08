@@ -494,22 +494,22 @@ app.get('/api/v1/bookingsOfUser/:userId', AuthenticateJWT, (req, res) =>{
 
   const sql=`SELECT booking.booking_date AS bookingDate,
                     booking.booking_time AS bookingTime,
-                    barbearia.name AS nameBarbearia,
+                    booking.date AS dateMakedBooking,
+                    booking.service_name AS serviceName,
+                    booking.service_price AS servicePrice,
+                    barbearia.name AS barbeariaName,
                     barbearia.banner_main AS bannerBarbearia,
                     barbearia.rua AS ruaBarbearia,
                     barbearia.N AS NruaBarbearia,
                     barbearia.bairro AS bairroBarbearia,
                     barbearia.cidade AS cidadeBarbearia,
-                    professional.name AS nameProfessional,
-                    professional.cell_phone AS phoneProfessional,
-                    professional.user_image AS userImageProfessional,
-                    servico.name AS nameService,
-                    servico.preco AS priceService
+                    professional.name AS professionalName,
+                    professional.cell_phone AS professionalPhone,
+                    professional.user_image AS userImageProfessional
               FROM booking
               INNER JOIN barbearia ON barbearia.id = booking.barbearia_id
               INNER JOIN professional ON professional.id = booking.professional_id
-              INNER JOIN servico ON servico.id = booking.service_id
-              WHERE user_id = ?`
+              WHERE booking.user_id = ?`
 
   db.query(sql, [userId], (err, result) =>{
     if(err){
