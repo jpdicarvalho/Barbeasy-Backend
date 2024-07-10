@@ -559,7 +559,6 @@ app.get('/api/v1/bookingsOfUser/:userId', AuthenticateJWT, (req, res) =>{
         }) 
     }
       orderBookings(result);
-      console.log(result)
       return res.status(200).json({Success: "Success", Bookings: result});
     }
   })
