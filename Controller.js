@@ -480,7 +480,6 @@ app.post("/api/v1/avaliacao", AuthenticateJWT, (req, res) => {
 //Buscando a avaliação da barbearia em especifico
 app.get('/api/v1/allAvaliation/:barbeariaId', AuthenticateJWT, async(req, res)=>{
   const barbeariaId = req.params.barbeariaId;
-
     const sql="SELECT * FROM avaliacoes WHER barbearia_id = ?";
     db.query(sql, [barbeariaId], (err, result) => {
       if (err){
