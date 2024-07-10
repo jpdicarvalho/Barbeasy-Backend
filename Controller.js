@@ -517,7 +517,34 @@ app.get('/api/v1/bookingsOfUser/:userId', AuthenticateJWT, (req, res) =>{
       return res.status(500).json({Error: "Internal Server Error"});
     }
     if(result.length > 0){
-      return res.status(200).json({Success: "Success", Bookings: result});
+      //function to order bookings
+      function orderBookings(booking) {
+        booking.sort((a, b) =>{
+            //data e horário de A
+            const dayAndYearBookingA = a.bookingDate.replace(/[^0-9]/g, '');
+            const monthBookingA = a.bookingDate.match(/(Jan|Fev|Mar|Abr|Mai|Jun|Jul|Ago|Set|Out|Nov|Dez)/g, '');
+            const bookingTimesA = a.bookingTime.split(',')[0].replace(/[^0-9]/g, '');
+
+            //data e horário de B
+            const dayAndYearBookingB = b.bookingDate.replace(/[^0-9]/g, '');
+            const monthBookingB = b.bookingDate.match(/(Jan|Fev|Mar|Abr|Mai|Jun|Jul|Ago|Set|Out|Nov|Dez)/g, '');
+            const bookingTimesB = b.bookingTime.split(',')[0].replace(/[^0-9]/g, '');
+
+
+            const valuesDateBookingA = Number (dayAndYearBookingA+numbersMonth[monthBookingA]+bookingTimesA)
+            const valuesDateBookingB = Number (dayAndYearBookingB+numbersMonth[monthBookingB]+bookingTimesB)
+            
+            if(valuesDateBookingA < valuesDateBookingB){
+                return 1;
+            }else if(valuesDateBookingA > valuesDateBookingB){
+                return -1;
+            }else{
+                0;
+            }
+        }) 
+    }
+      const ordenedBookings = orderBookings(result);
+      return res.status(200).json({Success: "Success", Bookings: ordenedBookings});
     }
   })
 })
