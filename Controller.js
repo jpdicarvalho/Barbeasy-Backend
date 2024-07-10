@@ -517,6 +517,7 @@ app.get('/api/v1/bookingsOfUser/:userId', AuthenticateJWT, (req, res) =>{
       return res.status(500).json({Error: "Internal Server Error"});
     }
     if(result.length > 0){
+      
       //function to order bookings
       function orderBookings(booking) {
         booking.sort((a, b) =>{
