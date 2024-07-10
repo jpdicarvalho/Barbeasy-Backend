@@ -517,7 +517,21 @@ app.get('/api/v1/bookingsOfUser/:userId', AuthenticateJWT, (req, res) =>{
       return res.status(500).json({Error: "Internal Server Error"});
     }
     if(result.length > 0){
-      
+      //list of month with your values
+      const numbersMonth = {
+        Jan: 1,
+        Fev: 2,
+        Mar: 3,
+        Abr: 4,
+        Maio: 5,
+        Jun: 6,
+        Jul: 7,
+        Ago: 8,
+        Set: 9,
+        Out: 10,
+        Nov: 11,
+        Dez: 12
+    }
       //function to order bookings
       function orderBookings(booking) {
         booking.sort((a, b) =>{
