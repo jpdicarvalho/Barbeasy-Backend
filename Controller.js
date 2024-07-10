@@ -478,15 +478,19 @@ app.post("/api/v1/avaliacao", AuthenticateJWT, (req, res) => {
 });
 
 //Buscando a avaliação da barbearia em especifico
-app.get('/api/v1/SearchAvaliation', AuthenticateJWT, async(req, res)=>{
-  try {
-    db.query('SELECT * FROM avaliacoes', (err, rows) => {
-      if (err) throw err;
-      res.json(rows);
-    });
-    } catch (error) {
-      console.error('Erro ao obter os registros:', error);
-    }
+app.get('/api/v1/allAvaliation/:barbeariaId', AuthenticateJWT, async(req, res)=>{
+  const barbeariaId = req.params.barbeariaId;
+
+    const sql="SELECT * FROM avaliacoes WHER barbearia_id = ?";
+    db.query(sql, [barbeariaId], (err, result) => {
+      if (err){
+        console.error("Erro ao buscar avaliações:", err);
+        return res.status(500).json({ Success: "Error", Message: "Erro ao buscar avaliações" });
+      }
+      if(result.length > 0) {
+        console.log(result)
+      }
+    });    
 });
 
 app.get('/api/v1/bookingsOfUser/:userId', AuthenticateJWT, (req, res) =>{
