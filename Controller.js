@@ -558,8 +558,9 @@ app.get('/api/v1/bookingsOfUser/:userId', AuthenticateJWT, (req, res) =>{
             }
         }) 
     }
-      const ordenedBookings = orderBookings(result);
-      return res.status(200).json({Success: "Success", Bookings: ordenedBookings});
+      orderBookings(result);
+      console.log(result)
+      return res.status(200).json({Success: "Success", Bookings: result});
     }
   })
 })
