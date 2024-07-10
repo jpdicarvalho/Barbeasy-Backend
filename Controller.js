@@ -487,7 +487,7 @@ app.get('/api/v1/allAvaliation/:barbeariaId', AuthenticateJWT, async(req, res)=>
         return res.status(500).json({ Success: "Error", Message: "Erro ao buscar avaliações" });
       }
       if(result.length > 0) {
-        console.log(result)
+        return res.status(200).json({ AllAvaliation: result});
       }
     });    
 });
