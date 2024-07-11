@@ -529,7 +529,7 @@ app.get('/api/v1/allAvaliation/:barbeariaId', AuthenticateJWT, async(req, res)=>
 
           if(averageAvaliation){
             const sqlUpdateAvaliation = 'UPDATE averageAvaliations SET totalAvaliations = ?, average = ? WHERE barbearia_id = ?';
-            db.query(sqlUpdateAvaliation, [totalAvaliation, averageAvaliation, barbeariaId], (erro, result) => {
+            db.query(sqlUpdateAvaliation, [totalAvaliation, averageAvaliation.toFixed(1), barbeariaId], (erro, result) => {
               if (erro){
                 console.error("Erro ao atualizar a média de avaliações:", erro);
                 return res.status(500).json({ Success: "Error", Message: "Erro ao buscar avaliações" });
