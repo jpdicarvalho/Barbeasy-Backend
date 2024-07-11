@@ -438,7 +438,15 @@ app.get('/api/v1/getAllBarbearias', AuthenticateJWT, async (req, res) => {
         return res.status(500).json({ Success: "Error", Message: "Erro ao buscar barbearias" });
       }
       if(resul.length > 0){
-        return res.status(200).json({barbearias: resul});
+        db.query('SELECT name FROM servico', (erro, result) => {
+          if(erro) {
+            console.error("Erro ao buscar nome dos serviços", erro);
+            return res.status(500).json({Error: "Internal Server Error"});
+          }
+          if(result.length > 0){
+            return res.status(200).json({barbearias: resul, servicesName: result});
+          }
+        })
       }
       
     });
