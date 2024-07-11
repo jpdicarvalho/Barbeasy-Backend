@@ -489,7 +489,7 @@ app.post("/api/v1/saveAvaliation", AuthenticateJWT, (req, res) => {
         }
         if(result.length < 1){
           const valuesFirstAverageAvaliation = {
-            barbeariaId,
+            barbearia_id: barbeariaId,
             totalAvaliations: 0,
             average: 0.0
           }
@@ -528,12 +528,12 @@ app.get('/api/v1/allAvaliation/:barbeariaId', AuthenticateJWT, async(req, res)=>
           }, 0);
 
           const averageAvaliation = sumAllavaliation / totalAvaliation;
-          
+
           if(averageAvaliation){
             const sqlUpdateAvaliation = 'UPDATE averageAvaliations SET totalAvaliations = ?, average = ? WHERE barbearia_id = ?';
             db.query(sqlUpdateAvaliation, [totalAvaliation, averageAvaliation], (erro, result) => {
               if (erro){
-                console.error("Erro ao atualiazar a média de avaliações:", err);
+                console.error("Erro ao atualizar a média de avaliações:", erro);
                 return res.status(500).json({ Success: "Error", Message: "Erro ao buscar avaliações" });
               }
               if(result){
