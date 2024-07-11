@@ -514,23 +514,32 @@ app.post("/api/v1/saveAvaliation", AuthenticateJWT, (req, res) => {
 //Buscando a avaliação da barbearia em especifico
 app.get('/api/v1/allAvaliation/:barbeariaId', AuthenticateJWT, async(req, res)=>{
   const barbeariaId = req.params.barbeariaId;
-    const sql="SELECT * FROM avaliations WHERE barbearia_id = ?";
-    db.query(sql, [barbeariaId], (err, result) => {
+  const sql="SELECT * FROM avaliations WHERE barbearia_id = ?";
+    db.query(sql, [barbeariaId], (err, resul) => {
       if (err){
         console.error("Erro ao buscar avaliações:", err);
         return res.status(500).json({ Success: "Error", Message: "Erro ao buscar avaliações" });
       }
-      if(result.length > 0) {
-          const numberAvaliation = result.length;//get the number of avaliations
-          const valuesOfAllavaliations = result.map(star =>  Number (star.estrelas))//get the values of all avaliations
+      if(resul.length > 0) {
+          const totalAvaliation = resul.length;//get the number of avaliations
+          const valuesOfAllavaliations = resul.map(star =>  Number (star.estrelas))//get the values of all avaliations
           const sumAllavaliation = valuesOfAllavaliations.reduce((sum, avaliation) => { //adding all values of avaliations
             return sum + avaliation;
           }, 0);
 
-          const averageAvaliation = sumAllavaliation / numberAvaliation;
+          const averageAvaliation = sumAllavaliation / totalAvaliation;
+          
           if(averageAvaliation){
             const sqlUpdateAvaliation = 'UPDATE averageAvaliations SET totalAvaliations = ?, average = ? WHERE barbearia_id = ?';
-            return res.status(200).json({ AllAvaliation: result, AverageAvaliation: averageAvaliation});
+            db.query(sqlUpdateAvaliation, [totalAvaliation, averageAvaliation], (erro, result) => {
+              if (erro){
+                console.error("Erro ao atualiazar a média de avaliações:", err);
+                return res.status(500).json({ Success: "Error", Message: "Erro ao buscar avaliações" });
+              }
+              if(result){
+                return res.status(200).json({ AllAvaliation: resul, AverageAvaliation: averageAvaliation});
+              }
+            })
           }
       }
     });    
