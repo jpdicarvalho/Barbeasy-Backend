@@ -474,7 +474,6 @@ app.post("/api/v1/saveAvaliation", AuthenticateJWT, (req, res) => {
   ]
   
   const sql = "INSERT INTO avaliacoes (`user_name`,`barbearia_id`, `estrelas`, `comentarios`, `data_avaliacao`) VALUES (?)";
-
   db.query(sql, [values], (err, result) => {
     if (err) {
       console.error(err);
