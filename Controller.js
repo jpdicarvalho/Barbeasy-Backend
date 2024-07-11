@@ -429,18 +429,16 @@ app.get('/api/v1/getAllBarbearias', AuthenticateJWT, async (req, res) => {
                       barbearia.bairro AS bairroBarbearia,
                       barbearia.cidade AS cidadeBarbearia,
                       averageAvaliations.totalAvaliations AS totalAvaliationsBarbearia,
-                      averageAvaliations.average AS averageAvaliationsBarbearia,
-                      servico.name AS servicesBarbearia
+                      averageAvaliations.average AS averageAvaliationsBarbearia
                 FROM barbearia
-                INNER JOIN averageAvaliations ON averageAvaliations.barbearia_id = barbearia.id
-                INNER JOIN servico ON servico.barbearia_id = barbearia.id`;
-    db.query(sql, (err, result) => {
+                INNER JOIN averageAvaliations ON averageAvaliations.barbearia_id = barbearia.id`;
+    db.query(sql, (err, resul) => {
       if (err){
         console.error("Erro ao buscar barbearias:", err);
         return res.status(500).json({ Success: "Error", Message: "Erro ao buscar barbearias" });
       }
-      if(result.length > 0){
-          return res.status(200).json({barbearias: result});
+      if(resul.length > 0){
+        return res.status(200).json({barbearias: resul});
       }
       
     });
