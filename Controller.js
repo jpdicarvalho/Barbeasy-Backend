@@ -495,7 +495,16 @@ app.get('/api/v1/allAvaliation/:barbeariaId', AuthenticateJWT, async(req, res)=>
         return res.status(500).json({ Success: "Error", Message: "Erro ao buscar avaliações" });
       }
       if(result.length > 0) {
-        return res.status(200).json({ AllAvaliation: result});
+          const numberAvaliation = result.length;//get the number of avaliations
+          const valuesOfAllavaliations = result.map(star =>  Number (star.estrelas))//get the values of all avaliations
+          const sumAllavaliation = valuesOfAllavaliations.reduce((sum, avaliation) => { //adding all values of avaliations
+            return sum + avaliation;
+          }, 0);
+
+          const averageAvaliation = sumAllavaliation / numberAvaliation;
+          if(averageAvaliation){
+            return res.status(200).json({ AllAvaliation: result, AverageAvaliation: averageAvaliation});
+          }
       }
     });    
 });
