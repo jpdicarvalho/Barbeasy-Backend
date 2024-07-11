@@ -444,7 +444,18 @@ app.get('/api/v1/getAllBarbearias', AuthenticateJWT, async (req, res) => {
             return res.status(500).json({Error: "Internal Server Error"});
           }
           if(result.length > 0){
-            return res.status(200).json({barbearias: resul, servicesName: result});
+
+            const combineData = (barbearias, servicos) => {
+              return barbearias.map(barbearia => {
+                // Filtra os serviços que pertencem à barbearia atual
+                const servicosDaBarbearia = servicos.filter(servico => servico.barbearia_id === barbearia.barbearia_id);
+                // Adiciona os serviços ao objeto da barbearia
+                return { ...barbearia, servicos: servicosDaBarbearia };
+              });
+            };
+            
+            const barbeariasComServicos = combineData(resul, result);
+            return res.status(200).json({barbearias: barbeariasComServicos});
           }
         })
       }
