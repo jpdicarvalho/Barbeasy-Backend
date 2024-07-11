@@ -458,21 +458,30 @@ app.get('/api/v1/getAllServices', AuthenticateJWT, async (req, res)=>{
 });
 
 //Cadastrando a avaliação do usuário
-app.post("/api/v1/avaliacao", AuthenticateJWT, (req, res) => {
-  const sql = "INSERT INTO avaliacoes (`user_name`,`barbearia_id`, `estrelas`, `comentarios`, `data_avaliacao`) VALUES (?)";
+app.post("/api/v1/saveAvaliation", AuthenticateJWT, (req, res) => {
+  const comment = req.body.comment;
+
+  if (!isSignUpBarbeariaValid(comment) && comment.length > 200) {
+    return res.status(400).json({ error: 'Error in values' });
+  }
+
   const values = [
-    req.body.userName, //String
-    req.body.barbeariaId, //interge
-    req.body.avaliacao, //interge
-    req.body.comentario, //String
-    req.body.data_avaliacao //String
+    req.body.userName, 
+    req.body.barbeariaId, 
+    req.body.avaliation, 
+    req.body.comment, 
+    req.body.formattedDate 
   ]
+  
+  const sql = "INSERT INTO avaliacoes (`user_name`,`barbearia_id`, `estrelas`, `comentarios`, `data_avaliacao`) VALUES (?)";
+
   db.query(sql, [values], (err, result) => {
     if (err) {
       console.error(err);
-      res.status(500).json({ success: false, message: 'Erro ao registrar avaliação' });
-    } else {
-      res.status(201).json({ success: true, message: 'Avaliação registrada com sucesso' });
+      return res.status(500).json({ success: false, message: 'Erro ao registrar avaliação' });
+    }
+    if(result){
+      return res.status(201).json({ Success: 'true', message: 'Avaliação registrada com sucesso' });
     }
   });
 });
