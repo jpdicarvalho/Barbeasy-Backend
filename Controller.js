@@ -420,22 +420,27 @@ app.put('/api/v1/updateUserPassword', AuthenticateJWT, (req, res) => {
 //Route to get all barbearias
 app.get('/api/v1/getAllBarbearias', AuthenticateJWT, async (req, res) => {
   try {
-    const sql="SELECT id, name, status, banner_main, banners, rua, N, bairro, cidade FROM barbearia";
-    db.query(sql, (err, rows) => {
+    const sql=`SELECT barbearia.id AS barbearia_id,
+                      barbearia.name AS nameBarbearia,
+                      barbearia.status AS statusBarbearia,
+                      barbearia.banner_main AS bannerBarbearia,
+                      barbearia.rua AS ruaBarbearia,
+                      barbearia.N AS NruaBarbearia,
+                      barbearia.bairro AS bairroBarbearia,
+                      barbearia.cidade AS cidadeBarbearia,
+                      averageAvaliations.totalAvaliations AS totalAvaliationsBarbearia,
+                      averageAvaliations.average AS averageAvaliationsBarbearia,
+                      servico.name AS servicesBarbearia
+                FROM barbearia
+                INNER JOIN averageAvaliations ON averageAvaliations.barbearia_id = barbearia.id
+                INNER JOIN servico ON servico.barbearia_id = barbearia.id`;
+    db.query(sql, (err, result) => {
       if (err){
         console.error("Erro ao buscar barbearias:", err);
         return res.status(500).json({ Success: "Error", Message: "Erro ao buscar barbearias" });
       }
-      if(rows.length > 0){
-        const sqlService="SELECT name, barbearia_id FROM servico";
-        db.query(sqlService, (error, result) =>{
-          if(error){
-            console.error("Erro ao buscar serviços:", err);
-            return res.status(500).json({ Success: "Error", Message: "Erro ao buscar serviços" });
-          }else{
-            res.json({barbearias: rows, services: result});
-          }
-        })
+      if(result.length > 0){
+          return res.status(200).json({barbearias: result});
       }
       
     });
