@@ -461,6 +461,7 @@ app.get('/api/v1/getAllServices', AuthenticateJWT, async (req, res)=>{
 app.post("/api/v1/saveAvaliation", AuthenticateJWT, (req, res) => {
   const comment = req.body.comment;
   const barbeariaId = req.body.barbeariaId
+  const averageAvaliatio = req.body.avaliation; //this for the first avaliation
 
   if (!isSignUpBarbeariaValid(comment) && comment.length > 200) {
     return res.status(400).json({ error: 'Error in values' });
@@ -488,13 +489,10 @@ app.post("/api/v1/saveAvaliation", AuthenticateJWT, (req, res) => {
           return res.status(500).json({ success: false, message: 'Erro ao verificar primeira avaliação' });
         }
         if(result.length < 1){
-          const valuesFirstAverageAvaliation = {
-            barbearia_id: barbeariaId,
-            totalAvaliations: 0,
-            average: 0.0
-          }
-          const sqlInsertFirstAverageAvaliation = "INSERT INTO averageAvaliations (`barbearia_id`,`totalAvaliations`, `average`) VALUES (?)";
-          db.query(sqlInsertFirstAverageAvaliation, [valuesFirstAverageAvaliation], (error, resultFinal) =>{
+          const totalAvaliations = 1;
+          
+          const sqlInsertFirstAverageAvaliation = "INSERT INTO averageAvaliations (`barbearia_id`,`totalAvaliations`, `average`) VALUES (?, ?, ?)";
+          db.query(sqlInsertFirstAverageAvaliation, [barbeariaId, totalAvaliations, averageAvaliatio], (error, resultFinal) =>{
             if(error){
               console.error(erro);
               return res.status(500).json({ success: false, message: 'Erro ao inserir primeira média de avaliação' });
