@@ -460,6 +460,7 @@ app.get('/api/v1/getAllServices', AuthenticateJWT, async (req, res)=>{
 //Cadastrando a avaliação do usuário
 app.post("/api/v1/saveAvaliation", AuthenticateJWT, (req, res) => {
   const comment = req.body.comment;
+  const barbeariaId = req.body.barbeariaId
 
   if (!isSignUpBarbeariaValid(comment) && comment.length > 200) {
     return res.status(400).json({ error: 'Error in values' });
@@ -470,17 +471,42 @@ app.post("/api/v1/saveAvaliation", AuthenticateJWT, (req, res) => {
     req.body.barbeariaId, 
     req.body.avaliation, 
     req.body.comment, 
-    req.body.formattedDate 
+    req.body.formattedDate
   ]
   
-  const sql = "INSERT INTO avaliacoes (`user_name`,`barbearia_id`, `estrelas`, `comentarios`, `data_avaliacao`) VALUES (?)";
-  db.query(sql, [values], (err, result) => {
+  const sql = "INSERT INTO avaliations (`user_name`,`barbearia_id`, `estrelas`, `comentarios`, `data_avaliacao`) VALUES (?)";
+  db.query(sql, [values], (err, resul) => {
     if (err) {
       console.error(err);
       return res.status(500).json({ success: false, message: 'Erro ao registrar avaliação' });
     }
-    if(result){
-      return res.status(201).json({ Success: 'true', message: 'Avaliação registrada com sucesso' });
+    if(resul){
+      const sqlVerifyFirstAvaliation = 'SELECT * FROM averageAvaliations WHERE barbearia_id = ?';
+      db.query(sqlVerifyFirstAvaliation, [barbeariaId], (erro, result) =>{
+        if(erro){
+          console.error(erro);
+          return res.status(500).json({ success: false, message: 'Erro ao verificar primeira avaliação' });
+        }
+        if(result.length < 1){
+          const valuesFirstAverageAvaliation = {
+            barbeariaId,
+            totalAvaliations: 0,
+            average: 0.0
+          }
+          const sqlInsertFirstAverageAvaliation = "INSERT INTO averageAvaliations (`barbearia_id`,`totalAvaliations`, `average`) VALUES (?)";
+          db.query(sqlInsertFirstAverageAvaliation, [valuesFirstAverageAvaliation], (error, resultFinal) =>{
+            if(error){
+              console.error(erro);
+              return res.status(500).json({ success: false, message: 'Erro ao inserir primeira média de avaliação' });
+            }
+            if(resultFinal){
+              return res.status(201).json({ Success: 'true', message: 'Avaliação registrada com sucesso' });
+            }
+          })
+        }else{
+          return res.status(201).json({ Success: 'true', message: 'Avaliação registrada com sucesso' });
+        }
+      })
     }
   });
 });
@@ -488,7 +514,7 @@ app.post("/api/v1/saveAvaliation", AuthenticateJWT, (req, res) => {
 //Buscando a avaliação da barbearia em especifico
 app.get('/api/v1/allAvaliation/:barbeariaId', AuthenticateJWT, async(req, res)=>{
   const barbeariaId = req.params.barbeariaId;
-    const sql="SELECT * FROM avaliacoes WHERE barbearia_id = ?";
+    const sql="SELECT * FROM avaliations WHERE barbearia_id = ?";
     db.query(sql, [barbeariaId], (err, result) => {
       if (err){
         console.error("Erro ao buscar avaliações:", err);
@@ -503,6 +529,7 @@ app.get('/api/v1/allAvaliation/:barbeariaId', AuthenticateJWT, async(req, res)=>
 
           const averageAvaliation = sumAllavaliation / numberAvaliation;
           if(averageAvaliation){
+            const sqlUpdateAvaliation = 'UPDATE averageAvaliations SET totalAvaliations = ?, average = ? WHERE barbearia_id = ?';
             return res.status(200).json({ AllAvaliation: result, AverageAvaliation: averageAvaliation});
           }
       }
