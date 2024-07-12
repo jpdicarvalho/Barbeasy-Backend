@@ -545,14 +545,14 @@ app.get('/api/v1/allAvaliation/:barbeariaId', AuthenticateJWT, async(req, res)=>
               FROM avaliations
               INNER JOIN user ON user.id = avaliations.user_id
               WHERE barbearia_id = ?`;
-    db.query(sql, [barbeariaId], (err, resul) => {
+    db.query(sql, [barbeariaId], (err, resultAllAvaliations) => {
       if (err){
         console.error("Erro ao buscar avaliações:", err);
         return res.status(500).json({ Success: "Error", Message: "Erro ao buscar avaliações" });
       }
-      if(resul.length > 0) {
-          const totalAvaliation = resul.length;//get the number of avaliations
-          const valuesOfAllavaliations = resul.map(star =>  Number (star.estrelas))//get the values of all avaliations
+      if(resultAllAvaliations.length > 0) {
+          const totalAvaliation = resultAllAvaliations.length;//get the number of avaliations
+          const valuesOfAllavaliations = resultAllAvaliations.map(star =>  Number (star.estrelas))//get the values of all avaliations
           const sumAllavaliation = valuesOfAllavaliations.reduce((sum, avaliation) => { //adding all values of avaliations
             return sum + avaliation;
           }, 0);
@@ -567,7 +567,33 @@ app.get('/api/v1/allAvaliation/:barbeariaId', AuthenticateJWT, async(req, res)=>
                 return res.status(500).json({ Success: "Error", Message: "Erro ao buscar avaliações" });
               }
               if(result){
-                return res.status(200).json({ AllAvaliation: resul, AverageAvaliation: averageAvaliation});
+                //function to order AllAvaliation by date
+                function orderAllAvaliations(AllAvaliation) {
+                  AllAvaliation.sort((a, b) =>{
+                      //Date and time of A
+                      const fullDateOfAvaliationA = a.data_avaliacao;
+                      const onlyNumberofDateA = fullDateOfAvaliationA.replace(/[^0-9]/g, '');
+
+                      //Date and time of B
+                      const fullDateOfAvaliationB = b.data_avaliacao;
+                      const onlyNumberofDateB = fullDateOfAvaliationB.replace(/[^0-9]/g, '');
+
+                      //Transforming dates in Numbers
+                      const valuesDateAllAvaliationsA = Number (onlyNumberofDateA);
+                      const valuesDateAllAvaliationsB = Number (onlyNumberofDateB);
+
+                      //Verication of dates
+                      if(valuesDateAllAvaliationsA < valuesDateAllAvaliationsB){
+                          return 1;
+                      }else if(valuesDateAllAvaliationsA > valuesDateAllAvaliationsB){
+                          return -1;
+                      }else{
+                          0;
+                      }
+                  }) 
+                }
+                orderAllAvaliations(resultAllAvaliations)
+                return res.status(200).json({ AllAvaliation: resultAllAvaliations, AverageAvaliation: averageAvaliation});
               }
             })
           }
