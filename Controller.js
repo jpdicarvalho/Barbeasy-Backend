@@ -494,7 +494,7 @@ app.post("/api/v1/saveAvaliation", AuthenticateJWT, (req, res) => {
     req.body.barbeariaId, 
     req.body.avaliation, 
     comment,
-    req.body.formattedDate
+    req.body.currentDate
   ]
   
   const sql = "INSERT INTO avaliations (`user_id`,`barbearia_id`, `estrelas`, `comentarios`, `data_avaliacao`) VALUES (?)";
