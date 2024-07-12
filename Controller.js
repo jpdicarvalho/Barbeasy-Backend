@@ -493,7 +493,7 @@ app.post("/api/v1/saveAvaliation", AuthenticateJWT, (req, res) => {
     req.body.user_id, 
     req.body.barbeariaId, 
     req.body.avaliation, 
-    req.body.comment, 
+    comment,
     req.body.formattedDate
   ]
   
