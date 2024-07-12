@@ -534,12 +534,12 @@ app.post("/api/v1/saveAvaliation", AuthenticateJWT, (req, res) => {
 //Buscando a avaliação da barbearia em especifico
 app.get('/api/v1/allAvaliation/:barbeariaId', AuthenticateJWT, async(req, res)=>{
   const barbeariaId = req.params.barbeariaId;
-  const sql=`SELECT id,
-                    user_id,
-                    barbearia_id,
-                    estrelas,
-                    comentarios,
-                    data_avaliacao,
+  const sql=`SELECT avaliations.id,
+                    avaliations.user_id,
+                    avaliations.barbearia_id,
+                    avaliations.estrelas,
+                    avaliations.comentarios,
+                    avaliations.data_avaliacao,
                     user.name AS userName,
                     user.user_image AS userImage
               FROM avaliations
