@@ -490,14 +490,14 @@ app.post("/api/v1/saveAvaliation", AuthenticateJWT, (req, res) => {
   }
 
   const values = [
-    req.body.userName, 
+    req.body.user_id, 
     req.body.barbeariaId, 
     req.body.avaliation, 
     req.body.comment, 
     req.body.formattedDate
   ]
   
-  const sql = "INSERT INTO avaliations (`user_name`,`barbearia_id`, `estrelas`, `comentarios`, `data_avaliacao`) VALUES (?)";
+  const sql = "INSERT INTO avaliations (`user_id`,`barbearia_id`, `estrelas`, `comentarios`, `data_avaliacao`) VALUES (?)";
   db.query(sql, [values], (err, resul) => {
     if (err) {
       console.error(err);
@@ -534,7 +534,17 @@ app.post("/api/v1/saveAvaliation", AuthenticateJWT, (req, res) => {
 //Buscando a avaliação da barbearia em especifico
 app.get('/api/v1/allAvaliation/:barbeariaId', AuthenticateJWT, async(req, res)=>{
   const barbeariaId = req.params.barbeariaId;
-  const sql="SELECT * FROM avaliations WHERE barbearia_id = ?";
+  const sql=`SELECT id,
+                    user_id,
+                    barbearia_id,
+                    estrelas,
+                    comentarios,
+                    data_avaliacao,
+                    user.name AS userName,
+                    user.user_image AS userImage
+              FROM avaliations
+              INNER JOIN user ON user.id = avaliations.user_id
+              WHERE barbearia_id = ?`;
     db.query(sql, [barbeariaId], (err, resul) => {
       if (err){
         console.error("Erro ao buscar avaliações:", err);
