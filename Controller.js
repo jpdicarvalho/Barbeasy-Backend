@@ -103,7 +103,7 @@ const isNameValided = (input) => /^[a-zA-Z]+$/.test(input);
 const isOnlyNumberValided = (input) => /^[0-9]*$/.test(input);
 const isEmailValided = (input) => /^[a-z0-9.@]+$/i.test(input);
 const isPasswordValided = (input) => /^[a-zA-Z0-9@.#%]+$/.test(input);
-const isSignUpBarbeariaValid = (input) => /^[a-zA-Z\sçéúíóáõãèòìàêôâ]*$/.test(input);
+const isSignUpBarbeariaValid = (input) => /^[a-zA-Z\sçéúíóáõãèòìàêôâ.!?]*$/.test(input);
 
 
 /* Inicializando o Swagger
