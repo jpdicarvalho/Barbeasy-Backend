@@ -430,8 +430,8 @@ app.get('/api/v1/getAllBarbearias', AuthenticateJWT, async (req, res) => {
                       barbearia.cidade AS cidadeBarbearia,
                       averageAvaliations.totalAvaliations AS totalAvaliationsBarbearia,
                       averageAvaliations.average AS averageAvaliationsBarbearia
-                FROM barbearia
-                INNER JOIN averageAvaliations ON averageAvaliations.barbearia_id = barbearia.id`;
+                  FROM barbearia
+                  LEFT JOIN averageAvaliations ON averageAvaliations.barbearia_id = barbearia.id`;
     db.query(sql, (err, resul) => {
       if (err){
         console.error("Erro ao buscar barbearias:", err);
