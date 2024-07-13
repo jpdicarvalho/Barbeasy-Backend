@@ -438,13 +438,14 @@ app.get('/api/v1/getAllBarbearias', AuthenticateJWT, async (req, res) => {
         return res.status(500).json({ Success: "Error", Message: "Erro ao buscar barbearias" });
       }
       if(resul.length > 0){
+        console.log(resul)
         db.query('SELECT name, barbearia_id FROM servico', (erro, result) => {
           if(erro) {
             console.error("Erro ao buscar nome dos serviços", erro);
             return res.status(500).json({Error: "Internal Server Error"});
           }
           if(result.length > 0){
-
+            console.log(result)
             const combineData = (barbearias, servicos) => {
               return barbearias.map(barbearia => {
                 // Filtra os serviços que pertencem à barbearia atual
@@ -455,6 +456,7 @@ app.get('/api/v1/getAllBarbearias', AuthenticateJWT, async (req, res) => {
             };
             
             const barbeariasComServicos = combineData(resul, result);
+            console.log(barbeariasComServicos)
             return res.status(200).json({barbearias: barbeariasComServicos});
           }
         })
