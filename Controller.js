@@ -1972,22 +1972,22 @@ app.post('/api/v1/createProfessional', AuthenticateJWT, (req, res) => {
   const fakeNameUserImage = 'default.png';
 
   // Verifica se newNameProfessional contém apenas letras maiúsculas e minúsculas
-  if (!isNameValided(newNameProfessional)) {
+  if (!isNameValided(newNameProfessional) && newNameProfessional.length > 30) {
     return res.status(400).json({ error: 'Error in values' });
   }
 
   // Verifica se newPhoneProfessional contém apenas letras maiúsculas e minúsculas
-  if (!isOnlyNumberValided(newPhoneProfessional)) {
+  if (!isOnlyNumberValided(newPhoneProfessional) && newPhoneProfessional.length > 11 || newPhoneProfessional.length < 10 ) {
     return res.status(400).json({ error: 'Error in values' });
   }
 
   // Verifica se newEmailProfessional contém apenas letras maiúsculas e minúsculas
-  if (!isEmailValided(newEmailProfessional)) {
+  if (!isEmailValided(newEmailProfessional) && newEmailProfessional.length > 50) {
     return res.status(400).json({ error: 'Error in values' });
   }
 
   // Verifica se newPasswordProfessional contém apenas letras maiúsculas e minúsculas
-  if (!isPasswordValided(newPasswordProfessional)) {
+  if (!isPasswordValided(newPasswordProfessional) && newPasswordProfessional.length > 8) {
     return res.status(400).json({ error: 'Error in values' });
   }
 
