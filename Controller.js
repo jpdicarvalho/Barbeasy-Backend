@@ -445,7 +445,6 @@ app.get('/api/v1/getAllBarbearias', AuthenticateJWT, async (req, res) => {
             return res.status(500).json({Error: "Internal Server Error"});
           }
           if(result.length > 0){
-            console.log(result)
             const combineData = (barbearias, servicos) => {
               return barbearias.map(barbearia => {
                 // Filtra os serviços que pertencem à barbearia atual
