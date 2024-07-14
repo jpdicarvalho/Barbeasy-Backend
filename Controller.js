@@ -1865,7 +1865,7 @@ app.put('/api/v1/updateService/:barbeariaId/:professionalId', AuthenticateJWT, (
   }
   if (editedDuration) {
       // Verifica se a str de duração do serviço contém letras e números apenaas
-      if (!isEmailValided(duracao) && duracao.length > 5) {
+      if (!isEmailValided(editedDuration) && editedDuration.length > 5) {
         return res.status(400).json({ error: 'Error in values' });
       }
       query += ` duracao = ?,`;
