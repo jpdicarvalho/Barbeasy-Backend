@@ -2237,9 +2237,9 @@ app.put('/api/v1/updateDayOff/:barbeariaId/:professionalId', AuthenticateJWT, (r
   const timesLockedByProfessional = req.body.timesLocked;
   const confirmPassword = req.body.confirmPassword;
 
-  //Sql to verify if password of barbearia is validated
-  const sqlVerifyPassword="SELECT usuario FROM barbearia WHERE barbearia_id = ? AND senha = ?";
-  db.query(sqlVerifyPassword, [confirmPassword], (erroVerifySenha, resultVerifySenha) =>{
+  //Sql to verify if password of barbearia is validated. The 'select usuario' don't matter, its there because is necessary select something
+  const sqlVerifyPassword="SELECT usuario FROM barbearia WHERE id = ? AND senha = ?";
+  db.query(sqlVerifyPassword, [barbeariaId, confirmPassword], (erroVerifySenha, resultVerifySenha) =>{
     if(erroVerifySenha){//If the password is wrong
       console.error("Erro ao obter folgas do professional", err);
       return res.status(404).json({ Error: "password is not validated" });
