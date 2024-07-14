@@ -71,7 +71,7 @@ const logger = winston.createLogger({// Configuração do Winston para registrar
 //===================== MIDDLEWARE TO RATE LIMIT =====================
 const limiter = rateLimit({// Configurar limitação de taxa
   windowMs: 30 * 60 * 1000, // 15 minutos
-  max: 5000, // Limite de 100 requisições por IP
+  max: 8000, // Limite de 100 requisições por IP
   message: 'Error in request'
 });
 
