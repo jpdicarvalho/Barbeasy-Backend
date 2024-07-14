@@ -1840,20 +1840,36 @@ app.put('/api/v1/updateService/:barbeariaId/:professionalId', AuthenticateJWT, (
 
   // Verifique se os campos estão preenchidos e adicione à query
   if (editedServiceName) {
-    query += ` name = ?,`;
-    values.push(editedServiceName);
+      // Verifica se number contém apenas números
+      if (!isSignUpBarbeariaValid(editedServiceName) && editedServiceName.length > 150) {
+        return res.status(400).json({ error: 'Error in values' });
+      }
+      query += ` name = ?,`;
+      values.push(editedServiceName);
   }
   if (editedServicePrice) {
-    query += ` preco = ?,`;
-    values.push(editedServicePrice);
+      // Verifica se number contém apenas números
+      if (!isOnlyNumberValided(editedServicePrice) && editedServicePrice.length > 10) {
+        return res.status(400).json({ error: 'Error in values' });
+      }
+      query += ` preco = ?,`;
+      values.push(editedServicePrice);
   }
   if (editedCommissionFee) {
-    query += ` commission_fee = ?,`;
-    values.push(editedCommissionFee);
+      // Verifica se number contém apenas números
+      if (!isOnlyNumberValided(editedCommissionFee) && editedCommissionFee.length > 10) {
+        return res.status(400).json({ error: 'Error in values' });
+      }
+      query += ` commission_fee = ?,`;
+      values.push(editedCommissionFee);
   }
   if (editedDuration) {
-    query += ` duracao = ?,`;
-    values.push(editedDuration);
+      // Verifica se a str de duração do serviço contém letras e números apenaas
+      if (!isEmailValided(duracao) && duracao.length > 5) {
+        return res.status(400).json({ error: 'Error in values' });
+      }
+      query += ` duracao = ?,`;
+      values.push(editedDuration);
   }
 
   // Remova a última vírgula da query
