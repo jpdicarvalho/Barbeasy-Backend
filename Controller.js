@@ -2275,6 +2275,8 @@ app.put('/api/v1/updateDayOff/:barbeariaId/:professionalId', AuthenticateJWT, (r
           })
         }
       })
+    }else{
+      return res.status(200).json({ Success: "Falied"});//Enviando o array com os horários
     }
   })
 });
