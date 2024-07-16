@@ -2361,7 +2361,6 @@ app.delete('/api/v1/unlinkProfessional/:barbeariaId/:professionalId/:confirmPass
   const professionalId = req.params.professionalId;
   const password = req.params.confirmPassword;
   
-  console.log(barbeariaId, professionalId, password)
   const sqlVerifyPassword = "SELECT usuario FROM barbearia WHERE senha = ?";
   db.query(sqlVerifyPassword, [password], (errVerifyPassword, resVerifyPassword) =>{
     if(errVerifyPassword){
@@ -2372,15 +2371,42 @@ app.delete('/api/v1/unlinkProfessional/:barbeariaId/:professionalId/:confirmPass
       const sqlDeleteBarbProfessional = "DELETE FROM Barb_Professional WHERE barbearia_id = ? AND professional_id = ?";
       db.query(sqlDeleteBarbProfessional, [barbeariaId, professionalId], (errDeleteBarbProfessional, resDeleteBarbProfessional) =>{
         if(errDeleteBarbProfessional){
-          console.error("Erro ao verificar senha", errDeleteBarbProfessional);
+          console.error("Erro ao desvincular o profissional", errDeleteBarbProfessional);
           return res.status(500).json({ Error: "Internal Server Error" });
-        }if(resDeleteBarbProfessional){
-          const sqlDeleteBarbProfessional = "DELETE FROM Barb_Professional WHERE barbearia_id = ? AND professional_id = ?";
+        }
+        if(resDeleteBarbProfessional){
+          const sqlDeleteAgenda = "DELETE FROM agenda WHERE barbearia_id = ? AND professional_id = ?";
+          db.query(sqlDeleteAgenda, [barbeariaId, professionalId], (errDeleteAgenda, resDeleteAgenda) =>{
+            if(errDeleteAgenda){
+              console.error("Erro ao desvincular o profissional", errDeleteAgenda);
+              return res.status(500).json({ Error: "Internal Server Error" });
+            }
+            if(resDeleteAgenda){
+              const sqlDeleteDaysOff = "DELETE FROM days_off WHERE barbearia_id = ? AND professional_id = ?";
+              db.query(sqlDeleteDaysOff, [barbeariaId, professionalId], (errDeleteDaysOff, resDeleteDaysOff) =>{
+                if(errDeleteDaysOff){
+                  console.error("Erro ao desvincular o profissional", errDeleteDaysOff);
+                  return res.status(500).json({ Error: "Internal Server Error" });
+                }
+                if(resDeleteDaysOff){
+                  const sqlDeleteService = "DELETE FROM servico WHERE barbearia_id = ? AND professional_id = ?";
+                  db.query(sqlDeleteService, [barbeariaId, professionalId], (errDeleteService, resDeleteService) =>{
+                    if(errDeleteService){
+                      console.error("Erro ao desvincular o profissional", errDeleteService);
+                      return res.status(500).json({ Error: "Internal Server Error" });
+                    }
+                    if(resDeleteService){
+                      return res.status(200).json({ Success: "Success"});
+                    }
+                  })
+                }
+              })
+            }
+          })
         }
       })
     }
   })
-  return res.status(200).json({ Success: "Success"});
 })
 
 
