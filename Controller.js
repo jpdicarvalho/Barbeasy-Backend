@@ -2356,14 +2356,15 @@ app.get('/api/v1/professionalBookings/:barbeariaId/:professionalId/:selectedDate
       })
 })
 
-app.delete('/api/v1/unlinkProfessional/:barbeariaId/:professionalId', AuthenticateJWT, (req, res) => {
+app.delete('/api/v1/unlinkProfessional/:barbeariaId/:professionalId/:confirmPassword', AuthenticateJWT, (req, res) => {
   const barbeariaId = req.params.barbeariaId;
   const professionalId = req.params.professionalId;
-  const password = req.body.confirmPassword;
+  const password = req.params.confirmPassword;
   
   console.log(barbeariaId, professionalId, password)
   /*const sqlVerifyPassword = "SELECT usuario FROM barbearia WHERE senha = ?";
   db.query(sqlVerifyPassword, [])*/
+  return res.status(200).json({ Success: "Success"});
 })
 
 
