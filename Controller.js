@@ -2356,6 +2356,17 @@ app.get('/api/v1/professionalBookings/:barbeariaId/:professionalId/:selectedDate
       })
 })
 
+app.delete('/api/v1/unlinkProfessional/:barbeariaId/:professionalId', AuthenticateJWT, (req, res) => {
+  const barbeariaId = req.params.barbeariaId;
+  const professionalId = req.params.professionalId;
+  const password = req.body.confirmPassword;
+  
+  console.log(barbeariaId, professionalId, password)
+  /*const sqlVerifyPassword = "SELECT usuario FROM barbearia WHERE senha = ?";
+  db.query(sqlVerifyPassword, [])*/
+})
+
+
 // Inicia o servidor na porta especificada
 app.listen(port, () => {
     console.log("Servidor rodando");
