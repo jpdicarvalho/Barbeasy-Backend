@@ -2328,9 +2328,9 @@ app.get('/api/v1/professionalBookings/:barbeariaId/:professionalId/:selectedDate
 
   const sql=`
         SELECT
-          user.id AS user_id,
           user.name user_name,
           user.celular AS user_phone,
+          user.user_image AS user_image,
           booking.id AS booking_id,
           booking.booking_date AS booking_date,
           booking.booking_time AS booking_time,
