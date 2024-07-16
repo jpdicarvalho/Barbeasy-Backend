@@ -2362,8 +2362,24 @@ app.delete('/api/v1/unlinkProfessional/:barbeariaId/:professionalId/:confirmPass
   const password = req.params.confirmPassword;
   
   console.log(barbeariaId, professionalId, password)
-  /*const sqlVerifyPassword = "SELECT usuario FROM barbearia WHERE senha = ?";
-  db.query(sqlVerifyPassword, [])*/
+  const sqlVerifyPassword = "SELECT usuario FROM barbearia WHERE senha = ?";
+  db.query(sqlVerifyPassword, [password], (errVerifyPassword, resVerifyPassword) =>{
+    if(errVerifyPassword){
+      console.error("Erro ao verificar senha", errVerifyPassword);
+      return res.status(500).json({ Error: "Internal Server Error" });
+    }
+    if(resVerifyPassword.length > 0){
+      const sqlDeleteBarbProfessional = "DELETE FROM Barb_Professional WHERE barbearia_id = ? AND professional_id = ?";
+      db.query(sqlDeleteBarbProfessional, [barbeariaId, professionalId], (errDeleteBarbProfessional, resDeleteBarbProfessional) =>{
+        if(errDeleteBarbProfessional){
+          console.error("Erro ao verificar senha", errDeleteBarbProfessional);
+          return res.status(500).json({ Error: "Internal Server Error" });
+        }if(resDeleteBarbProfessional){
+          const sqlDeleteBarbProfessional = "DELETE FROM Barb_Professional WHERE barbearia_id = ? AND professional_id = ?";
+        }
+      })
+    }
+  })
   return res.status(200).json({ Success: "Success"});
 })
 
