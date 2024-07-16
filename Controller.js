@@ -2166,12 +2166,11 @@ app.post('/api/v1/createBooking/', AuthenticateJWT, (req, res) => {
     req.body.userId,
     req.body.barbeariaId,
     req.body.professionalId,
+    req.body.serviceId,
     req.body.selectedDay,
     req.body.timeSelected];
   const formatDate = req.body.formattedDate;
-  const token = values.join('-')
-  const serviceName = req.body.serviceName;
-  const servicePrice =  req.body.servicePrice;
+  const token = values.join('-');
 
   
   const sqlSelect="SELECT token FROM booking WHERE token = ?";
@@ -2183,8 +2182,8 @@ app.post('/api/v1/createBooking/', AuthenticateJWT, (req, res) => {
     if(resut.length > 0){
       return res.status(401).json({ Unauthorized: 'Unauthorized' });
     }else{
-      const sqlInsert = "INSERT INTO booking (user_id, barbearia_id, professional_id, booking_date, booking_time, date, token, service_name, service_price) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
-      db.query(sqlInsert, [...values, formatDate, token, serviceName, servicePrice], (erro, results) => {
+      const sqlInsert = "INSERT INTO booking (user_id, barbearia_id, professional_id, service_id, booking_date, booking_time, date, token) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+      db.query(sqlInsert, [...values, formatDate, token], (erro, results) => {
         if(erro){
           console.error('Erro ao realizar agendamento:', erro);
           return res.status(500).json({ Error: ' Internal Server Error' });
