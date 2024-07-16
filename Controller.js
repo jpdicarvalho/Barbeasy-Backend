@@ -2334,11 +2334,8 @@ app.get('/api/v1/professionalBookings/:barbeariaId/:professionalId/:selectedDate
           booking.id AS booking_id,
           booking.booking_date AS booking_date,
           booking.booking_time AS booking_time,
-          booking.date AS date_booking_was__made,
-          booking.service_name AS service_name,
-          booking.service_price AS service_price,
-          professional.id AS professional_id,
-          professional.name AS professional_name,
+          servico.name AS service_name,
+          servico.price AS service_price,
           servico.duracao AS service_duration,
           servico.commission_fee AS service_commission_fee
       FROM user
