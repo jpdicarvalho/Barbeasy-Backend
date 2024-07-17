@@ -2077,6 +2077,23 @@ app.post('/api/v1/acceptNotification', AuthenticateJWT, (req, res) => {
     })
 });
 
+//Route to accept notification
+app.delete('/api/v1/rejectNotification/:barbeariaId/:professionalId', AuthenticateJWT, (req, res) => {
+  const barbeariaId = req.params.barbeariaId;
+  const professionalId = req.params.professionalId;
+
+  const sqlDelete = "DELETE FROM notificationProfessional WHERE barbearia_id = ? AND professional_id = ?"
+  db.query(sqlDelete, [barbeariaId, professionalId], (erro, result) =>{
+    if(erro){
+      console.error('Erro ao apagar notificação:', erro);
+      return res.status(500).json({ Error: "Error" });
+    }
+    if(result){
+      return res.status(200).json({ Success: "Success"});
+    }
+  })
+});
+
 //Rota para obter os profissionais da barbearia em  específico
 app.get('/api/v1/listProfessionalToBarbearia/:barbeariaId', AuthenticateJWT, (req, res) => {
   const barbeariaId = req.params.barbeariaId;
