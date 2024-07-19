@@ -2059,26 +2059,40 @@ app.post('/api/v1/createProfessional', AuthenticateJWT, (req, res) => {
 app.post('/api/v1/acceptNotification', AuthenticateJWT, (req, res) => {
     const barbeariaId = req.body.barbeariaId;
     const professionalId = req.body.professionalId;
-    const sql="INSERT INTO Barb_Professional (barbearia_id, professional_id) VALUES (?, ?)"
-    db.query(sql, [barbeariaId, professionalId], (err, resul) =>{
-      if(err){
-        console.error('Erro ao criar vinculo do profissional com a barbearia:', err);
+    
+    //Consult to verify if professional have a relationship with barbearia
+    const verifyRelationship = "SELECT professional_id FROM Barb_Professional WHERE barbearia_id = ? AND professional_id = ?";
+    db.query(verifyRelationship, [barbeariaId, professionalId], (errVerify, resultVerify) =>{
+      if(errVerify){
+        console.error('Erro ao verificar vínculo do profissional com a barbearia:', errVerify);
         return res.status(500).json({ Error: "Error" });
       }
-      if(resul){
-        const sqlDelete = "DELETE FROM notificationProfessional WHERE barbearia_id = ? AND professional_id = ?"
-        db.query(sqlDelete, [barbeariaId, professionalId], (erro, result) =>{
-          if(erro){
-            console.error('Erro ao apagar notificação:', erro);
+      if(resultVerify.length === 0){
+        const sql="INSERT INTO Barb_Professional (barbearia_id, professional_id) VALUES (?, ?)"
+        db.query(sql, [barbeariaId, professionalId], (err, resul) =>{
+          if(err){
+            console.error('Erro ao criar vinculo do profissional com a barbearia:', err);
             return res.status(500).json({ Error: "Error" });
-          }else{
-            if(result){
-              return res.status(200).json({ Success: "Success"});
-            }
+          }
+          if(resul){
+            const sqlDelete = "DELETE FROM notificationProfessional WHERE barbearia_id = ? AND professional_id = ?"
+            db.query(sqlDelete, [barbeariaId, professionalId], (erro, result) =>{
+              if(erro){
+                console.error('Erro ao apagar notificação:', erro);
+                return res.status(500).json({ Error: "Error" });
+              }else{
+                if(result){
+                  return res.status(200).json({ Success: "Success"});
+                }
+              }
+            })
           }
         })
+      }else{
+        return res.status(401).json({ Error: "Unauthorized: professional have a relationship with barbearia"});
       }
     })
+    
 });
 
 //Route to accept notification
