@@ -1959,9 +1959,12 @@ app.get('/api/v1/notificationToProfe/:professional_id', AuthenticateJWT, (req, r
                     barbearia.rua AS ruaBarbearia,
                     barbearia.N AS nRuaBarbearia,
                     barbearia.bairro AS bairroBarbearia,
-                    barbearia.cidade AS cidadeBarbearia
+                    barbearia.cidade AS cidadeBarbearia,
+                    averageAvaliations.totalAvaliations AS totalAvaliations,
+                    averageAvaliations.average AS average
               FROM notificationProfessional
               INNER JOIN barbearia ON barbearia.id = notificationProfessional.barbearia_id
+              INNER JOIN averageAvaliations ON averageAvaliations.barbearia_id = notificationProfessional.barbearia_id
               WHERE professional_id = ?`;
 
   db.query(sql, [professionalId], (err, result) =>{
