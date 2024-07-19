@@ -2059,7 +2059,7 @@ app.post('/api/v1/createProfessional', AuthenticateJWT, (req, res) => {
 app.post('/api/v1/acceptNotification', AuthenticateJWT, (req, res) => {
     const barbeariaId = req.body.barbeariaId;
     const professionalId = req.body.professionalId;
-    
+
     //Consult to verify if professional have a relationship with barbearia
     const verifyRelationship = "SELECT professional_id FROM Barb_Professional WHERE barbearia_id = ? AND professional_id = ?";
     db.query(verifyRelationship, [barbeariaId, professionalId], (errVerify, resultVerify) =>{
@@ -2141,8 +2141,9 @@ app.get('/api/v1/listBarbeariaToProfessional/:professionalId', AuthenticateJWT, 
   const professionalId = req.params.professionalId;
 
   const sql=`SELECT barbearia_id AS barbeariaId,
-                barbearia.name AS nameBarbearia,
-                barbearia.status AS statusBarbearia
+                    barbearia.name AS nameBarbearia,
+                    barbearia.status AS statusBarbearia,
+                    barbearia.banner_main AS banner_main
              FROM Barb_Professional
              INNER JOIN barbearia ON barbearia.id = Barb_Professional.barbearia_id
              WHERE professional_id = ?`
