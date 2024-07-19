@@ -198,6 +198,7 @@ app.post('/api/v1/SignIn', async (req, res) => {
       res.send({err: err});
     }
     if (result.length > 0) {
+      console.log(result)
       const user = result[0];
       // Criação do token
       const token = jwt.sign({ userId: user.id, userEmail: user.email }, process.env.TOKEN_SECRET_WORD_OF_USER_CLIENT, { expiresIn: "3h" });
