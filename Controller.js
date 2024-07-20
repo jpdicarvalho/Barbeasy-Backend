@@ -1511,6 +1511,45 @@ app.get('/api/v1/updatePasswordBarbearia', AuthenticateJWT, (req, res) => {
   })
 });
 
+//Rota para atualizar a senha de usuário da barbearia
+app.put('/api/v1/updatePasswordProfessional', AuthenticateJWT, (req, res) => {
+  const professionalId = req.body.professionalId;
+  const passwordConfirm = req.body.passwordConfirm;
+  const newPassword = req.body.newPassword;
+
+  // Verifica se senha contém apenas letras maiúsculas e minúsculas e alguns caracteres especiais
+  if (!isPasswordValided(passwordConfirm) && passwordConfirm.length <= 8) {
+    return res.status(400).json({ error: 'Error in values' });
+  }
+
+  // Verifica se senha contém apenas letras maiúsculas e minúsculas e alguns caracteres especiais
+  if (!isPasswordValided(newPassword) && newPassword.length <= 8) {
+    return res.status(400).json({ error: 'Error in values' });
+  }
+  
+  const sql = "SELECT password FROM professional WHERE id = ? AND password = ?";
+  db.query(sql, [professionalId, passwordConfirm], (err, resul) => {
+    if(err) {
+      console.error("Erro ao comparar senha de usuário", err);
+      return res.status(500).json({Error: "Internal Server Error"});
+    }
+    if(resul.length > 0) {
+      const sql = "UPDATE professional SET password = ? WHERE id = ?";
+      db.query(sql, [newPassword, professionalId], (erro, result) =>{
+        if(erro){
+          console.error("Erro ao atualizar a senha de usuário barbearia", erro);
+          return res.status(500).json({Error: "Internal Server Error"});
+        }
+        if(result){
+          return res.status(200).json({ Success: "Success"});
+        }
+      })
+    }else{
+      return res.status(404).json({ Success: "Falied"});
+    }
+  })
+});
+
 //Route to update the 'agenda' of professional
 app.put('/api/v1/updateAgenda/:barbeariaId/:professionalId', AuthenticateJWT, (req, res) => {
   //Obtendo as variáveis enviadas
