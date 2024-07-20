@@ -250,7 +250,7 @@ app.put('/api/v1/updateUserImage', AuthenticateJWT, upload.single('image'), (req
   }
 
   //formating the name of image sent
-  const nameImgaSubstring = newImageUser.substring(0, 29)
+  const nameImgaSubstring = newImageUser.substring(0, 22)
   const formatNameImage = `userClient_${userId}_${currentDateTime.getFullYear()}${(currentDateTime.getMonth() + 1).toString().padStart(2, '0')}${currentDateTime.getDate().toString().padStart(2, '0')}_`;
 console.log('nameImgaSubstring', nameImgaSubstring)
 console.log('formatNameImage', formatNameImage)
