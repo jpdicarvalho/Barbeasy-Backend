@@ -956,8 +956,8 @@ app.put('/api/v1/updateUserImageProfessional', AuthenticateJWT, upload.single('i
           console.error('Send Error:', sendErr);
         }else{
           //Atualizando a coluna 'user_image' com a nova imagem do usuário
-          const sql = "UPDATE professional SET user_image = ? WHERE id = ? AND password = ?";
-          db.query(sql, [newImageUser, professionalId], (updateErr, updateResult) => {
+          const sql = "UPDATE professional SET user_image = ? WHERE id = ? AND password =?";
+          db.query(sql, [newImageUser, professionalId, password], (updateErr, updateResult) => {
             if (updateErr) {
               //Mensagem de erro caso não seja possuível realizar a atualização da imagem no Banco de Dados
               console.error('Error on Update Image:', updateErr);
@@ -1101,8 +1101,8 @@ app.put('/api/v1/updateBannersImages', AuthenticateJWT, upload.array('images'), 
             const bannerImagesNameString = bannerImagesName.join(','); 
 
             //Atualizando o nome das imagens banner no BD MySQL
-            const sql = "UPDATE barbearia SET banner_main = ?, banners = ? WHERE id = ?";
-            db.query(sql, [bannerMain, bannerImagesNameString, barbeariaId], (err, result) => {
+            const sql = "UPDATE barbearia SET banner_main = ?, banners = ? WHERE id = ? AND senha = ?";
+            db.query(sql, [bannerMain, bannerImagesNameString, barbeariaId, confirmPassword], (err, result) => {
               if (err) {
                 console.error('Erro ao atualizar o nome das imagens no banco de dados:', err);
                 return res.status(500).json({ error: 'Internal Server Error' });
