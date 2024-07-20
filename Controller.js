@@ -921,6 +921,12 @@ app.put('/api/v1/updateUserImageProfessional', AuthenticateJWT, upload.single('i
     }
   }
 
+  const nameImgaSubstring = file.substring(0, 32)
+  const formatNameBanner = `useProfessionalId_${professionalId}_${currentDateTime.getFullYear()}${(currentDateTime.getMonth() + 1).toString().padStart(2, '0')}${currentDateTime.getDate().toString().padStart(2, '0')}_`;
+console.log('newImageUser', newImageUser);
+console.log('nameImgaSubstring',nameImgaSubstring)
+console.log('formatNameBanner',formatNameBanner)
+
   //Buscando imagem atual salva no BD MySQL
   const currentImg = "SELECT user_image FROM professional WHERE id = ?";
   db.query(currentImg, [professionalId], (err, result) => {
