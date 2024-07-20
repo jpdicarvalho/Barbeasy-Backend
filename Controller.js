@@ -1475,7 +1475,7 @@ app.get('/api/v1/emailBarbearia/:barbeariaId', AuthenticateJWT, (req, res) => {
 });
 
 //Rota para atualizar a senha de usuário da barbearia
-app.get('/api/v1/updatePasswordBarbearia', AuthenticateJWT, (req, res) => {
+app.put('/api/v1/updatePasswordBarbearia', AuthenticateJWT, (req, res) => {
   const barbeariaId = req.query.barbeariaId;
   const passwordConfirm = req.query.passwordConfirm;
   const newPassword = req.query.newPassword;
