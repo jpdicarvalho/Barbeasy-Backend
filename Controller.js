@@ -908,6 +908,7 @@ app.get('/api/v1/AuthToUpdateData/', AuthenticateJWT, (req, res) =>{
 app.put('/api/v1/updateUserImageProfessional', AuthenticateJWT, upload.single('image'), (req, res) => {
   const professionalId = req.body.professionalId;
   const newImageUser = req.file.originalname;
+  const password = req.body.password;
 
   const allowedExtensions = ['jpg', 'jpeg', 'png'];
 
@@ -921,6 +922,7 @@ app.put('/api/v1/updateUserImageProfessional', AuthenticateJWT, upload.single('i
     }
   }
 
+  //formating the name of image sent
   const nameImgaSubstring = newImageUser.substring(0, 29)
   const formatNameImage = `useProfessionalId_${professionalId}_${currentDateTime.getFullYear()}${(currentDateTime.getMonth() + 1).toString().padStart(2, '0')}${currentDateTime.getDate().toString().padStart(2, '0')}_`;
 
@@ -931,8 +933,8 @@ app.put('/api/v1/updateUserImageProfessional', AuthenticateJWT, upload.single('i
   }
 
   //Buscando imagem atual salva no BD MySQL
-  const currentImg = "SELECT user_image FROM professional WHERE id = ?";
-  db.query(currentImg, [professionalId], (err, result) => {
+  const currentImg = "SELECT user_image FROM professional WHERE id = ? AND password = ?";
+  db.query(currentImg, [professionalId, password], (err, result) => {
     if(err){
       console.error('Error on Update Image:', err);
       return res.status(500).json({ error: 'Current Image - Internal Server Error' });
@@ -954,7 +956,7 @@ app.put('/api/v1/updateUserImageProfessional', AuthenticateJWT, upload.single('i
           console.error('Send Error:', sendErr);
         }else{
           //Atualizando a coluna 'user_image' com a nova imagem do usuário
-          const sql = "UPDATE professional SET user_image = ? WHERE id=?";
+          const sql = "UPDATE professional SET user_image = ? WHERE id = ? AND password = ?";
           db.query(sql, [newImageUser, professionalId], (updateErr, updateResult) => {
             if (updateErr) {
               //Mensagem de erro caso não seja possuível realizar a atualização da imagem no Banco de Dados
