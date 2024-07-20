@@ -921,7 +921,7 @@ app.put('/api/v1/updateUserImageProfessional', AuthenticateJWT, upload.single('i
     }
   }
 
-  const nameImgaSubstring = newImageUser.substring(0, 32)
+  const nameImgaSubstring = newImageUser.substring(0, 33)
   const formatNameBanner = `useProfessionalId_${professionalId}_${currentDateTime.getFullYear()}${(currentDateTime.getMonth() + 1).toString().padStart(2, '0')}${currentDateTime.getDate().toString().padStart(2, '0')}_`;
 console.log('newImageUser', newImageUser);
 console.log('nameImgaSubstring',nameImgaSubstring)
