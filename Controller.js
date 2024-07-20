@@ -921,11 +921,17 @@ app.put('/api/v1/updateUserImageProfessional', AuthenticateJWT, upload.single('i
     }
   }
 
-  const nameImgaSubstring = file.substring(0, 32)
+  const nameImgaSubstring = newImageUser.substring(0, 32)
   const formatNameBanner = `useProfessionalId_${professionalId}_${currentDateTime.getFullYear()}${(currentDateTime.getMonth() + 1).toString().padStart(2, '0')}${currentDateTime.getDate().toString().padStart(2, '0')}_`;
 console.log('newImageUser', newImageUser);
 console.log('nameImgaSubstring',nameImgaSubstring)
 console.log('formatNameBanner',formatNameBanner)
+
+  //verify if pre-fix name is valided
+  if(nameImgaSubstring != formatNameBanner){
+    console.error('Error to update image')
+    return res.status(400).json({ error: 'name are not allowed'});
+  }
 
   //Buscando imagem atual salva no BD MySQL
   const currentImg = "SELECT user_image FROM professional WHERE id = ?";
