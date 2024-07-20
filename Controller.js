@@ -922,13 +922,10 @@ app.put('/api/v1/updateUserImageProfessional', AuthenticateJWT, upload.single('i
   }
 
   const nameImgaSubstring = newImageUser.substring(0, 29)
-  const formatNameBanner = `useProfessionalId_${professionalId}_${currentDateTime.getFullYear()}${(currentDateTime.getMonth() + 1).toString().padStart(2, '0')}${currentDateTime.getDate().toString().padStart(2, '0')}_`;
-console.log('newImageUser', newImageUser);
-console.log('nameImgaSubstring',nameImgaSubstring)
-console.log('formatNameBanner',formatNameBanner)
+  const formatNameImage = `useProfessionalId_${professionalId}_${currentDateTime.getFullYear()}${(currentDateTime.getMonth() + 1).toString().padStart(2, '0')}${currentDateTime.getDate().toString().padStart(2, '0')}_`;
 
   //verify if pre-fix name is valided
-  if(nameImgaSubstring != formatNameBanner){
+  if(nameImgaSubstring != formatNameImage){
     console.error('Error to update image')
     return res.status(400).json({ error: 'name are not allowed'});
   }
