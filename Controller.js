@@ -1476,9 +1476,9 @@ app.get('/api/v1/emailBarbearia/:barbeariaId', AuthenticateJWT, (req, res) => {
 
 //Rota para atualizar a senha de usuário da barbearia
 app.put('/api/v1/updatePasswordBarbearia', AuthenticateJWT, (req, res) => {
-  const barbeariaId = req.query.barbeariaId;
-  const passwordConfirm = req.query.passwordConfirm;
-  const newPassword = req.query.newPassword;
+  const barbeariaId = req.body.barbeariaId;
+  const passwordConfirm = req.body.passwordConfirm;
+  const newPassword = req.body.newPassword;
 
   // Verifica se senha contém apenas letras maiúsculas e minúsculas e alguns caracteres especiais
   if (!isPasswordValided(passwordConfirm) && passwordConfirm.length <= 8) {
@@ -1491,20 +1491,22 @@ app.put('/api/v1/updatePasswordBarbearia', AuthenticateJWT, (req, res) => {
   }
   
   const sql = "SELECT senha FROM barbearia WHERE id = ? AND senha = ?";
-  db.query(sql, [barbeariaId, passwordConfirm], (err, result) => {
+  db.query(sql, [barbeariaId, passwordConfirm], (err, resul) => {
     if(err) {
       console.error("Erro ao comparar senha de usuário da barbearia", err);
       return res.status(500).json({Error: "Internal Server Error"});
     }
-    if(result.length > 0) {
+    if(resul.length > 0) {
       const sql = "UPDATE barbearia SET senha = ? WHERE id = ?";
-      db.query(sql, [newPassword, barbeariaId], (err, result) =>{
-        if(err){
-          console.error("Erro ao atualizar a senha de usuário barbearia", err);
+      db.query(sql, [newPassword, barbeariaId], (erro, result) =>{
+        if(erro){
+          console.error("Erro ao atualizar a senha de usuário barbearia", erro);
           return res.status(500).json({Error: "Internal Server Error"});
         }
+        if(result){
+          return res.status(200).json({ Success: "Success"});
+        }
       })
-      return res.status(200).json({ Success: "Success"});
     }else{
       return res.status(404).json({ Success: "Falied"});
     }
