@@ -77,8 +77,21 @@ const limiter = rateLimit({// Configurar limitação de taxa
 
 const port = process.env.PORT || 3000;
 
-//CORS Settings to Only Allow Frontend Deployment to Netlify
-const corsOptions = { origin: process.env.FRONTEND_URL, optionsSuccessStatus: 200, // Some browser versions may need this code
+const allowedOrigins = [
+  process.env.FRONTEND_URL,
+  process.env.LOCALHOST_URL,
+];
+
+const corsOptions = {
+  origin: function (origin, callback) {
+    // Verifica se a origem está na lista de URLs permitidas
+    if (allowedOrigins.includes(origin) || !origin) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  optionsSuccessStatus: 200 // Algumas versões de navegador podem precisar desse código
 };
 
 app.use(cors(corsOptions));
