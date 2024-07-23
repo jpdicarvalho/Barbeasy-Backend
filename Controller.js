@@ -933,7 +933,16 @@ app.put('/api/v1/saveAccessToken', AuthenticateJWT, (req, res) => {
   const barbeariaId = req.body.barbeariaId;
   const accessToken = req.body.accessToken;
 
-  console.log(barbeariaId, accessToken)
+  const sql='UPDATE barbearia SET access_token = ? WHERE id = ?';
+  db.query(sql, [accessToken, barbeariaId], (error, result) =>{
+    if(error){
+      console.error('Error on save access token:', error);
+      return res.status(500).json({ error: 'save access token - Internal Server Error' });
+    }
+    if(result){
+      return res.status(200).json({Success: 'Success'})
+    }
+  })
 
 })
 
