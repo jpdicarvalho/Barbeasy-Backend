@@ -930,9 +930,9 @@ app.get('/api/v1/AuthToUpdateData/', AuthenticateJWT, (req, res) =>{
 });
 
 app.put('/api/v1/saveAccessToken', AuthenticateJWT, (req, res) => {
-  const barbeariaId = req.body.barbeariaId;
+  const barbeariaId = req.body.barbeariaId ;
   const accessToken = req.body.accessToken;
-
+console.log(barbeariaId, accessToken)
   const sql='UPDATE barbearia SET access_token = ? WHERE id = ?';
   db.query(sql, [accessToken, barbeariaId], (error, result) =>{
     if(error){
