@@ -111,6 +111,7 @@ db.connect((error) => {
     console.log('Conexão bem-sucedida ao banco de dados!');
   }
 });
+
 //regex to valided values of input
 const isNameValided = (input) => /^[a-zA-Z\sçéúíóáõãèòìàêôâ]+$/.test(input);
 const isOnlyNumberValided = (input) => /^[0-9]*$/.test(input);
@@ -818,7 +819,8 @@ app.post("/api/v1/SignUpBarbearia", async (req, res) => {
       rua: street,
       N: number,
       bairro: neighborhood,
-      cidade: city
+      cidade: city,
+      access_token: 'access_token'
     };
 
     db.query('INSERT INTO barbearia SET ?', barbearia, (error, results) => {
@@ -926,6 +928,8 @@ app.get('/api/v1/AuthToUpdateData/', AuthenticateJWT, (req, res) =>{
     }
   })
 });
+
+app.put('/api/v1/saveAccessToken')
 
 //Upload de Imagem do Usuário Barbearia, na AWS S3  #VERIFIED
 app.put('/api/v1/updateUserImageProfessional', AuthenticateJWT, upload.single('image'), (req, res) => {
