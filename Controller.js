@@ -707,7 +707,7 @@ app.post('/api/v1/payment', AuthenticateJWT, (req, res) =>{
 
   // Step 2: Initialize the client object
   const client = new MercadoPagoConfig({
-    accessToken: 'APP_USR-7433076748534689-103020-f2ad6b84165928b9b0d4732a99d73ce6-752130654',
+    accessToken: 'APP_USR-7433076748534689-072320-fc064785922776f12238cb3122a76e0c-752130654',
       options: {
         timeout: 5000,
         idempotencyKey: 'abc'
@@ -717,16 +717,12 @@ app.post('/api/v1/payment', AuthenticateJWT, (req, res) =>{
   // Step 3: Initialize the API object
   const payment = new Payment(client);
 
-  const body = { 
-    transaction_amount: req.body.price,
+  const body = {  
+    transaction_amount: 13.12,
     description: 'Transação de teste',
     payment_method_id: 'pix',
       payer: {
         email: 'joao.pedro@gmail.com',
-        identification: { 
-          type: 'CPF',
-          number: 43671393246,
-        }
       }
     }
 
