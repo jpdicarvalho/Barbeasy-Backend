@@ -726,13 +726,9 @@ const accessTokenBarbearia = req.body.accessTokenBarbearia;
 const { transaction_amount, description, paymentMethodId, email, identificationType, number } = req.body;
 console.log(transaction_amount, description, paymentMethodId, email, identificationType, number)
 
-  const client = new MercadoPagoConfig({
-    accessToken: 'APP_USR-5940575729236381-072411-87ce618bdd0028f05a91c3d5b1d40745-752130654',
-      options: {
-        timeout: 5000,
-        idempotencyKey: 'abc'
-      }
-    });
+  // Step 2: Initialize the client object
+  const client = new MercadoPagoConfig({ accessToken: 'access_token', options: { timeout: 5000, idempotencyKey: 'abc' } });
+
 
   const payment = new Payment(client);
 
@@ -752,12 +748,13 @@ console.log(transaction_amount, description, paymentMethodId, email, identificat
     }
 
   payment.create({ body, requestOptions })
-  .then(result => {
-    return res.status(200).json({ Success: true, result: result.point_of_interaction.transaction_data.ticket_url });
+  .then((result) => {
+    console.log(result)
+    //return res.status(200).json({ Success: true, result: result.point_of_interaction.transaction_data.ticket_url });
   })
-  .catch(err => {
-    console.error('Erro:', err);
-    return res.status(400).json({ Success: false, message: 'Erro ao gerar pagamento', err: err});
+  .catch((error) => {
+    console.error('Erro:', error);
+    //return res.status(400).json({ Success: false, message: 'Erro ao gerar pagamento', err: err});
   });
 
 })
