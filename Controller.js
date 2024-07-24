@@ -723,13 +723,16 @@ app.get('/api/v1/accessTokenBarbearia/:barbeariaId', AuthenticateJWT, (req, res)
 //Route to Create payment
 app.post('/api/v1/payment', AuthenticateJWT, (req, res) =>{
 const accessTokenBarbearia = req.body.accessTokenBarbearia;
-
 const { transaction_amount, description, paymentMethodId, email, identificationType, number } = req.body;
-console.log(transaction_amount, description, paymentMethodId, email, identificationType, number)
 
   // Step 2: Initialize the client object
-  const client = new MercadoPagoConfig({ accessToken: 'APP_USR-5940575729236381-072411-bb284cb8738ca00000f47174f01370cf-752130654', options: { timeout: 5000, idempotencyKey: 'abc' } });
-
+  const client = new MercadoPagoConfig({
+    accessToken: `${accessTokenBarbearia}`,
+    options: {
+      timeout: 5000,
+      idempotencyKey: 'abc'
+    }
+  });
 
   const payment = new Payment(client);
 
