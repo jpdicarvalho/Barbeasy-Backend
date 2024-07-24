@@ -702,6 +702,22 @@ app.get('/api/v1/bookingsOfUser/:userId', AuthenticateJWT, (req, res) =>{
   })
 })
 
+//====================================== Routes about Payments ======================================
+app.get('/api/v1/accessTokenBarbearia/:barbeariaId', AuthenticateJWT, (req, res) =>{
+  const barbeariaId = req.params.barbeariaId;
+
+  const sql = 'SELECT access_token FROM barbearia WHERE id = ?';
+  db(sql, [barbeariaId], (err, resul) =>{
+    if(err){
+      console.error("Error in search access token of user", err);
+      return res.status(500).json({Error: "Internal Server Error"});
+    }
+    if(resul.length > 0){
+      return res.status(500).json({AccessToken: resul});
+    }
+  })
+})
+
 app.post('/api/v1/payment', AuthenticateJWT, (req, res) =>{
 
   const client = new MercadoPagoConfig({
