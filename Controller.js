@@ -725,8 +725,6 @@ app.post('/api/v1/payment', AuthenticateJWT, (req, res) =>{
 const accessTokenBarbearia = req.body.accessTokenBarbearia;
 const { transaction_amount, description, paymentMethodId, email, identificationType, number } = req.body;
 
-console.log(accessTokenBarbearia)
-  // Step 2: Initialize the client object
   const client = new MercadoPagoConfig({
     accessToken: accessTokenBarbearia,
     options: {
