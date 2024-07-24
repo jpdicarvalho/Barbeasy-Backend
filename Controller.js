@@ -738,7 +738,7 @@ console.log(accessTokenBarbearia)
   const payment = new Payment(client);
 
   const body = { 
-    transaction_amount: transaction_amount,
+    transaction_amount: Number(transaction_amount),
     description: description,
     payment_method_id: paymentMethodId,
     payer: {
@@ -758,7 +758,7 @@ console.log(accessTokenBarbearia)
   })
   .catch((error) => {
     console.error('Erro:', error);
-    return res.status(400).json({ Success: false, message: 'Erro ao gerar pagamento', err: err});
+    return res.status(400).json({ Success: false, message: 'Erro ao gerar pagamento', error: error});
   });
 
 })
