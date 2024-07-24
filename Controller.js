@@ -213,7 +213,6 @@ app.post('/api/v1/SignIn', async (req, res) => {
       res.send({err: err});
     }
     if (result.length > 0) {
-      console.log(result)
       const user = result[0];
       // Criação do token
       const token = jwt.sign({ userId: user.id, userEmail: user.email }, process.env.TOKEN_SECRET_WORD_OF_USER_CLIENT, { expiresIn: "3h" });
@@ -480,7 +479,6 @@ app.get('/api/v1/getAllBarbearias', AuthenticateJWT, async (req, res) => {
             };
             
             const barbeariasComServicos = combineData(resul, result);
-            console.log(barbeariasComServicos)
             return res.status(200).json({barbearias: barbeariasComServicos});
           }
         })
@@ -707,7 +705,7 @@ app.get('/api/v1/accessTokenBarbearia/:barbeariaId', AuthenticateJWT, (req, res)
   const barbeariaId = req.params.barbeariaId;
 
   const sql = 'SELECT access_token FROM barbearia WHERE id = ?';
-  db(sql, [barbeariaId], (err, resul) =>{
+  db.query(sql, [barbeariaId], (err, resul) =>{
     if(err){
       console.error("Error in search access token of user", err);
       return res.status(500).json({Error: "Internal Server Error"});
