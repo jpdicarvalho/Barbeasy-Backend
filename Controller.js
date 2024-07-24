@@ -464,7 +464,6 @@ app.get('/api/v1/getAllBarbearias', AuthenticateJWT, async (req, res) => {
         return res.status(500).json({ Success: "Error", Message: "Erro ao buscar barbearias" });
       }
       if(resul.length > 0){
-        console.log(resul)
         db.query('SELECT name, barbearia_id FROM servico', (erro, result) => {
           if(erro) {
             console.error("Erro ao buscar nome dos serviços", erro);
