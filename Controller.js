@@ -754,12 +754,11 @@ console.log(accessTokenBarbearia)
 
   payment.create({ body, requestOptions })
   .then((result) => {
-    console.log(result)
-    //return res.status(200).json({ Success: true, result: result.point_of_interaction.transaction_data.ticket_url });
+    return res.status(200).json({ Success: true, result: result.point_of_interaction.transaction_data.ticket_url });
   })
   .catch((error) => {
     console.error('Erro:', error);
-    //return res.status(400).json({ Success: false, message: 'Erro ao gerar pagamento', err: err});
+    return res.status(400).json({ Success: false, message: 'Erro ao gerar pagamento', err: err});
   });
 
 })
