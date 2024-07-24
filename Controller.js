@@ -732,8 +732,10 @@ app.post('/api/v1/payment', AuthenticateJWT, (req, res) =>{
 
   payment.create({ body, requestOptions })
   .then(result =>{
+    console.log(result)
     return res.status(200).json({ Success: 'true', data: result});
   }).catch(err =>{
+    console.log(err)
     return res.status(400).json({ Success: 'false', data: err});
   });
 
