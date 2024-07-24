@@ -727,7 +727,7 @@ const { transaction_amount, description, paymentMethodId, email, identificationT
 console.log(transaction_amount, description, paymentMethodId, email, identificationType, number)
 
   // Step 2: Initialize the client object
-  const client = new MercadoPagoConfig({ accessToken: 'APP_USR-5940575729236381-072411-bb284cb8738ca00000f47174f01370cf-752130654', options: { timeout: 5000, idempotencyKey: 'abc' } });
+  const client = new MercadoPagoConfig({ accessToken: 'APP_USR-7433076748534689-103020-f2ad6b84165928b9b0d4732a99d73ce6-752130654', options: { timeout: 5000, idempotencyKey: 'abc' } });
 
 
   const payment = new Payment(client);
