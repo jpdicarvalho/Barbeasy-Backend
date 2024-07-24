@@ -705,7 +705,7 @@ app.get('/api/v1/bookingsOfUser/:userId', AuthenticateJWT, (req, res) =>{
 app.post('/api/v1/payment', AuthenticateJWT, (req, res) =>{
 
   const client = new MercadoPagoConfig({
-    accessToken: 'TEST-7433076748534689-103020-9589823dd23695796b609bc3f25ecd91-752130654',
+    accessToken: 'APP_USR-7433076748534689-072320-fc064785922776f12238cb3122a76e0c-752130654',
       options: {
         timeout: 5000,
         idempotencyKey: 'abc'
