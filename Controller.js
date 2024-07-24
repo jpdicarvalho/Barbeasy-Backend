@@ -733,8 +733,13 @@ app.post('/api/v1/payment', AuthenticateJWT, (req, res) =>{
     }
 
   payment.create({ body, requestOptions })
-  .then((result) => console.log(result))
-  .catch((error) => console.log(error));
+  .then((result) =>{
+    return res.status(200).json({result: result})
+  })
+  .catch((error) => {
+    console.log('Erro:', error)
+    return res.status(400).json({Message: 'Erro ao gerar pagamento'})
+  });
 
 })
 
