@@ -704,9 +704,10 @@ app.get('/api/v1/bookingsOfUser/:userId', AuthenticateJWT, (req, res) =>{
 })
 
 app.post('/api/v1/payment', AuthenticateJWT, (req, res) =>{
+
   // Step 2: Initialize the client object
   const client = new MercadoPagoConfig({
-    accessToken: process.env.accessTokenMercadoPago,
+    accessToken: 'APP_USR-7433076748534689-103020-f2ad6b84165928b9b0d4732a99d73ce6-752130654',
       options: {
         timeout: 5000,
         idempotencyKey: 'abc'
@@ -717,7 +718,7 @@ app.post('/api/v1/payment', AuthenticateJWT, (req, res) =>{
   const payment = new Payment(client);
 
   const body = { 
-    transaction_amount: req.body.transaction_amount,
+    transaction_amount: 1,
     description: 'Transação de teste',
     payment_method_id: 'pix',
       payer: {
@@ -728,6 +729,7 @@ app.post('/api/v1/payment', AuthenticateJWT, (req, res) =>{
         }
       }
     }
+
     const requestOptions = {
       idempotencyKey: '<SOME_UNIQUE_VALUE>'
     }
