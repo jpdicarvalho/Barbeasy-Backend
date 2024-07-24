@@ -711,7 +711,9 @@ app.get('/api/v1/accessTokenBarbearia/:barbeariaId', AuthenticateJWT, (req, res)
       return res.status(500).json({Error: "Internal Server Error"});
     }
     if(resul.length > 0){
-      return res.status(200).json({AccessToken: resul});
+      return res.status(200).json({Success: true, AccessToken: resul});
+    }else{
+      return res.status(200).json({Success: false, Message: 'barbeaia não está habilitada para receber pagamentos'});
     }
   })
 })
@@ -719,7 +721,7 @@ app.get('/api/v1/accessTokenBarbearia/:barbeariaId', AuthenticateJWT, (req, res)
 app.post('/api/v1/payment', AuthenticateJWT, (req, res) =>{
 
   const client = new MercadoPagoConfig({
-    accessToken: 'APP_USR-7433076748534689-072320-fc064785922776f12238cb3122a76e0c-752130654',
+    accessToken: req.body.AccessToken,
       options: {
         timeout: 5000,
         idempotencyKey: 'abc'
