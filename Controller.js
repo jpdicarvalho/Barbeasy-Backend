@@ -707,7 +707,7 @@ app.post('/api/v1/payment', AuthenticateJWT, (req, res) =>{
 
   // Step 2: Initialize the client object
   const client = new MercadoPagoConfig({
-    accessToken: 'APP_USR-7433076748534689-072320-fc064785922776f12238cb3122a76e0c-752130654',
+    accessToken: 'APP_USR-7433076748534689-103020-f2ad6b84165928b9b0d4732a99d73ce6-752130654',
       options: {
         timeout: 5000,
         idempotencyKey: 'abc'
@@ -718,26 +718,23 @@ app.post('/api/v1/payment', AuthenticateJWT, (req, res) =>{
   const payment = new Payment(client);
 
   const body = {  
-    transaction_amount: 13.12,
-    description: 'Transação de teste',
-    payment_method_id: 'pix',
-      payer: {
-        email: 'joao.pedro@gmail.com',
-      }
-    }
+    transaction_amount: req.body.transaction_amount,
+        description: req.body.description,
+        payment_method_id: req.body.paymentMethodId,
+            payer: {
+            email: req.body.email,
+            identification: {
+        type: req.body.identificationType,
+        number: req.body.number
+    }}}
 
     const requestOptions = {
       idempotencyKey: '<SOME_UNIQUE_VALUE>'
     }
 
   payment.create({ body, requestOptions })
-  .then(result =>{
-    console.log(result)
-    return res.status(200).json({ Success: 'true', data: result});
-  }).catch(err =>{
-    console.log(err)
-    return res.status(400).json({ Success: 'false', data: err});
-  });
+  .then((result) => console.log(result))
+  .catch((error) => console.log(error));
 
 })
 
