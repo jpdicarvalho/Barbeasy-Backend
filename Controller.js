@@ -723,8 +723,7 @@ app.get('/api/v1/accessTokenBarbearia/:barbeariaId', AuthenticateJWT, (req, res)
 app.post('/api/v1/payment', AuthenticateJWT, (req, res) =>{
 const accessTokenBarbearia = req.body.accessTokenBarbearia;
 const { transaction_amount, description, paymentMethodId, email, identificationType, number } = req.body;
-console.log(payer, accessTokenBarbearia)
-
+console.log(transaction_amount, description, paymentMethodId, email, identificationType, number)
   const client = new MercadoPagoConfig({
     accessToken: String(accessTokenBarbearia),
       options: {
