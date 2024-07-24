@@ -7,7 +7,8 @@ import mysql from "mysql2";
 
 import jwt  from 'jsonwebtoken';
 import AuthenticateJWT from './AuthenticateJWT.js'
-import MercadoPago from "mercadopago";
+
+import { MercadoPagoConfig, Payment } from 'mercadopago';
 
 import multer from 'multer';
 import { S3Client, PutObjectCommand, GetObjectCommand, DeleteObjectCommand } from '@aws-sdk/client-s3';
@@ -702,59 +703,43 @@ app.get('/api/v1/bookingsOfUser/:userId', AuthenticateJWT, (req, res) =>{
   })
 })
 
-//Salvando o agendamento feito pelo cliente
-app.post('/api/v1/agendamento', (req, res) => {
-  const { selectedDate, selectedTime, selectedService, barbeariaId, userId} = req.body;
-  db.query('INSERT INTO agendamentos (dia_agendamento, horario, user_id, barbearia_id, servico_id) VALUES (?, ?, ?, ?, ?)', 
-    [selectedDate, selectedTime, userId, barbeariaId, selectedService], 
-    (err, results) => {
-      if (err) {
-        console.error('Erro ao inserir os dados:', err);
-        res.status(500).json({ message: 'Erro ao inserir os dados' });
-        return;
-      }
-      res.json({ message: 'Agendamento criado com sucesso' });
-  });
-});
-
-//RoutesPayment
-app.post('/api/Checkout', async (req, res) => {
-  //set API Mercago Pago
-  const client = new MercadoPago.MercadoPagoConfig({
+app.post('/api/v1/payment', AuthenticateJWT, (req, res) =>{
+  // Step 2: Initialize the client object
+  const client = new MercadoPagoConfig({
     accessToken: process.env.accessTokenMercadoPago,
-  });
-  
-  const preference = new MercadoPago.Preference(client);
+      options: {
+        timeout: 5000,
+        idempotencyKey: 'abc'
+      }
+    });
 
-  //create preferences
-  let body = {
-    items:[{
-          title: req.body.nameServico,
-          quantity: 1,
-          currency_id: 'BRL',
-          description: req.body.DescricaoServico,
-          unit_price: parseFloat(req.body.preco)
-    }],
-    payer:{
-      email: "demo@gmail.com"
-    },
-    payment_methods:{
-      installments:3
-    },
-    "back_urls": {
-      "success": "http://localhost:5173/",
-      "failure": "http://localhost:5173/failure",
-      "pending": "http://localhost:5173/pending"
-  },
-  "auto_return": "approved",
-  };
-  preference.create({ body }).then(function (data) {
-    res.send(JSON.stringify(data.init_point));
-    //console.log(data);
-   }).catch(function (error){
-     console.log(error);
-   });
-});
+  // Step 3: Initialize the API object
+  const payment = new Payment(client);
+
+  const body = { 
+    transaction_amount: req.body.transaction_amount,
+    description: 'Transação de teste',
+    payment_method_id: 'pix',
+      payer: {
+        email: 'joao.pedro@gmail.com',
+        identification: { 
+          type: 'CPF',
+          number: 43671393246,
+        }
+      }
+    }
+    const requestOptions = {
+      idempotencyKey: '<SOME_UNIQUE_VALUE>'
+    }
+
+  payment.create({ body, requestOptions })
+  .then(result =>{
+    return res.status(200).json({ Success: 'true', data: result});
+  }).catch(err =>{
+    return res.status(400).json({ Success: 'false', data: err});
+  });
+
+})
 
 //======================================= ROTAS USER-BARBEARIA ====================================
 
@@ -930,9 +915,9 @@ app.get('/api/v1/AuthToUpdateData/', AuthenticateJWT, (req, res) =>{
 });
 
 app.put('/api/v1/saveAccessToken', AuthenticateJWT, (req, res) => {
-  const barbeariaId = req.body.barbeariaId ;
+  const barbeariaId = req.body.barbeariaId;
   const accessToken = req.body.accessToken;
-console.log(barbeariaId, accessToken)
+
   const sql='UPDATE barbearia SET access_token = ? WHERE id = ?';
   db.query(sql, [accessToken, barbeariaId], (error, result) =>{
     if(error){
