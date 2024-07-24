@@ -718,7 +718,7 @@ app.post('/api/v1/payment', AuthenticateJWT, (req, res) =>{
   const payment = new Payment(client);
 
   const body = { 
-    transaction_amount: 1,
+    transaction_amount: req.body.price,
     description: 'Transação de teste',
     payment_method_id: 'pix',
       payer: {
