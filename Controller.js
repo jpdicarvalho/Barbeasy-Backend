@@ -734,12 +734,11 @@ app.post('/api/v1/payment', AuthenticateJWT, (req, res) =>{
 
   payment.create({ body, requestOptions })
   .then((result) => {
-    console.log(result)
-    return res.status(200).json({result: result})
+    return res.status(200).json({ Success: true, result: result });
   })
   .catch((error) => {
-    console.log('Erro:', error)
-    return res.status(400).json({Message: 'Erro ao gerar pagamento'})
+    console.error('Erro:', error);
+    return res.status(400).json({ Success: false, message: 'Erro ao gerar pagamento', error: error});
   });
 
 })
