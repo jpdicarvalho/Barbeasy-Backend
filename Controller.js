@@ -701,6 +701,7 @@ app.get('/api/v1/bookingsOfUser/:userId', AuthenticateJWT, (req, res) =>{
 })
 
 //====================================== Routes about Payments ======================================
+//Route to get access token of barbearia
 app.get('/api/v1/accessTokenBarbearia/:barbeariaId', AuthenticateJWT, (req, res) =>{
   const barbeariaId = req.params.barbeariaId;
 
@@ -718,6 +719,7 @@ app.get('/api/v1/accessTokenBarbearia/:barbeariaId', AuthenticateJWT, (req, res)
   })
 })
 
+//Route to Create payment
 app.post('/api/v1/payment', AuthenticateJWT, (req, res) =>{
 
   const client = new MercadoPagoConfig({
