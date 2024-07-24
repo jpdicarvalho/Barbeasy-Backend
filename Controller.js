@@ -721,7 +721,9 @@ app.get('/api/v1/accessTokenBarbearia/:barbeariaId', AuthenticateJWT, (req, res)
 
 //Route to Create payment
 app.post('/api/v1/payment', AuthenticateJWT, (req, res) =>{
-  const { transaction_amount, description, paymentMethodId, payer, accessTokenBarbearia } = req.body;
+const accessTokenBarbearia = req.body.accessTokenBarbearia;
+const { transaction_amount, description, paymentMethodId, payer } = req.body;
+console.log(transaction_amount, description, paymentMethodId, payer, accessTokenBarbearia)
 
   const client = new MercadoPagoConfig({
     accessToken: String(accessTokenBarbearia),
@@ -733,18 +735,16 @@ app.post('/api/v1/payment', AuthenticateJWT, (req, res) =>{
 
   const payment = new Payment(client);
 
-  const body = {
-    transaction_amount: transaction_amount,
-    description: description,
-    payment_method_id: paymentMethodId,
-    payer: {
-      email: payer.email,
-      identification: {
-        type: payer.identification.identificationType,
-        number: payer.identification.number
-      }
-    }
-  };
+  const body = { 
+    transaction_amount: req.body.transaction_amount,
+    description: req.body.description,
+    payment_method_id: req.body.paymentMethodId,
+        payer: {
+        email: req.body.email,
+        identification: {
+    type: req.body.identificationType,
+    number: req.body.number
+  }}}
 
     const requestOptions = {
       idempotencyKey: '<SOME_UNIQUE_VALUE>'
