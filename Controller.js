@@ -711,7 +711,7 @@ app.get('/api/v1/accessTokenBarbearia/:barbeariaId', AuthenticateJWT, (req, res)
       return res.status(500).json({Error: "Internal Server Error"});
     }
     if(resul.length > 0){
-      return res.status(500).json({AccessToken: resul});
+      return res.status(200).json({AccessToken: resul});
     }
   })
 })
