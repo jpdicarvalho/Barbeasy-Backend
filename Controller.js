@@ -755,6 +755,7 @@ const { transaction_amount, description, paymentMethodId, email, identificationT
 
   payment.create({ body, requestOptions })
   .then((result) => {
+    console.log(result)
     return res.status(200).json({ Success: true, result: result.point_of_interaction.transaction_data.ticket_url });
   })
   .catch((error) => {
@@ -764,8 +765,13 @@ const { transaction_amount, description, paymentMethodId, email, identificationT
 
 })
 
-app.get('/api/v1/notificationPayment', (req, res) =>{
+/*app.get('/api/v1/notificationPayment', (req, res) =>{
   res.send('olá mundo')
+})*/
+
+app.post('/api/v1/notificationPayment', (req, res) =>{
+  console.log(req.body)
+  res.send('post v1')
 })
 //======================================= ROTAS USER-BARBEARIA ====================================
 
