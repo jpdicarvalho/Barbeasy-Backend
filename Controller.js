@@ -746,15 +746,15 @@ const { transaction_amount, description, paymentMethodId, email, identificationT
         number: number
       }
     },
-    back_urls: {
-        success: "https://barbeasy.netlify.app/BarbeariaDetails",
-        //failure: "http://www.seu-site/failure",
-        //pending: "http://www.seu-site/pending"
-    },
     auto_return: "approved",
-    notification_url: "https://barbeasy.up.railway.app/api/v1/notificationPayment"
+    back_urls: {
+        success: "https://barbeasy.netlify.app/success",
+        failure: "https://barbeasy.netlify.app/failure",
+        pending: "https://barbeasy.netlify.app/pending"
+    }
   }
-
+//notification_url: "https://barbeasy.up.railway.app/api/v1/notificationPayment"
+  
   const requestOptions = {
     idempotencyKey: uuidv4()
   }
