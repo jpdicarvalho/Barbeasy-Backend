@@ -746,6 +746,12 @@ const { transaction_amount, description, paymentMethodId, email, identificationT
         number: number
       }
     },
+    back_urls: {
+        success: "https://barbeasy.netlify.app/BarbeariaDetails",
+        //failure: "http://www.seu-site/failure",
+        //pending: "http://www.seu-site/pending"
+    },
+    auto_return: "approved",
     notification_url: "https://barbeasy.up.railway.app/api/v1/notificationPayment"
   }
 
