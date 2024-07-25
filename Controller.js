@@ -746,14 +746,8 @@ const { transaction_amount, description, paymentMethodId, email, identificationT
         number: number
       }
     },
-    auto_return: "approved",
-    back_urls: {
-        success: "https://barbeasy.netlify.app/success",
-        failure: "https://barbeasy.netlify.app/failure",
-        pending: "https://barbeasy.netlify.app/pending"
-    }
+    notification_url: "https://barbeasy.up.railway.app/api/v1/notificationPayment"
   }
-//notification_url: "https://barbeasy.up.railway.app/api/v1/notificationPayment"
   
   const requestOptions = {
     idempotencyKey: uuidv4()
@@ -762,7 +756,7 @@ const { transaction_amount, description, paymentMethodId, email, identificationT
   payment.create({ body, requestOptions })
   .then((result) => {
     console.log(result)
-    return res.status(200).json({ Success: true, result: result.point_of_interaction.transaction_data.ticket_url });
+    return res.status(200).json({ Success: true, result: result.point_of_interaction.transaction_data.ticket_url, fullResponse: result});
   })
   .catch((error) => {
     console.error('Erro:', error);
@@ -770,10 +764,6 @@ const { transaction_amount, description, paymentMethodId, email, identificationT
   });
 
 })
-
-/*app.get('/api/v1/notificationPayment', (req, res) =>{
-  res.send('olá mundo')
-})*/
 
 app.post('/api/v1/notificationPayment', (req, res) =>{
   console.log(req.body)
