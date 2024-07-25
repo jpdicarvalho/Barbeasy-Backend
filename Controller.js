@@ -744,11 +744,14 @@ const { transaction_amount, description, paymentMethodId, email, identificationT
       identification: {
         type: identificationType,
         number: number
-  }}}
+      }
+    },
+    notification_url: "https://barbeasy.up.railway.app/api/v1/notificationPayment"
+  }
 
-    const requestOptions = {
-      idempotencyKey: uuidv4()
-    }
+  const requestOptions = {
+    idempotencyKey: uuidv4()
+  }
 
   payment.create({ body, requestOptions })
   .then((result) => {
