@@ -761,6 +761,9 @@ const { transaction_amount, description, paymentMethodId, email, identificationT
 
 })
 
+app.get('/api/v1/notificationPayment', (req, res) =>{
+  res.send('olá mundo')
+})
 //======================================= ROTAS USER-BARBEARIA ====================================
 
 //Cadastro de ususário Barbearia   #VERIFIED
