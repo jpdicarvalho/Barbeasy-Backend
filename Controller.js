@@ -814,6 +814,11 @@ const { userId, barbeariaId, professionalId, serviceId } = req.body;//To save pa
 })
 
 app.post('/api/v1/notificationPayment', (req, res) =>{
+  const actionNotification = req.body.action;
+  if(actionNotification === 'payment.updated'){
+    const payment_id = req.body.data.id;
+    
+  }
   console.log(req.body)
   res.send('post v1')
 })
