@@ -816,18 +816,22 @@ const { userId, barbeariaId, professionalId, serviceId } = req.body;//To save pa
 })
 
 app.post('/api/v1/notificationPayment', (req, res) =>{
-  const actionNotification = req.body.action;
   console.log(req.body)
 
-  if(actionNotification === 'payment.updated'){
-    const payment_id = req.body.data.id;
+  const actionNotification = req.body.action;
+  const payment_id = req.body.data.id;
+
+  console.log(actionNotification)
+  console.log(payment_id)
+
+  /*if(actionNotification === 'payment.updated'){
     axios.get(`${process.env.URL_MERCADO_PAGO_TO_GET_PAYMENT}` + payment_id)
       .then((response) =>{
         console.log(response)
       }).catch((error) =>{
         console.log(error)
       })
-  }
+  }*/
   res.send('post v1')
 })
 //======================================= ROTAS USER-BARBEARIA ====================================
