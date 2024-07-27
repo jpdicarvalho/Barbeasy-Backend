@@ -757,9 +757,9 @@ const { userId, barbeariaId, professionalId, serviceId } = req.body;//To save pa
 
   payment.create({ body, requestOptions })
   .then((response) => {
-    const paymentId = result.id;
-    const paymentStatus = result.status;
-    const date_created = result.date_created;
+    const paymentId = response.id;
+    const paymentStatus = response.status;
+    const date_created = response.date_created;
 
 
     const sqlSelect = 'SELECT status FROM payments WHERE user_id = ? AND barbearia_id = ?';
