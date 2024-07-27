@@ -3,6 +3,8 @@ import express from 'express';
 import cors from 'cors';
 import bodyParser from "body-parser";
 
+import axios from 'axios';
+
 import mysql from "mysql2";
 
 import jwt  from 'jsonwebtoken';
@@ -815,11 +817,17 @@ const { userId, barbeariaId, professionalId, serviceId } = req.body;//To save pa
 
 app.post('/api/v1/notificationPayment', (req, res) =>{
   const actionNotification = req.body.action;
+  console.log(req.body)
+
   if(actionNotification === 'payment.updated'){
     const payment_id = req.body.data.id;
-    
+    axios.get(`${process.env.URL_MERCADO_PAGO_TO_GET_PAYMENT}` + payment_id)
+      .then((response) =>{
+        console.log(response)
+      }).catch((error) =>{
+        console.log(response)
+      })
   }
-  console.log(req.body)
   res.send('post v1')
 })
 //======================================= ROTAS USER-BARBEARIA ====================================
