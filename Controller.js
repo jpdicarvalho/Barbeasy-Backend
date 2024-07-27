@@ -825,7 +825,7 @@ app.post('/api/v1/notificationPayment', (req, res) =>{
       .then((response) =>{
         console.log(response)
       }).catch((error) =>{
-        console.log(response)
+        console.log(error)
       })
   }
   res.send('post v1')
