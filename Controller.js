@@ -815,7 +815,23 @@ const { userId, barbeariaId, professionalId, serviceId } = req.body;//To save pa
 
 })
 
-app.post('/api/v1/notificationPayment', (req, res) =>{
+app.put('/api/v1/updatePaymentStatus', AuthenticateJWT, (req, res) =>{
+  const paymentStatus = req.body.PaymentStatus;
+  const PaymentId = req.body.PaymentId;
+
+
+  const sql = 'UPDATE payments SET status = ? WHERE payment_id = ?';
+  db.query(sql, [paymentStatus, PaymentId], (err, resu) =>{
+    if(err){
+      console.error('Error update payment status:', err);
+      return res.status(500).json({ error: 'on update payment status - Internal Server Error' });
+    }
+    if(resu){
+      return res.status(200).json({ Success: 'Success'});
+    }
+  })
+})
+/*app.post('/api/v1/notificationPayment', (req, res) =>{
   console.log(req.body)
 
   const actionNotification = req.body.action;
@@ -833,7 +849,7 @@ app.post('/api/v1/notificationPayment', (req, res) =>{
       })
   }
   res.send('post v1')
-})
+})*/
 //======================================= ROTAS USER-BARBEARIA ====================================
 
 //Cadastro de ususário Barbearia   #VERIFIED
