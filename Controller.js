@@ -828,25 +828,6 @@ app.put('/api/v1/updatePaymentStatus', AuthenticateJWT, (req, res) =>{
     }
   })
 })
-/*app.post('/api/v1/notificationPayment', (req, res) =>{
-  console.log(req.body)
-
-  const actionNotification = req.body.action;
-  const payment_id = req.body.data.id;
-
-  console.log(actionNotification)
-  console.log(payment_id)
-
-  if(actionNotification === 'payment.updated'){
-    axios.get(`${process.env.URL_MERCADO_PAGO_TO_GET_PAYMENT}${payment_id}`)
-      .then((response) =>{
-        console.log(response)
-      }).catch((error) =>{
-        console.log(error)
-      })
-  }
-  res.send('post v1')
-})*/
 //======================================= ROTAS USER-BARBEARIA ====================================
 
 //Cadastro de ususário Barbearia   #VERIFIED
