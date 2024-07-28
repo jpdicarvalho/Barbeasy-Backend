@@ -813,6 +813,7 @@ const { userId, barbeariaId, professionalId, serviceId } = req.body;//To save pa
 
 })
 
+//Route to update payment status
 app.put('/api/v1/updatePaymentStatus', AuthenticateJWT, (req, res) =>{
   const paymentStatus = req.body.PaymentStatus;
   const PaymentId = req.body.PaymentId;
