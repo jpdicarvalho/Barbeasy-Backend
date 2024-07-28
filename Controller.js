@@ -3,8 +3,6 @@ import express from 'express';
 import cors from 'cors';
 import bodyParser from "body-parser";
 
-import axios from 'axios';
-
 import mysql from "mysql2";
 
 import jwt  from 'jsonwebtoken';
