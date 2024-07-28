@@ -819,7 +819,6 @@ app.put('/api/v1/updatePaymentStatus', AuthenticateJWT, (req, res) =>{
   const paymentStatus = req.body.PaymentStatus;
   const PaymentId = req.body.PaymentId;
 
-
   const sql = 'UPDATE payments SET status = ? WHERE payment_id = ?';
   db.query(sql, [paymentStatus, PaymentId], (err, resu) =>{
     if(err){
