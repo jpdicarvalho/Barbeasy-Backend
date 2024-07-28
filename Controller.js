@@ -2424,13 +2424,13 @@ app.get('/api/v1/bookingsTimes/:barbeariaId/:professionalId/:selectedDate', Auth
     if (err) {
       console.error('Erro ao buscar agendamentos da barbearia:', err);
       return res.status(500).json({ Error: 'Internal Server Error.' }); 
-    }else{
-      if (result.length > 0) {
-        return res.status(200).json({ Message: "true", timesLocked: result });
-      }else{
-        return res.status(200).json({ Message: "false"});
-      }
     }
+    if (result.length > 0) {
+      return res.status(200).json({ Message: "true", timesLocked: result });
+    }else{
+      return res.status(200).json({ Message: "false"});
+    }
+
   });
 });
 
