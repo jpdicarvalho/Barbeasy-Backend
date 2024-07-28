@@ -749,7 +749,7 @@ const { userId, barbeariaId, professionalId, serviceId } = req.body;//To save pa
     payment_method_id: paymentMethodId,
     payer: {
       email: email,
-      phone: phone,
+      phone: `${phone}`,
       identification: {
         type: identificationType,
         number: number
