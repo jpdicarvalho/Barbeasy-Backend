@@ -817,6 +817,8 @@ const { userId, barbeariaId, professionalId, serviceId } = req.body;//To save pa
 app.put('/api/v1/updatePaymentStatus', AuthenticateJWT, (req, res) =>{
   const paymentStatus = req.body.PaymentStatus;
   const PaymentId = req.body.PaymentId;
+  const tokenOfBookingPreCreated = req.body.tokenOfBookingPreCreated;
+
 
   const sql = 'UPDATE payments SET status = ? WHERE payment_id = ?';
   db.query(sql, [paymentStatus, PaymentId], (err, resu) =>{
@@ -825,7 +827,16 @@ app.put('/api/v1/updatePaymentStatus', AuthenticateJWT, (req, res) =>{
       return res.status(500).json({ error: 'on update payment status - Internal Server Error' });
     }
     if(resu){
-      return res.status(200).json({ Success: 'Success'});
+      const sqlUpdatePaymentStatus = 'UPDATE booking SET paymentStatus = ? WHERE token = ?';
+      db.query(sqlUpdatePaymentStatus, [tokenOfBookingPreCreated], (erro, resul) =>{
+        if(erro){
+          console.error('Error update payment status from booking:', erro);
+          return res.status(500).json({ error: 'on update payment status from booking - Internal Server Error' });
+        }
+        if(resul){
+          return res.status(200).json({ Success: 'Success'});
+        }
+      })
     }
   })
 })
