@@ -2371,7 +2371,10 @@ app.post('/api/v1/createBooking/', AuthenticateJWT, (req, res) => {
     req.body.professionalId,
     req.body.serviceId,
     req.body.selectedDay,
-    req.body.timeSelected];
+    req.body.timeSelected,
+  ];
+
+  const initialPaymentStatus = req.body.initialPaymentStatus;
   const formatDate = req.body.formattedDate;
   const token = values.join('-');
 
@@ -2385,8 +2388,8 @@ app.post('/api/v1/createBooking/', AuthenticateJWT, (req, res) => {
     if(resut.length > 0){
       return res.status(401).json({ Unauthorized: 'Unauthorized' });
     }else{
-      const sqlInsert = "INSERT INTO booking (user_id, barbearia_id, professional_id, service_id, booking_date, booking_time, date, token) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-      db.query(sqlInsert, [...values, formatDate, token], (erro, results) => {
+      const sqlInsert = "INSERT INTO booking (user_id, barbearia_id, professional_id, service_id, booking_date, booking_time, date_created, token, paymentStatus) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+      db.query(sqlInsert, [...values, formatDate, token, initialPaymentStatus], (erro, results) => {
         if(erro){
           console.error('Erro ao realizar agendamento:', erro);
           return res.status(500).json({ Error: ' Internal Server Error' });
