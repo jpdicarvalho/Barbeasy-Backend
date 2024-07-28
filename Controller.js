@@ -640,10 +640,13 @@ app.get('/api/v1/bookingsOfUser/:userId', AuthenticateJWT, (req, res) =>{
                     barbearia.cidade AS cidadeBarbearia,
                     professional.name AS professionalName,
                     professional.cell_phone AS professionalPhone,
-                    professional.user_image AS userImageProfessional
+                    professional.user_image AS userImageProfessional,
+                    servico.name AS serviceName,
+                    servico.preco AS servicePrice
               FROM booking
               INNER JOIN barbearia ON barbearia.id = booking.barbearia_id
               INNER JOIN professional ON professional.id = booking.professional_id
+              INNER JOIN servico ON servico.id = booking.service_id
               WHERE booking.user_id = ?`
 
   db.query(sql, [userId], (err, result) =>{
