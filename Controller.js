@@ -828,7 +828,7 @@ app.put('/api/v1/updatePaymentStatus', AuthenticateJWT, (req, res) =>{
     }
     if(resu){
       const sqlUpdatePaymentStatus = 'UPDATE booking SET paymentStatus = ? WHERE token = ?';
-      db.query(sqlUpdatePaymentStatus, [tokenOfBookingPreCreated], (erro, resul) =>{
+      db.query(sqlUpdatePaymentStatus, [paymentStatus, tokenOfBookingPreCreated], (erro, resul) =>{
         if(erro){
           console.error('Error update payment status from booking:', erro);
           return res.status(500).json({ error: 'on update payment status from booking - Internal Server Error' });
