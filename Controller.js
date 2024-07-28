@@ -632,8 +632,6 @@ app.get('/api/v1/bookingsOfUser/:userId', AuthenticateJWT, (req, res) =>{
   const sql=`SELECT booking.booking_date AS bookingDate,
                     booking.booking_time AS bookingTime,
                     booking.date_created AS dateMakedBooking,
-                    booking.service_name AS serviceName,
-                    booking.service_price AS servicePrice,
                     barbearia.name AS barbeariaName,
                     barbearia.banner_main AS bannerBarbearia,
                     barbearia.rua AS ruaBarbearia,
