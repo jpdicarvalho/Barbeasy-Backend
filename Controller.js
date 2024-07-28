@@ -725,7 +725,7 @@ app.get('/api/v1/accessTokenBarbearia/:barbeariaId', AuthenticateJWT, (req, res)
 app.post('/api/v1/payment', AuthenticateJWT, (req, res) =>{
 const accessTokenBarbearia = req.body.accessTokenBarbearia;
 
-const { transaction_amount, description, paymentMethodId, email, phone, identificationType, number } = req.body;//To create payment
+const { transaction_amount, description, paymentMethodId, email, identificationType, number } = req.body;//To create payment
 const { userId, barbeariaId, professionalId, serviceId } = req.body;//To save payment
 
   const client = new MercadoPagoConfig({
@@ -749,7 +749,6 @@ const { userId, barbeariaId, professionalId, serviceId } = req.body;//To save pa
     payment_method_id: paymentMethodId,
     payer: {
       email: email,
-      phone: `${phone}`,
       identification: {
         type: identificationType,
         number: number
