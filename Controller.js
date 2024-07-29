@@ -846,6 +846,32 @@ app.put('/api/v1/updatePaymentStatus', AuthenticateJWT, (req, res) =>{
     }
   })
 })
+
+app.delete('/api/v1/delePreBooking/:paymentId/:identificationToken', AuthenticateJWT, (req, res) =>{
+  const paymentId = req.params.paymentId;
+  const identificationToken = req.params.identificationToken;
+
+  const sqlDeleteFromBooking = 'DELETE booking WHERE token = ?';
+  db.query(sqlDeleteFromBooking, [identificationToken], (err, resu) =>{
+      if(err){
+        console.error('Error on delete pre-booking:', err);
+        return res.status(500).json({ error: 'on delete pre-booking - Internal Server Error' });
+      }
+      if(resu){
+        const sqlDeleteFromPayments = 'DELETE payments WHERE payment_id = ?';
+        db.query(sqlDeleteFromPayments, [paymentId], (erro, resul) =>{
+          if(erro){
+            console.error('Error on delete payment:', erro);
+            return res.status(500).json({ error: 'on delete payment - Internal Server Error' });
+          }
+          if(resul){
+            return res.status(200).json({ Success: true});
+          }
+        })
+      }
+  })
+
+})
 //======================================= ROTAS USER-BARBEARIA ====================================
 
 //Cadastro de ususário Barbearia   #VERIFIED
