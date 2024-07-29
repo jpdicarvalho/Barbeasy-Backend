@@ -851,14 +851,14 @@ app.delete('/api/v1/delePreBooking/:paymentId/:identificationToken', Authenticat
   const paymentId = req.params.paymentId;
   const identificationToken = req.params.identificationToken;
 
-  const sqlDeleteFromBooking = 'DELETE booking WHERE token = ?';
+  const sqlDeleteFromBooking = 'DELETE FROM booking WHERE token = ?';
   db.query(sqlDeleteFromBooking, [identificationToken], (err, resu) =>{
       if(err){
         console.error('Error on delete pre-booking:', err);
         return res.status(500).json({ error: 'on delete pre-booking - Internal Server Error' });
       }
       if(resu){
-        const sqlDeleteFromPayments = 'DELETE payments WHERE payment_id = ?';
+        const sqlDeleteFromPayments = 'DELETE FROM payments WHERE payment_id = ?';
         db.query(sqlDeleteFromPayments, [paymentId], (erro, resul) =>{
           if(erro){
             console.error('Error on delete payment:', erro);
