@@ -754,7 +754,9 @@ const { userId, barbeariaId, professionalId, serviceId } = req.body;//To save pa
         number: number
       }
     },
-    date_of_expiration: dateOfExpiration
+    date_of_expiration: dateOfExpiration,
+    notification_url: "https://barbeasy.up.railway.app/api/v1/notificationPayment"
+
   }
   
   const requestOptions = {
@@ -872,6 +874,12 @@ app.delete('/api/v1/delePreBooking/:paymentId/:identificationToken', Authenticat
   })
 
 })
+
+app.post('/api/v1/notificationPayment', (req, res) =>{
+  console.log(req.body)
+  res.send('post v1')
+})
+
 //======================================= ROTAS USER-BARBEARIA ====================================
 
 //Cadastro de ususário Barbearia   #VERIFIED
