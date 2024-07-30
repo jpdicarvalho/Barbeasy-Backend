@@ -740,7 +740,7 @@ const { userId, barbeariaId, professionalId, serviceId } = req.body;//To save pa
 
   // Definindo a data de expiração para 50 segundos a partir da data atual
   const expirationDate = new Date();
-  expirationDate.setSeconds(expirationDate.getSeconds() + 60);
+  expirationDate.setSeconds(expirationDate.getSeconds() + 600);
   const dateOfExpiration = expirationDate.toISOString(); // Formato ISO 8601
 
   const body = { 
@@ -768,7 +768,6 @@ const { userId, barbeariaId, professionalId, serviceId } = req.body;//To save pa
     const paymentId = response.id;
     const paymentStatus = response.status;
     const date_created = response.date_created;
-
 
     const sqlSelect = 'SELECT status FROM payments WHERE user_id = ? AND barbearia_id = ?';
     db.query(sqlSelect, [userId, barbeariaId], (err, resu) =>{
