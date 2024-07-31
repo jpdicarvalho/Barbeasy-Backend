@@ -710,13 +710,13 @@ app.put('/api/v1/saveCredentials', AuthenticateJWT, (req, res) => {
   const refreshToken = req.body.refreshToken;
   const data_renovation = req.body.data_renovation;
 
-  const sqlSelect = 'SELECT data_renovation FROM BarberiaCredentials WHERE barbearia_id = ?'
+  const sqlSelect = 'SELECT date_renovation FROM BarberiaCredentials WHERE barbearia_id = ?'
   db.query(sqlSelect, [barbeariaId], (err, resu) =>{
     if(err){
       console.error('Error on verify credentials:', err);
       return res.status(500).json({ error: 'on verify credentials - Internal Server Error' });
     }
-    if(resu.length > 0){
+    if(resu.length > 0){//if the barbershop has the credentials
       const sqlUpdate='UPDATE BarberiaCredentials SET access_token = ?, refresh_token = ?, date_renovation = ? WHERE barbearia_id = ?';
       db.query(sqlUpdate, [accessToken, refreshToken, data_renovation, barbeariaId], (erro, resul) =>{
         if(erro){
@@ -727,7 +727,7 @@ app.put('/api/v1/saveCredentials', AuthenticateJWT, (req, res) => {
           return res.status(200).json({Success: 'Success'})
         }
       })
-    }else{
+    }else{//if the barbershop don't have the credentials
       const sqlInsert = 'INSERT INTO BarberiaCredentials (barbearia_id, access_token, refresh_token, date_renovation) VALUES (?, ?, ?, ?)';
       db.query(sqlInsert, [barbeariaId, accessToken, refreshToken, data_renovation], (error, result) =>{
         if(error){
