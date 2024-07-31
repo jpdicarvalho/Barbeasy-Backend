@@ -710,7 +710,6 @@ app.put('/api/v1/saveCredentials', AuthenticateJWT, (req, res) => {
   const refresh_token = req.body.refresh_token;
   const data_renovation = req.body.data_renovation;
 
-  console.log(access_token, refresh_token)
   const sqlSelect = 'SELECT date_renovation FROM BarberiaCredentials WHERE barbearia_id = ?'
   db.query(sqlSelect, [barbeariaId], (err, resu) =>{
     if(err){
@@ -747,7 +746,7 @@ app.put('/api/v1/saveCredentials', AuthenticateJWT, (req, res) => {
 app.get('/api/v1/accessTokenBarbearia/:barbeariaId', AuthenticateJWT, (req, res) =>{
   const barbeariaId = req.params.barbeariaId;
 
-  const sql = 'SELECT access_token FROM barbearia WHERE id = ?';
+  const sql = 'SELECT access_token FROM BarberiaCredentials WHERE id = ?';
   db.query(sql, [barbeariaId], (err, resul) =>{
     if(err){
       console.error("Error in search access token of user", err);
