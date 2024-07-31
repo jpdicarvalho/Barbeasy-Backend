@@ -753,6 +753,7 @@ app.get('/api/v1/barbeariaCredentials/:barbeariaId', AuthenticateJWT, (req, res)
       return res.status(500).json({Error: "Internal Server Error"});
     }
     if(resul.length > 0){
+      console.log(resul)
       return res.status(200).json({Success: true, credentials: resul});
     }else{
       return res.status(200).json({Success: false, Message: 'barbeaia não está habilitada para receber pagamentos'});
