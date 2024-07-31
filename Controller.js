@@ -743,17 +743,17 @@ app.put('/api/v1/saveCredentials', AuthenticateJWT, (req, res) => {
 })
 
 //Route to get access token of barbearia
-app.get('/api/v1/accessTokenBarbearia/:barbeariaId', AuthenticateJWT, (req, res) =>{
+app.get('/api/v1/barbeariaCredentials/:barbeariaId', AuthenticateJWT, (req, res) =>{
   const barbeariaId = req.params.barbeariaId;
 
-  const sql = 'SELECT access_token FROM BarberiaCredentials WHERE id = ?';
+  const sql = 'SELECT access_token, refresh_token, date_renovation FROM BarberiaCredentials WHERE id = ?';
   db.query(sql, [barbeariaId], (err, resul) =>{
     if(err){
       console.error("Error in search access token of user", err);
       return res.status(500).json({Error: "Internal Server Error"});
     }
     if(resul.length > 0){
-      return res.status(200).json({Success: true, AccessToken: resul[0].access_token});
+      return res.status(200).json({Success: true, credentials: resul});
     }else{
       return res.status(200).json({Success: false, Message: 'barbeaia não está habilitada para receber pagamentos'});
     }
