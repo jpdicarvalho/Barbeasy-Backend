@@ -710,6 +710,7 @@ app.put('/api/v1/saveCredentials', AuthenticateJWT, (req, res) => {
   const refreshToken = req.body.refreshToken;
   const data_renovation = req.body.data_renovation;
 
+  console.log(accessToken, refreshToken)
   const sqlSelect = 'SELECT date_renovation FROM BarberiaCredentials WHERE barbearia_id = ?'
   db.query(sqlSelect, [barbeariaId], (err, resu) =>{
     if(err){
