@@ -887,6 +887,7 @@ app.put('/api/v1/updatePaymentStatus', AuthenticateJWT, (req, res) =>{
   })
 })
 
+//Route to delete pre-Booking created
 app.delete('/api/v1/delePreBooking/:paymentId/:identificationToken', AuthenticateJWT, (req, res) =>{
   const paymentId = req.params.paymentId;
   const identificationToken = req.params.identificationToken;
