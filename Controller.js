@@ -703,6 +703,45 @@ app.get('/api/v1/bookingsOfUser/:userId', AuthenticateJWT, (req, res) =>{
 })
 
 //====================================== Routes about Payments ======================================
+//Route to save access token
+app.put('/api/v1/saveCredentials', AuthenticateJWT, (req, res) => {
+  const barbeariaId = req.body.barbeariaId;
+  const accessToken = req.body.accessToken;
+  const refreshToken = req.body.refreshToken;
+  const data_renovation = req.body.data_renovation;
+
+  const sqlSelect = 'SELECT data_renovation FROM BarberiaCredentials WHERE barbearia_id = ?'
+  db.query(sqlSelect, [barbeariaId], (err, resu) =>{
+    if(err){
+      console.error('Error on verify credentials:', err);
+      return res.status(500).json({ error: 'on verify credentials - Internal Server Error' });
+    }
+    if(resu.length > 0){
+      const sqlUpdate='UPDATE BarberiaCredentials SET access_token = ?, refresh_token = ?, date_renovation = ? WHERE barbearia_id = ?';
+      db.query(sqlUpdate, [accessToken, refreshToken, data_renovation, barbeariaId], (erro, resul) =>{
+        if(erro){
+          console.error('Error on update credentials:', erro);
+          return res.status(500).json({ error: 'update credentials - Internal Server Error' });
+        }
+        if(resul){
+          return res.status(200).json({Success: 'Success'})
+        }
+      })
+    }else{
+      const sqlInsert = 'INSERT INTO BarberiaCredentials (barbearia_id, access_token, refresh_token, date_renovation) VALUES (?, ?, ?, ?)';
+      db.query(sqlInsert, [barbeariaId, accessToken, refreshToken, data_renovation], (error, result) =>{
+        if(error){
+          console.error('Error on save credentials:', error);
+          return res.status(500).json({ error: 'save credentials - Internal Server Error' });
+        }
+        if(result){
+          return res.status(200).json({Success: 'Success'})
+        }
+      })
+    }
+  })
+})
+
 //Route to get access token of barbearia
 app.get('/api/v1/accessTokenBarbearia/:barbeariaId', AuthenticateJWT, (req, res) =>{
   const barbeariaId = req.params.barbeariaId;
@@ -1051,23 +1090,6 @@ app.get('/api/v1/AuthToUpdateData/', AuthenticateJWT, (req, res) =>{
     }
   })
 });
-
-app.put('/api/v1/saveAccessToken', AuthenticateJWT, (req, res) => {
-  const barbeariaId = req.body.barbeariaId;
-  const accessToken = req.body.accessToken;
-
-  const sql='UPDATE barbearia SET access_token = ? WHERE id = ?';
-  db.query(sql, [accessToken, barbeariaId], (error, result) =>{
-    if(error){
-      console.error('Error on save access token:', error);
-      return res.status(500).json({ error: 'save access token - Internal Server Error' });
-    }
-    if(result){
-      return res.status(200).json({Success: 'Success'})
-    }
-  })
-
-})
 
 //Upload de Imagem do Usuário Barbearia, na AWS S3  #VERIFIED
 app.put('/api/v1/updateUserImageProfessional', AuthenticateJWT, upload.single('image'), (req, res) => {
