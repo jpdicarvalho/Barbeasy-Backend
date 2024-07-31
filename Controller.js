@@ -706,11 +706,11 @@ app.get('/api/v1/bookingsOfUser/:userId', AuthenticateJWT, (req, res) =>{
 //Route to save access token
 app.put('/api/v1/saveCredentials', AuthenticateJWT, (req, res) => {
   const barbeariaId = req.body.barbeariaId;
-  const accessToken = req.body.accessToken;
-  const refreshToken = req.body.refreshToken;
+  const access_token = req.body.access_token;
+  const refresh_token = req.body.refresh_token;
   const data_renovation = req.body.data_renovation;
 
-  console.log(accessToken, refreshToken)
+  console.log(access_token, refresh_token)
   const sqlSelect = 'SELECT date_renovation FROM BarberiaCredentials WHERE barbearia_id = ?'
   db.query(sqlSelect, [barbeariaId], (err, resu) =>{
     if(err){
@@ -719,7 +719,7 @@ app.put('/api/v1/saveCredentials', AuthenticateJWT, (req, res) => {
     }
     if(resu.length > 0){//if the barbershop has the credentials
       const sqlUpdate='UPDATE BarberiaCredentials SET access_token = ?, refresh_token = ?, date_renovation = ? WHERE barbearia_id = ?';
-      db.query(sqlUpdate, [accessToken, refreshToken, data_renovation, barbeariaId], (erro, resul) =>{
+      db.query(sqlUpdate, [access_token, refresh_token, data_renovation, barbeariaId], (erro, resul) =>{
         if(erro){
           console.error('Error on update credentials:', erro);
           return res.status(500).json({ error: 'update credentials - Internal Server Error' });
@@ -730,7 +730,7 @@ app.put('/api/v1/saveCredentials', AuthenticateJWT, (req, res) => {
       })
     }else{//if the barbershop don't have the credentials
       const sqlInsert = 'INSERT INTO BarberiaCredentials (barbearia_id, access_token, refresh_token, date_renovation) VALUES (?, ?, ?, ?)';
-      db.query(sqlInsert, [barbeariaId, accessToken, refreshToken, data_renovation], (error, result) =>{
+      db.query(sqlInsert, [barbeariaId, access_token, refresh_token, data_renovation], (error, result) =>{
         if(error){
           console.error('Error on save credentials:', error);
           return res.status(500).json({ error: 'save credentials - Internal Server Error' });
