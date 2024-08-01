@@ -779,7 +779,7 @@ const { userId, barbeariaId, professionalId, serviceId } = req.body;//To save pa
 
   // Definindo a data de expiração para 50 segundos a partir da data atual
   const expirationDate = new Date();
-  expirationDate.setSeconds(expirationDate.getSeconds() + 120);
+  expirationDate.setSeconds(expirationDate.getSeconds() + 180);
   const dateOfExpiration = expirationDate.toISOString(); // Formato ISO 8601
 
   const body = { 
