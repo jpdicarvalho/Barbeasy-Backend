@@ -742,11 +742,10 @@ app.put('/api/v1/saveCredentials', AuthenticateJWT, (req, res) => {
   })
 })
 
-app.get('/api/v1/credentialsMercadoPago/:credentialId', AuthenticateJWT, (req, res) =>{
-  const credentialId = req.body.credentialId;
+app.get('/api/v1/credentialsMercadoPago', AuthenticateJWT, (req, res) =>{
 
-  const sql = "SELECT client_id, client_secret, characters FROM CredentialsMercadoPago WHERE id = ?";
-  db.query(sql, [Number(credentialId)], (err, resul) =>{
+  const sql = "SELECT client_id, client_secret, characters FROM CredentialsMercadoPago";
+  db.query(sql, (err, resul) =>{
     if(err){
       console.error("Error in get credentials of mercado pago", err);
       return res.status(500).json({Error: "Internal Server Error"});
