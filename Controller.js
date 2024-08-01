@@ -742,6 +742,22 @@ app.put('/api/v1/saveCredentials', AuthenticateJWT, (req, res) => {
   })
 })
 
+app.get('/api/v1/credentialsMercadoPago/:credentialId', AuthenticateJWT, (req, res) =>{
+  const credentialId = req.body.credentialId;
+
+  const sql = "SELECT client_id, client_secret, characters FROM CredentialsMercadoPago WHERE id = ?";
+  db.query(sql, [credentialId], (err, resul) =>{
+    if(err){
+      console.error("Error in get credentials of mercado pago", err);
+      return res.status(500).json({Error: "Internal Server Error"});
+    }
+    if(resul.length > 0){
+      return res.status(200).json({Success: true, credentials: resul})
+    }else{
+      return res.status(404).json({Success: false, Message: "Credentials not found"})
+    }
+  })
+})
 //Route to get access token of barbearia
 app.get('/api/v1/barbeariaCredentials/:barbeariaId', AuthenticateJWT, (req, res) =>{
   const barbeariaId = req.params.barbeariaId;
