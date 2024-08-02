@@ -767,20 +767,39 @@ const accessTokenBarbearia = req.body.accessTokenBarbearia;
 const { transaction_amount, description, paymentMethodId, email, identificationType, number } = req.body;//To create payment
 const { userId, barbeariaId, professionalId, serviceId } = req.body;//To save payment
 
-  const client = new MercadoPagoConfig({
-    accessToken: accessTokenBarbearia,
-    options: {
-      timeout: 5000,
-      idempotencyKey: 'abc'
-    }
-  });
+const client = new MercadoPagoConfig({
+  accessToken: accessTokenBarbearia,
+  options: {
+    timeout: 5000,
+    idempotencyKey: 'abc'
+  }
+});
 
-  const payment = new Payment(client);
+const payment = new Payment(client);
 
-  const expirationDate = new Date();
-  expirationDate.setMinutes(expirationDate.getMinutes() + 5); // Adiciona 5 minutos à data atual
-  const dateOfExpiration = expirationDate.toISOString(); // Formato ISO 8601
+const expirationDate = new Date();
+expirationDate.setMinutes(expirationDate.getMinutes() + 2); // Adiciona 7 minutos à data atual (5 + 2)
 
+const formatDate = (date) => {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  const hours = String(date.getHours()).padStart(2, '0');
+  const minutes = String(date.getMinutes()).padStart(2, '0');
+  const seconds = String(date.getSeconds()).padStart(2, '0');
+  const milliseconds = String(date.getMilliseconds()).padStart(3, '0');
+  
+  // Obtendo o offset do fuso horário
+  const timezoneOffset = -date.getTimezoneOffset();
+  const sign = timezoneOffset >= 0 ? '+' : '-';
+  const offsetHours = String(Math.floor(Math.abs(timezoneOffset) / 60)).padStart(2, '0');
+  const offsetMinutes = String(Math.abs(timezoneOffset) % 60).padStart(2, '0');
+  
+  return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}.${milliseconds}${sign}${offsetHours}:${offsetMinutes}`;
+};
+
+const dateOfExpiration = formatDate(expirationDate);
+console.log(dateOfExpiration)
   const body = { 
     transaction_amount: Number(transaction_amount),
     description: description,
@@ -792,6 +811,7 @@ const { userId, barbeariaId, professionalId, serviceId } = req.body;//To save pa
         number: number
       }
     },
+    date_of_expiration: dateOfExpiration,
     notification_url: "https://barbeasy.up.railway.app/api/v1/notificationPayment"
   }
   
