@@ -792,9 +792,7 @@ const { userId, barbeariaId, professionalId, serviceId } = req.body;//To save pa
         number: number
       }
     },
-    date_of_expiration: dateOfExpiration,
     notification_url: "https://barbeasy.up.railway.app/api/v1/notificationPayment"
-
   }
   
   const requestOptions = {
