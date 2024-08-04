@@ -1125,6 +1125,7 @@ app.put('/api/v1/updateAmountVisibility', AuthenticateJWT, (req, res) =>{
     }
   })
 })
+
 //Route to get amount visibility
 app.get('/api/v1/amountVibility/:barbeariaId', AuthenticateJWT, (req, res) =>{
   const barbeariaId = req.params.barbeariaId;
@@ -1136,10 +1137,11 @@ app.get('/api/v1/amountVibility/:barbeariaId', AuthenticateJWT, (req, res) =>{
       return res.status(500).json({ error: 'Internal Server Error' });
     }
     if(resu.length > 0){
-      return res.status(200).json({visibility: resu})
+      return res.status(200).json({visibility: resu[0].amountVisibility})
     }
   })
 })
+
 //Upload de Imagem do Usuário Barbearia, na AWS S3  #VERIFIED
 app.put('/api/v1/updateUserImageProfessional', AuthenticateJWT, upload.single('image'), (req, res) => {
   const professionalId = req.body.professionalId;
