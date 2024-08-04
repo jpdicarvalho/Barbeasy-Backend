@@ -1110,18 +1110,33 @@ app.get('/api/v1/AuthToUpdateData/', AuthenticateJWT, (req, res) =>{
 });
 
 //Route to update amount visibility
-app.put('/api/v1/updateVisibilityAmount', AuthenticateJWT, (req, res) =>{
+app.put('/api/v1/updateAmountVisibility', AuthenticateJWT, (req, res) =>{
   const barbeariaId = req.body.barbeariaId;
   const changeVisibilityAmount = req.body.changeVisibilityAmount;
 
   const sql='UPDATE barbearia SET amountVisibility = ? WHERE id = ?';
   db.query(sql, [changeVisibilityAmount, barbeariaId], (err, resu) =>{
     if (err) {
-      console.error('Erro ao verificar senha:', err);
+      console.error('Erro ao atualizar visibilidade:', err);
       return res.status(500).json({ error: 'Internal Server Error' });
     }
     if(resu){
       return res.status(200).json({Success: true})
+    }
+  })
+})
+//Route to get amount visibility
+app.get('/api/v1/amountVibility/:barbeariaId', AuthenticateJWT, (req, res) =>{
+  const barbeariaId = req.params.barbeariaId;
+
+  const sql = 'SELECT amountVisibility FROM barbearia WHERE id = ?';
+  db.query(sql, [barbeariaId], (err, resu) =>{
+    if (err) {
+      console.error('Erro ao verificar visibilidade:', err);
+      return res.status(500).json({ error: 'Internal Server Error' });
+    }
+    if(resu.length > 0){
+      return res.status(200).json({visibility: resu})
     }
   })
 })
