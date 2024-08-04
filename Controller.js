@@ -1109,6 +1109,22 @@ app.get('/api/v1/AuthToUpdateData/', AuthenticateJWT, (req, res) =>{
   })
 });
 
+//Route to update amount visibility
+app.put('/api/v1/updateVisibilityAmount/:barbeariaId', AuthenticateJWT, (req, res) =>{
+  const barbeariaId = req.params.barbeariaId;
+  const changeVisibilityAmount = req.body.changeVisibilityAmount;
+
+  const sql='UPDATE barbearia SET amountVisibility = ? WHERE id = ?';
+  db.query(sql, [changeVisibilityAmount, barbeariaId], (err, resu) =>{
+    if (err) {
+      console.error('Erro ao verificar senha:', err);
+      return res.status(500).json({ error: 'Internal Server Error' });
+    }
+    if(resu){
+      return res.status(200).json({Success: true})
+    }
+  })
+})
 //Upload de Imagem do Usuário Barbearia, na AWS S3  #VERIFIED
 app.put('/api/v1/updateUserImageProfessional', AuthenticateJWT, upload.single('image'), (req, res) => {
   const professionalId = req.body.professionalId;
@@ -2591,8 +2607,6 @@ app.get('/api/v1/bookings/:barbeariaId/:selectedDate', AuthenticateJWT, (req, re
           booking.booking_time AS booking_time,
           professional.id AS professional_id,
           professional.name AS professional_name,
-          professional.cell_phone AS professional_cell_phone,
-          professional.user_image AS professional_user_image,
           servico.id AS service_id,
           servico.name AS service_name,
           servico.preco AS service_price,
