@@ -1110,8 +1110,8 @@ app.get('/api/v1/AuthToUpdateData/', AuthenticateJWT, (req, res) =>{
 });
 
 //Route to update amount visibility
-app.put('/api/v1/updateVisibilityAmount/:barbeariaId', AuthenticateJWT, (req, res) =>{
-  const barbeariaId = req.params.barbeariaId;
+app.put('/api/v1/updateVisibilityAmount', AuthenticateJWT, (req, res) =>{
+  const barbeariaId = req.body.barbeariaId;
   const changeVisibilityAmount = req.body.changeVisibilityAmount;
 
   const sql='UPDATE barbearia SET amountVisibility = ? WHERE id = ?';
