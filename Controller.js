@@ -2690,7 +2690,7 @@ app.get('/api/v1/getAmountOfMonth/:barbeariaId/:CurrentMonthAndYear', Authentica
   const sql=`SELECT *
             FROM booking
             WHERE barbearia_id = ? AND booking_date LIKE '%${CurrentMonthAndYear}%'`;
-  db.query(sql, [barbeariaId, currentMonth, currentYear], (err, resul) =>{
+  db.query(sql, [barbeariaId], (err, resul) =>{
     if(err){
       console.error("Erro ao obter agendamentos", err);
       return res.status(500).json({ Error: "Internal Server Error" });
