@@ -2683,6 +2683,13 @@ app.get('/api/v1/professionalBookings/:barbeariaId/:professionalId/:selectedDate
       })
 })
 
+app.get('/api/v1/getAmountOfMonth/:barbeariaId/:currentMonth/:currentYear', AuthenticateJWT, (req, res) =>{
+  const barbeariaId = req.params.barbeariaId;
+  const currentMonth = req.params.currentMonth;
+  const currentYear = req.params.currentYear;
+  
+  console.log(barbeariaId, currentMonth, currentYear)
+})
 app.delete('/api/v1/unlinkProfessional/:barbeariaId/:professionalId/:confirmPassword', AuthenticateJWT, (req, res) => {
   const barbeariaId = req.params.barbeariaId;
   const professionalId = req.params.professionalId;
