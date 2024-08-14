@@ -2700,6 +2700,12 @@ app.get('/api/v1/getAmountOfMonth/:barbeariaId/:currentMonth/:currentYear', Auth
       console.error("Erro ao obter agendamentos", err);
       return res.status(500).json({ Error: "Internal Server Error" });
     }
+    if(resul.length > 0){
+      console.log(resul)
+      //return res.status(200).json({ Message: "true", bookings: result });
+    }else{
+      return res.status(200).json({ Message: "false"});
+    }
   })
 })
 app.delete('/api/v1/unlinkProfessional/:barbeariaId/:professionalId/:confirmPassword', AuthenticateJWT, (req, res) => {
