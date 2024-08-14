@@ -2683,16 +2683,13 @@ app.get('/api/v1/professionalBookings/:barbeariaId/:professionalId/:selectedDate
       })
 })
 
-app.get('/api/v1/getAmountOfMonth/:barbeariaId/:currentMonth/:currentYear', AuthenticateJWT, (req, res) =>{
+app.get('/api/v1/getAmountOfMonth/:barbeariaId/:CurrentMonthAndYear', AuthenticateJWT, (req, res) =>{
   const barbeariaId = req.params.barbeariaId;
-  const currentMonth = req.params.currentMonth;
-  const currentYear = req.params.currentYear;
+  const CurrentMonthAndYear = req.params.CurrentMonthAndYear;
   
-  const sql=`SELECT
-                EXTRACT(YEAR FROM date_created) AS year,
-                EXTRACT(MONTH FROM date_created) AS month
+  const sql=`SELECT *
             FROM booking
-            WHERE barbearia_id = ?`;
+            WHERE barbearia_id = ? AND booking_date LIKE '%${CurrentMonthAndYear}%'`;
   db.query(sql, [barbeariaId, currentMonth, currentYear], (err, resul) =>{
     if(err){
       console.error("Erro ao obter agendamentos", err);
