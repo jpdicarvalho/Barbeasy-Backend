@@ -2689,12 +2689,10 @@ app.get('/api/v1/getAmountOfMonth/:barbeariaId/:currentMonth/:currentYear', Auth
   const currentYear = req.params.currentYear;
   
   const sql=`SELECT
-                servico.preco AS service_price,
                 EXTRACT(YEAR FROM date_created) AS year,
                 EXTRACT(MONTH FROM date_created) AS month
             FROM booking
-            INNER JOIN servico ON servico.id = booking.service_id
-            WHERE barbearia_id = ? AND year = ? AND month = ?`;
+            WHERE barbearia_id = ?`;
   db.query(sql, [barbeariaId, currentMonth, currentYear], (err, resul) =>{
     if(err){
       console.error("Erro ao obter agendamentos", err);
