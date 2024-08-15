@@ -2696,16 +2696,6 @@ app.get('/api/v1/getAmountOfMonth/:barbeariaId', AuthenticateJWT, (req, res) =>{
 
   let CurrentMonthAndYear = `${month} de ${year}`;
   
-  function caluclateAmonte (mesAtual){
-    let totalAmount;
-    Object.entries(mesAtual).forEach(([key, value]) => {
-      let valueService = value.replace(/[^0-9,]/g, '').replace(',', '.');
-      // Convertendo a string resultante para número
-      valueService = parseFloat(valueService);
-      totalAmount = totalAmount + valueService;
-      console.log(totalAmount);
-    });
-  }
   const sql=`SELECT 
                     servico.preco AS service_price
             FROM booking
@@ -2719,9 +2709,7 @@ app.get('/api/v1/getAmountOfMonth/:barbeariaId', AuthenticateJWT, (req, res) =>{
       return res.status(500).json({ Error: "Internal Server Error" });
     }
     if(resul.length > 0){
-      console.log(resul)
-      caluclateAmonte(resul[0])
-      //return res.status(200).json({ Message: "true", bookings: result });
+      return res.status(200).json({ Message: "true", resul });
     }else{
       return res.status(200).json({ Message: "false"});
     }
