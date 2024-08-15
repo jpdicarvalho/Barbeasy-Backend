@@ -2700,7 +2700,9 @@ app.get('/api/v1/getAmountOfMonth/:barbeariaId', AuthenticateJWT, (req, res) =>{
                     servico.preco AS service_price
             FROM booking
             INNER JOIN servico ON servico.id = booking.service_id
-            WHERE barbearia_id = ? AND paymentStatus = 'approved' AND booking_date LIKE '%${CurrentMonthAndYear}%'`;
+            WHERE booking.barbearia_id = ?
+                  AND paymentStatus = 'approved'
+                  AND booking_date LIKE '%${CurrentMonthAndYear}%'`;
   db.query(sql, [barbeariaId], (err, resul) =>{
     if(err){
       console.error("Erro ao obter agendamentos", err);
