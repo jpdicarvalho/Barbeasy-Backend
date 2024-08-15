@@ -2683,6 +2683,7 @@ app.get('/api/v1/professionalBookings/:barbeariaId/:professionalId/:selectedDate
       })
 })
 
+//Route to get all service by month and calucule total amount
 app.get('/api/v1/getAmountOfMonth/:barbeariaId', AuthenticateJWT, (req, res) =>{
   const barbeariaId = req.params.barbeariaId;
 
@@ -2696,7 +2697,8 @@ app.get('/api/v1/getAmountOfMonth/:barbeariaId', AuthenticateJWT, (req, res) =>{
 
   let CurrentMonthAndYear = `${month} de ${year}`;
   
-  function caluclateAmonte (mesAtual){
+  //Function to calcule total amount of current month
+  function caluclateAmount (mesAtual){
     let totalAmount = 0;
   
     for(let i = 0; i < mesAtual.length; i++){
@@ -2727,13 +2729,14 @@ app.get('/api/v1/getAmountOfMonth/:barbeariaId', AuthenticateJWT, (req, res) =>{
       return res.status(500).json({ Error: "Internal Server Error" });
     }
     if(resul.length > 0){
-      const totalAmount = caluclateAmonte(resul)
+      const totalAmount = caluclateAmount(resul)
       return res.status(200).json({ totalAmount });
     }else{
       return res.status(200).json({ Message: "false"});
     }
   })
 })
+
 app.delete('/api/v1/unlinkProfessional/:barbeariaId/:professionalId/:confirmPassword', AuthenticateJWT, (req, res) => {
   const barbeariaId = req.params.barbeariaId;
   const professionalId = req.params.professionalId;
