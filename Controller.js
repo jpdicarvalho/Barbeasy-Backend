@@ -2696,7 +2696,7 @@ app.get('/api/v1/getAmountOfMonth/:barbeariaId', AuthenticateJWT, (req, res) =>{
 
   let CurrentMonthAndYear = `${month} de ${year}`;
   
-  const sql=`SELECT id,
+  const sql=`SELECT booking.id,
                     servico.preco AS service_price
             FROM booking
             INNER JOIN servico ON servico.id = booking.service_id
