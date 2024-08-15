@@ -2683,13 +2683,24 @@ app.get('/api/v1/professionalBookings/:barbeariaId/:professionalId/:selectedDate
       })
 })
 
-app.get('/api/v1/getAmountOfMonth/:barbeariaId/:CurrentMonthAndYear', AuthenticateJWT, (req, res) =>{
+app.get('/api/v1/getAmountOfMonth/:barbeariaId', AuthenticateJWT, (req, res) =>{
   const barbeariaId = req.params.barbeariaId;
-  const CurrentMonthAndYear = req.params.CurrentMonthAndYear;
+
+  const months = [
+    'Jan', 'Fev', 'Mar', 'Abr', 'Maio', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'
+  ];
+
+  const today = new Date();
+  const month = months[today.getMonth()];
+  const year = today.getFullYear();
+
+  let CurrentMonthAndYear = `${month} de ${year}`;
   
-  const sql=`SELECT *
+  const sql=`SELECT id,
+                    servico.preco AS service_price,
             FROM booking
-            WHERE barbearia_id = ? AND booking_date LIKE '%${CurrentMonthAndYear}%'`;
+            INNER JOIN servico ON servico.id = booking.service_id
+            WHERE barbearia_id = ? AND paymentStatus = 'approved' AND booking_date LIKE '%${CurrentMonthAndYear}%'`;
   db.query(sql, [barbeariaId], (err, resul) =>{
     if(err){
       console.error("Erro ao obter agendamentos", err);
