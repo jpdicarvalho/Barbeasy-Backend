@@ -779,7 +779,7 @@ const client = new MercadoPagoConfig({
 const payment = new Payment(client);
 
 const expirationDate = new Date();
-expirationDate.setMinutes(expirationDate.getMinutes() + 7); // Adiciona 7 minutos à data atual
+expirationDate.setMinutes(expirationDate.getMinutes() + 1); // Adiciona 7 minutos à data atual
 
 const pad = (num) => String(num).padStart(2, '0');
 
@@ -936,7 +936,7 @@ app.post('/api/v1/notificationPayment', (req, res) => {
   const urlGetPayment = 'https://api.mercadopago.com/v1/payments/';
 
   // Acessa o id diretamente da query string
-  const paymentId = req.query.id;
+  const paymentId = req.query.id || req.body.data.id;
   if (paymentId) {
       const sql=`SELECT BarbeariaCredentials.access_token AS access_token
                         FROM BarbeariaCredentials
