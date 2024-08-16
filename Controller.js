@@ -779,7 +779,7 @@ const client = new MercadoPagoConfig({
 const payment = new Payment(client);
 
 const expirationDate = new Date();
-expirationDate.setMinutes(expirationDate.getMinutes() + 3); // Adiciona 7 minutos à data atual
+expirationDate.setMinutes(expirationDate.getMinutes() + 5); // Adiciona 7 minutos à data atual
 
 const pad = (num) => String(num).padStart(2, '0');
 
