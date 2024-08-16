@@ -931,18 +931,27 @@ app.delete('/api/v1/delePreBooking/:paymentId/:identificationToken', Authenticat
 
 })
 
-app.post('/api/v1/notificationPayment', (req, res) =>{
-  const urlGetPayment = 'https://api.mercadopago.com/v1/payments/'
-  if(req.body){
-    console.log('em busca do id - 01',req.body.data.id)
+app.post('/api/v1/notificationPayment', (req, res) => {
+  const urlGetPayment = 'https://api.mercadopago.com/v1/payments/';
+
+  // Verifique se o corpo da requisição contém dados
+  if (req.body && req.body.data && req.body.data.id) {
+    console.log('em busca do id - 01', req.body.data.id);
+  } else {
+    console.error('ID não encontrado no corpo da requisição');
   }
-  if(req.body){
-    const paymentId = req.params.id
-    console.log('em busca do id - 02',paymentId)
+
+  // Acessa o id diretamente da query string
+  const paymentId = req.query.id;
+  if (paymentId) {
+    console.log('em busca do id - 02', paymentId);
+  } else {
+    console.error('ID não encontrado na query string');
   }
-  
-  res.send('post v1')
-})
+
+  // Envie uma resposta de sucesso
+  res.send('post v1');
+});
 
 //======================================= ROTAS USER-BARBEARIA ====================================
 
