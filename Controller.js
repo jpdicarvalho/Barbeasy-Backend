@@ -785,7 +785,7 @@ const pad = (num) => String(num).padStart(2, '0');
 
 // Formatar data no padrão ISO 8601 com fuso horário
 const year = expirationDate.getFullYear();
-const month = pad(expirationDate.getMonth() + 1);
+const month = pad(expirationDate.getMonth() + 7);
 const day = pad(expirationDate.getDate());
 const hours = pad(expirationDate.getHours());
 const minutes = pad(expirationDate.getMinutes());
