@@ -779,7 +779,7 @@ const client = new MercadoPagoConfig({
 const payment = new Payment(client);
 
 const expirationDate = new Date();
-expirationDate.setMinutes(expirationDate.getMinutes() + 7); // Adiciona 7 minutos à data atual
+expirationDate.setMinutes(expirationDate.getMinutes() + 3); // Adiciona 7 minutos à data atual
 
 const pad = (num) => String(num).padStart(2, '0');
 
@@ -948,7 +948,6 @@ app.post('/api/v1/notificationPayment', (req, res) => {
           return res.status(500).json({ error: 'on update payment status - Internal Server Error' });
         }
         if(resul.length > 0){
-          console.log('access_token', resul[0].access_token)
           const accessTokenBarbearia = resul[0].access_token;
 
           axios.get(`${urlGetPayment}${paymentId}`, {
