@@ -955,9 +955,21 @@ app.post('/api/v1/notificationPayment', (req, res) => {
                 'Authorization': `Bearer ${accessTokenBarbearia}`
               }
           }).then(res =>{
-              console.log(res.data.status)
+            if(res.data.status === 'cancelled'){
+              const sql = 'UPDATE payments SET status = ? WHERE payment_id = ?';
+              db.query(sql, [res.data.status, paymentId], (erro, result) =>{
+                if(erro){
+                  console.error('Error update payment status from booking:', erro);
+                  return res.status(500).json({ error: 'on update payment status from booking - Internal Server Error' });
+                }
+                if(result){
+                  console.log('Status do pagamento atualizado para cancelado')
+                }
+              })
+            }
+            console.log(res.data.status)
           }).catch(err =>{
-              console.log(err)
+            console.error(err)
           })
         }
       })
