@@ -934,13 +934,6 @@ app.delete('/api/v1/delePreBooking/:paymentId/:identificationToken', Authenticat
 app.post('/api/v1/notificationPayment', (req, res) => {
   const urlGetPayment = 'https://api.mercadopago.com/v1/payments/';
 
-  // Verifique se o corpo da requisição contém dados
-  if (req.body && req.body.data && req.body.data.id) {
-    console.log('em busca do id - 01', req.body.data.id);
-  } else {
-    console.error('ID não encontrado no corpo da requisição');
-  }
-
   // Acessa o id diretamente da query string
   const paymentId = req.query.id;
   if (paymentId) {
