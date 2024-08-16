@@ -19,6 +19,7 @@ import winston from 'winston';
 import UAParser from 'ua-parser-js';
 import rateLimit from 'express-rate-limit';
 
+import axios from 'axios';
 //import { serveSwaggerUI, setupSwaggerUI } from './swaggerConfig.js';
 
 import 'dotenv/config'
@@ -937,7 +938,12 @@ app.post('/api/v1/notificationPayment', (req, res) => {
   // Acessa o id diretamente da query string
   const paymentId = req.query.id;
   if (paymentId) {
-    console.log('em busca do id - 02', paymentId);
+    axios.get(`${urlGetPayment}${paymentId}`)
+      .then(res =>{
+          console.log(res.data)
+      }).catch(err =>{
+          console.log(err)
+      })
   } else {
     console.error('ID não encontrado na query string');
   }
