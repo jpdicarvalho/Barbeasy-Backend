@@ -932,7 +932,8 @@ app.delete('/api/v1/delePreBooking/:paymentId/:identificationToken', Authenticat
 })
 
 app.post('/api/v1/notificationPayment', (req, res) =>{
-  console.log(req.body)
+  const urlGetPayment = 'https://api.mercadopago.com/v1/payments/'
+  console.log(req.body.data.id)
   res.send('post v1')
 })
 
