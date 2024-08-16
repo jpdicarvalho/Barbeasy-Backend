@@ -779,13 +779,13 @@ const client = new MercadoPagoConfig({
 const payment = new Payment(client);
 
 const expirationDate = new Date();
-expirationDate.setMinutes(expirationDate.getMinutes() + 1); // Adiciona 7 minutos à data atual
+expirationDate.setMinutes(expirationDate.getMinutes() + 7); // Adiciona 7 minutos à data atual
 
 const pad = (num) => String(num).padStart(2, '0');
 
 // Formatar data no padrão ISO 8601 com fuso horário
 const year = expirationDate.getFullYear();
-const month = pad(expirationDate.getMonth() + 7);
+const month = pad(expirationDate.getMonth() + 1);
 const day = pad(expirationDate.getDate());
 const hours = pad(expirationDate.getHours());
 const minutes = pad(expirationDate.getMinutes());
