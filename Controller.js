@@ -711,14 +711,14 @@ app.put('/api/v1/saveCredentials', AuthenticateJWT, (req, res) => {
   const refresh_token = req.body.refresh_token;
   const data_renovation = req.body.data_renovation;
 
-  const sqlSelect = 'SELECT date_renovation FROM BarberiaCredentials WHERE barbearia_id = ?'
+  const sqlSelect = 'SELECT date_renovation FROM BarbeariaCredentials WHERE barbearia_id = ?'
   db.query(sqlSelect, [barbeariaId], (err, resu) =>{
     if(err){
       console.error('Error on verify credentials:', err);
       return res.status(500).json({ error: 'on verify credentials - Internal Server Error' });
     }
     if(resu.length > 0){//if the barbershop has the credentials
-      const sqlUpdate='UPDATE BarberiaCredentials SET access_token = ?, refresh_token = ?, date_renovation = ? WHERE barbearia_id = ?';
+      const sqlUpdate='UPDATE BarbeariaCredentials SET access_token = ?, refresh_token = ?, date_renovation = ? WHERE barbearia_id = ?';
       db.query(sqlUpdate, [access_token, refresh_token, data_renovation, barbeariaId], (erro, resul) =>{
         if(erro){
           console.error('Error on update credentials:', erro);
@@ -729,7 +729,7 @@ app.put('/api/v1/saveCredentials', AuthenticateJWT, (req, res) => {
         }
       })
     }else{//if the barbershop don't have the credentials
-      const sqlInsert = 'INSERT INTO BarberiaCredentials (barbearia_id, access_token, refresh_token, date_renovation) VALUES (?, ?, ?, ?)';
+      const sqlInsert = 'INSERT INTO BarbeariaCredentials (barbearia_id, access_token, refresh_token, date_renovation) VALUES (?, ?, ?, ?)';
       db.query(sqlInsert, [barbeariaId, access_token, refresh_token, data_renovation], (error, result) =>{
         if(error){
           console.error('Error on save credentials:', error);
@@ -747,7 +747,7 @@ app.put('/api/v1/saveCredentials', AuthenticateJWT, (req, res) => {
 app.get('/api/v1/barbeariaCredentials/:barbeariaId', AuthenticateJWT, (req, res) =>{
   const barbeariaId = req.params.barbeariaId;
 
-  const sql = 'SELECT access_token, refresh_token, date_renovation FROM BarberiaCredentials WHERE barbearia_id = ?';
+  const sql = 'SELECT access_token, refresh_token, date_renovation FROM BarbeariaCredentials WHERE barbearia_id = ?';
   db.query(sql, [barbeariaId], (err, resul) =>{
     if(err){
       console.error("Error in search access token of user", err);
@@ -938,11 +938,29 @@ app.post('/api/v1/notificationPayment', (req, res) => {
   // Acessa o id diretamente da query string
   const paymentId = req.query.id;
   if (paymentId) {
-    axios.get(`${urlGetPayment}${paymentId}`)
-      .then(res =>{
-          console.log(res.data)
-      }).catch(err =>{
-          console.log(err)
+      const sql=`SELECT BarbeariaCredentials.access_token AS access_token
+                        FROM BarbeariaCredentials
+                        INNER JOIN payments ON payments.barbearia_id = BarbeariaCredentials.barbearia_id
+                        WHERE payments.payment_id = ?`;
+      db.query(sql, [paymentId], (err, resul) =>{
+        if(err){
+          console.error('Error update payment status:', err);
+          return res.status(500).json({ error: 'on update payment status - Internal Server Error' });
+        }
+        if(resul.length > 0){
+          console.log('access_token', resul[0].access_token)
+          const accessTokenBarbearia = resul[0].access_token;
+
+          axios.get(`${urlGetPayment}${paymentId}`, {
+            headers: {
+                'Authorization': `Bearer ${accessTokenBarbearia}`
+              }
+          }).then(res =>{
+              console.log(res.data)
+          }).catch(err =>{
+              console.log(err)
+          })
+        }
       })
   } else {
     console.error('ID não encontrado na query string');
