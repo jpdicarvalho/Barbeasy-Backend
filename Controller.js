@@ -956,7 +956,7 @@ app.post('/api/v1/notificationPayment', (req, res) => {
                 'Authorization': `Bearer ${accessTokenBarbearia}`
               }
           }).then(res =>{
-              console.log(res.data)
+              console.log(res.data.status)
           }).catch(err =>{
               console.log(err)
           })
