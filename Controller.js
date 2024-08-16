@@ -2622,6 +2622,8 @@ app.get('/api/v1/bookings/:barbeariaId/:selectedDate', AuthenticateJWT, (req, re
           user.user_image AS user_image,
           booking.id AS booking_id,
           booking.booking_time AS booking_time,
+          booking.paymentStatus AS paymentStatus,
+          booking.date_created AS date_created,
           professional.id AS professional_id,
           professional.name AS professional_name,
           servico.id AS service_id,
