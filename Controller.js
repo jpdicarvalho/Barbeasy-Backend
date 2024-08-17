@@ -2612,7 +2612,6 @@ app.get('/api/v1/bookings/:barbeariaId/:selectedDate', AuthenticateJWT, (req, re
           user.user_image AS user_image,
           bookings.id AS booking_id,
           bookings.booking_time AS booking_time,
-          bookings.paymentStatus AS paymentStatus,
           bookings.date_created AS date_created,
           professional.id AS professional_id,
           professional.name AS professional_name,
@@ -2620,11 +2619,14 @@ app.get('/api/v1/bookings/:barbeariaId/:selectedDate', AuthenticateJWT, (req, re
           servico.name AS service_name,
           servico.preco AS service_price,
           servico.duracao AS service_duration,
-          servico.commission_fee AS service_commission_fee
+          servico.commission_fee AS service_commission_fee,
+          payments.status AS paymentStatus
       FROM user
       INNER JOIN bookings ON user.id = bookings.user_id AND bookings.barbearia_id = ? AND bookings.booking_date = ?
       INNER JOIN professional ON professional.id = bookings.professional_id
-      INNER JOIN servico ON servico.id = bookings.service_id`;
+      INNER JOIN servico ON servico.id = bookings.service_id
+      INNER JOIN payments ON payments.id = bookings.payment_id`;
+      
       db.query(sql, [barbeariaId, selectedDate], (err, result) =>{
         if(err){
           console.error("Erro ao obter agendamentos", err);
