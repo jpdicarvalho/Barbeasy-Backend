@@ -630,9 +630,9 @@ app.get('/api/v1/allAvaliation/:barbeariaId', AuthenticateJWT, async(req, res)=>
 app.get('/api/v1/bookingsOfUser/:userId', AuthenticateJWT, (req, res) =>{
   const userId = req.params.userId;
 
-  const sql=`SELECT booking.booking_date AS bookingDate,
-                    booking.booking_time AS bookingTime,
-                    booking.date_created AS dateMakedBooking,
+  const sql=`SELECT bookings.booking_date AS bookingDate,
+                    bookings.booking_time AS bookingTime,
+                    bookings.date_created AS dateMakedBooking,
                     barbearia.name AS barbeariaName,
                     barbearia.banner_main AS bannerBarbearia,
                     barbearia.rua AS ruaBarbearia,
@@ -644,11 +644,11 @@ app.get('/api/v1/bookingsOfUser/:userId', AuthenticateJWT, (req, res) =>{
                     professional.user_image AS userImageProfessional,
                     servico.name AS serviceName,
                     servico.preco AS servicePrice
-              FROM booking
-              INNER JOIN barbearia ON barbearia.id = booking.barbearia_id
-              INNER JOIN professional ON professional.id = booking.professional_id
-              INNER JOIN servico ON servico.id = booking.service_id
-              WHERE booking.user_id = ?`
+              FROM bookings
+              INNER JOIN barbearia ON barbearia.id = bookings.barbearia_id
+              INNER JOIN professional ON professional.id = bookings.professional_id
+              INNER JOIN servico ON servico.id = bookings.service_id
+              WHERE bookings.user_id = ?`
 
   db.query(sql, [userId], (err, result) =>{
     if(err){
@@ -858,11 +858,11 @@ app.put('/api/v1/updatePaymentStatus', AuthenticateJWT, (req, res) =>{
       return res.status(500).json({ error: 'on update payment status - Internal Server Error' });
     }
     if(resu){
-      const sqlUpdatePaymentStatus = 'UPDATE booking SET paymentStatus = ? WHERE token = ?';
+      const sqlUpdatePaymentStatus = 'UPDATE bookings SET paymentStatus = ? WHERE token = ?';
       db.query(sqlUpdatePaymentStatus, [paymentStatus, identificationToken], (erro, resul) =>{
         if(erro){
-          console.error('Error update payment status from booking:', erro);
-          return res.status(500).json({ error: 'on update payment status from booking - Internal Server Error' });
+          console.error('Error update payment status from bookings:', erro);
+          return res.status(500).json({ error: 'on update payment status from bookings - Internal Server Error' });
         }
         if(resul){
           return res.status(200).json({ Success: 'Success'});
@@ -877,7 +877,7 @@ app.delete('/api/v1/delePreBooking/:paymentId/:identificationToken', Authenticat
   const paymentId = req.params.paymentId;
   const identificationToken = req.params.identificationToken;
 
-  const sqlDeleteFromBooking = 'DELETE FROM booking WHERE token = ?';
+  const sqlDeleteFromBooking = 'DELETE FROM bookings WHERE token = ?';
   db.query(sqlDeleteFromBooking, [identificationToken], (err, resu) =>{
       if(err){
         console.error('Error on delete pre-booking:', err);
@@ -926,8 +926,8 @@ app.post('/api/v1/notificationPayment', (req, res) => {
               const sql = 'UPDATE payments SET status = ? WHERE payment_id = ?';
               db.query(sql, [res.data.status, paymentId], (erro, result) =>{
                 if(erro){
-                  console.error('Error update payment status from booking:', erro);
-                  return res.status(500).json({ error: 'on update payment status from booking - Internal Server Error' });
+                  console.error('Error update payment status from bookings:', erro);
+                  return res.status(500).json({ error: 'on update payment status from bookings - Internal Server Error' });
                 }
                 if(result){
                   console.log('Status do pagamento atualizado para cancelado')
@@ -2514,7 +2514,7 @@ app.post('/api/v1/createBooking/', AuthenticateJWT, (req, res) => {
   const token = values.join('-');
 
   
-  const sqlSelect="SELECT token FROM booking WHERE token = ?";
+  const sqlSelect="SELECT token FROM bookings WHERE token = ?";
   db.query(sqlSelect, [token], (err, resut) =>{
     if(err){
       console.error('Erro ao verificar disponibilidade da barbearia:', err);
@@ -2523,7 +2523,7 @@ app.post('/api/v1/createBooking/', AuthenticateJWT, (req, res) => {
     if(resut.length > 0){
       return res.status(401).json({ Unauthorized: 'Unauthorized' });
     }else{
-      const sqlInsert = "INSERT INTO booking (user_id, barbearia_id, professional_id, service_id, booking_date, booking_time, date_created, token, paymentStatus) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+      const sqlInsert = "INSERT INTO bookings (user_id, barbearia_id, professional_id, service_id, booking_date, booking_time, date_created, token, paymentStatus) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
       db.query(sqlInsert, [...values, formatDate, token, initialPaymentStatus], (erro, results) => {
         if(erro){
           console.error('Erro ao realizar agendamento:', erro);
@@ -2543,11 +2543,11 @@ app.get('/api/v1/bookingsTimes/:barbeariaId/:professionalId/:selectedDate', Auth
   const selectedDate = req.params.selectedDate;
 
   const sql = `
-        SELECT COALESCE(booking.booking_time, 0) AS timesLocked
-        FROM booking
-        WHERE booking.barbearia_id = ? 
-          AND booking.professional_id = ? 
-          AND booking.booking_date = ?
+        SELECT COALESCE(bookings.booking_time, 0) AS timesLocked
+        FROM bookings
+        WHERE bookings.barbearia_id = ? 
+          AND bookings.professional_id = ? 
+          AND bookings.booking_date = ?
         UNION ALL
         SELECT COALESCE(days_off.times, 0)
         FROM days_off
@@ -2632,10 +2632,10 @@ app.get('/api/v1/bookings/:barbeariaId/:selectedDate', AuthenticateJWT, (req, re
           user.name user_name,
           user.celular AS user_phone,
           user.user_image AS user_image,
-          booking.id AS booking_id,
-          booking.booking_time AS booking_time,
-          booking.paymentStatus AS paymentStatus,
-          booking.date_created AS date_created,
+          bookings.id AS booking_id,
+          bookings.booking_time AS booking_time,
+          bookings.paymentStatus AS paymentStatus,
+          bookings.date_created AS date_created,
           professional.id AS professional_id,
           professional.name AS professional_name,
           servico.id AS service_id,
@@ -2644,9 +2644,9 @@ app.get('/api/v1/bookings/:barbeariaId/:selectedDate', AuthenticateJWT, (req, re
           servico.duracao AS service_duration,
           servico.commission_fee AS service_commission_fee
       FROM user
-      INNER JOIN booking ON user.id = booking.user_id AND booking.barbearia_id = ? AND booking.booking_date = ?
-      INNER JOIN professional ON professional.id = booking.professional_id
-      INNER JOIN servico ON servico.id = booking.service_id`;
+      INNER JOIN bookings ON user.id = bookings.user_id AND bookings.barbearia_id = ? AND bookings.booking_date = ?
+      INNER JOIN professional ON professional.id = bookings.professional_id
+      INNER JOIN servico ON servico.id = bookings.service_id`;
       db.query(sql, [barbeariaId, selectedDate], (err, result) =>{
         if(err){
           console.error("Erro ao obter agendamentos", err);
@@ -2672,17 +2672,17 @@ app.get('/api/v1/professionalBookings/:barbeariaId/:professionalId/:selectedDate
           user.name user_name,
           user.celular AS user_phone,
           user.user_image AS user_image,
-          booking.id AS booking_id,
-          booking.booking_date AS booking_date,
-          booking.booking_time AS booking_time,
+          bookings.id AS booking_id,
+          bookings.booking_date AS booking_date,
+          bookings.booking_time AS booking_time,
           servico.name AS service_name,
           servico.preco AS service_price,
           servico.duracao AS service_duration,
           servico.commission_fee AS service_commission_fee
       FROM user
-      INNER JOIN booking ON user.id = booking.user_id AND booking.barbearia_id = ? AND booking.booking_date = ?
+      INNER JOIN bookings ON user.id = bookings.user_id AND bookings.barbearia_id = ? AND bookings.booking_date = ?
       INNER JOIN professional ON professional.id = ?
-      INNER JOIN servico ON servico.id = booking.service_id`;
+      INNER JOIN servico ON servico.id = bookings.service_id`;
       db.query(sql, [barbeariaId, selectedDate, professionalId], (err, result) =>{
         if(err){
           console.error("Erro ao obter agendamentos", err);
@@ -2732,9 +2732,9 @@ app.get('/api/v1/getAmountOfMonth/:barbeariaId', AuthenticateJWT, (req, res) =>{
 
   const sql=`SELECT 
                     servico.preco AS service_price
-            FROM booking
-            INNER JOIN servico ON servico.id = booking.service_id
-            WHERE booking.barbearia_id = ?
+            FROM bookings
+            INNER JOIN servico ON servico.id = bookings.service_id
+            WHERE bookings.barbearia_id = ?
                   AND paymentStatus = 'approved'
                   AND booking_date LIKE '%${CurrentMonthAndYear}%'`;
   db.query(sql, [barbeariaId], (err, resul) =>{
