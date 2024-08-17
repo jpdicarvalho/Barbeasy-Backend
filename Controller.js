@@ -2413,7 +2413,8 @@ app.get('/api/v1/listProfessionalToBarbearia/:barbeariaId', AuthenticateJWT, (re
 app.get('/api/v1/listBarbeariaToProfessional/:professionalId', AuthenticateJWT, (req, res) => {
   const professionalId = req.params.professionalId;
 
-  const sql=`SELECT barbearia.name AS nameBarbearia,
+  const sql=`SELECT barbearia.id AS barbeariaId,
+                    barbearia.name AS nameBarbearia,
                     barbearia.banner_main AS bannerBarbearia,
                     barbearia.rua AS ruaBarbearia,
                     barbearia.N AS nRuaBarbearia,
