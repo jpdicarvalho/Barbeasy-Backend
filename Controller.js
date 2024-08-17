@@ -2421,9 +2421,9 @@ app.get('/api/v1/listBarbeariaToProfessional/:professionalId', AuthenticateJWT, 
                     barbearia.cidade AS cidadeBarbearia,
                     averageAvaliations.totalAvaliations AS totalAvaliations,
                     averageAvaliations.average AS average
-             FROM barbearia
-             INNER JOIN Barb_Professional ON Barb_Professional.barbearia_id = barbearia.id AND Barb_Professional.professional_id = ?
-             LEFT JOIN averageAvaliations ON averageAvaliations.barbearia_id = Barb_Professional.barbearia`
+              FROM Barb_Professional
+              INNER JOIN barbearia ON barbearia.id = Barb_Professional.barbearia_id AND Barb_Professional.professional_id = ?
+              LEFT JOIN averageAvaliations ON averageAvaliations.barbearia_id = Barb_Professional.barbearia_id`;
 
   db.query(sql, [professionalId], (err, result) =>{
     if(err){
