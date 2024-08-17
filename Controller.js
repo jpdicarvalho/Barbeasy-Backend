@@ -2712,11 +2712,9 @@ app.get('/api/v1/getAmountOfMonth/:barbeariaId', AuthenticateJWT, (req, res) =>{
 
   const sql=`SELECT 
                 servico.preco AS service_price
-              FROM bookings
-              INNER JOIN servico ON servico.id = bookings.service_id
-              INNER JOIN payments ON payments.status = 'approved'
-              WHERE bookings.barbearia_id = ?
-                    AND booking_date LIKE '%${CurrentMonthAndYear}%'`;
+              FROM servico
+              INNER JOIN bookings ON bookings.barbearia_id = ? AND bookings.service_id = servico.id AND booking_date LIKE '%${CurrentMonthAndYear}%'
+              INNER JOIN payments ON payments.status = 'approved'`;
 
   db.query(sql, [barbeariaId], (err, resul) =>{
     if(err){
