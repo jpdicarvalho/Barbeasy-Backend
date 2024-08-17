@@ -2625,8 +2625,8 @@ app.get('/api/v1/bookings/:barbeariaId/:selectedDate', AuthenticateJWT, (req, re
       INNER JOIN bookings ON user.id = bookings.user_id AND bookings.barbearia_id = ? AND bookings.booking_date = ?
       INNER JOIN professional ON professional.id = bookings.professional_id
       INNER JOIN servico ON servico.id = bookings.service_id
-      INNER JOIN payments ON payments.id = bookings.payment_id`;
-      
+      INNER JOIN payments ON payments.id = bookings.payment_id AND payments.status = 'approved'`;
+
       db.query(sql, [barbeariaId, selectedDate], (err, result) =>{
         if(err){
           console.error("Erro ao obter agendamentos", err);
