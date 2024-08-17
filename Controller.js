@@ -870,33 +870,6 @@ app.put('/api/v1/updatePaymentStatus', AuthenticateJWT, (req, res) =>{
   })
 })
 
-//Route to delete pre-Booking created
-app.delete('/api/v1/delePreBooking/:paymentId/:identificationToken', AuthenticateJWT, (req, res) =>{
-  const paymentId = req.params.paymentId;
-  const identificationToken = req.params.identificationToken;
-
-  const sqlDeleteFromBooking = 'DELETE FROM bookings WHERE token = ?';
-  db.query(sqlDeleteFromBooking, [identificationToken], (err, resu) =>{
-      if(err){
-        console.error('Error on delete pre-booking:', err);
-        return res.status(500).json({ error: 'on delete pre-booking - Internal Server Error' });
-      }
-      if(resu){
-        const sqlDeleteFromPayments = 'DELETE FROM payments WHERE payment_id = ?';
-        db.query(sqlDeleteFromPayments, [paymentId], (erro, resul) =>{
-          if(erro){
-            console.error('Error on delete payment:', erro);
-            return res.status(500).json({ error: 'on delete payment - Internal Server Error' });
-          }
-          if(resul){
-            return res.status(200).json({ Success: true});
-          }
-        })
-      }
-  })
-
-})
-
 app.post('/api/v1/notificationPayment', (req, res) => {
   const urlGetPayment = 'https://api.mercadopago.com/v1/payments/';
 
