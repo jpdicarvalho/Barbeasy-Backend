@@ -2516,17 +2516,22 @@ app.get('/api/v1/bookingsTimes/:barbeariaId/:professionalId/:selectedDate', Auth
   const selectedDate = req.params.selectedDate;
 
   const sql = `
-        SELECT COALESCE(bookings.booking_time, 0) AS timesLocked
-        FROM bookings
-        WHERE bookings.barbearia_id = ? 
-          AND bookings.professional_id = ? 
-          AND bookings.booking_date = ?
-        UNION ALL
-        SELECT COALESCE(days_off.times, 0)
-        FROM days_off
-        WHERE days_off.barbearia_id = ? 
-          AND days_off.professional_id = ? 
-          AND days_off.day = ?`;
+              SELECT bookings.booking_time AS timesLocked
+              FROM bookings
+              INNER JOIN payments 
+                  ON payments.id = bookings.payment_id 
+                  AND payments.status != 'cancelled'
+              WHERE bookings.barbearia_id = ?
+                AND bookings.professional_id = ?
+                AND bookings.booking_date = ?
+
+              UNION
+
+              SELECT days_off.times
+              FROM days_off
+              WHERE days_off.barbearia_id = ?
+                AND days_off.professional_id = ?
+                AND days_off.day = ?`;
 
   db.query(sql, [barbeariaId, professionalId, selectedDate, barbeariaId, professionalId, selectedDate], (err, result) => {
     if (err) {
