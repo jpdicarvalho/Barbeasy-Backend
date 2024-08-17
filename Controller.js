@@ -2525,14 +2525,15 @@ app.post('/api/v1/createBooking/', AuthenticateJWT, (req, res) => {
 
   
   const sqlSelect="SELECT token FROM bookings WHERE token = ?";
-  db.query(sqlSelect, [token], (err, resut) =>{
+  db.query(sqlSelect, [token], (err, result) =>{
     if(err){
       console.error('Erro ao verificar disponibilidade da barbearia:', err);
       return res.status(500).json({ Error: 'Erro ao verificar disponibilidade da barbearia.' });
     }
-    if(resut.length > 0){
+    if(result.length > 0){
       return res.status(401).json({ Unauthorized: 'Unauthorized' });
-    }else{
+    }
+    if(result.length < 1){
       const sqlInsert = "INSERT INTO bookings (user_id, barbearia_id, professional_id, service_id, payment_id, booking_date, booking_time, date_created, token) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
       db.query(sqlInsert, [...values, formatDate, token, initialPaymentStatus], (erro, results) => {
         if(erro){
