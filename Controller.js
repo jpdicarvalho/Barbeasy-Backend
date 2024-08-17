@@ -857,8 +857,6 @@ const offsetMinutes = pad(Math.abs(timezoneOffset) % 60);
 app.put('/api/v1/updatePaymentStatus', AuthenticateJWT, (req, res) =>{
   const paymentStatus = req.body.PaymentStatus;
   const PaymentId = req.body.PaymentId;
-  const identificationToken = req.body.identificationToken;
-
 
   const sql = 'UPDATE payments SET status = ? WHERE payment_id = ?';
   db.query(sql, [paymentStatus, PaymentId], (err, resu) =>{
@@ -867,16 +865,7 @@ app.put('/api/v1/updatePaymentStatus', AuthenticateJWT, (req, res) =>{
       return res.status(500).json({ error: 'on update payment status - Internal Server Error' });
     }
     if(resu){
-      const sqlUpdatePaymentStatus = 'UPDATE bookings SET paymentStatus = ? WHERE token = ?';
-      db.query(sqlUpdatePaymentStatus, [paymentStatus, identificationToken], (erro, resul) =>{
-        if(erro){
-          console.error('Error update payment status from bookings:', erro);
-          return res.status(500).json({ error: 'on update payment status from bookings - Internal Server Error' });
-        }
-        if(resul){
-          return res.status(200).json({ Success: 'Success'});
-        }
-      })
+      return res.status(200).json({ Success: 'Success'});
     }
   })
 })
