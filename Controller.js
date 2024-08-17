@@ -798,8 +798,8 @@ const sign = timezoneOffset >= 0 ? '+' : '-';
 const offsetHours = pad(Math.floor(Math.abs(timezoneOffset) / 60));
 const offsetMinutes = pad(Math.abs(timezoneOffset) % 60);
 
-// Montar data final
-const dateOfExpiration = `${year}-${month}-${day}T${hours}:${minutes}:${seconds}.${milliseconds}${sign}${offsetHours}:${offsetMinutes}`;
+  // Montar data final
+  const dateOfExpiration = `${year}-${month}-${day}T${hours}:${minutes}:${seconds}.${milliseconds}${sign}${offsetHours}:${offsetMinutes}`;
 
   const body = { 
     transaction_amount: Number(transaction_amount),
@@ -826,47 +826,14 @@ const dateOfExpiration = `${year}-${month}-${day}T${hours}:${minutes}:${seconds}
     const paymentStatus = response.status;
     const date_created = response.date_created;
 
-    const sqlSelect = 'SELECT status FROM payments WHERE user_id = ? AND barbearia_id = ?';
-    db.query(sqlSelect, [userId, barbeariaId], (err, resu) =>{
-      if(err){
-        console.error('Error on verify payment:', err);
-        return res.status(500).json({ error: 'on verify payment - Internal Server Error' });
+    const sqlInsert = 'INSERT INTO payments (payment_id,	user_id,	barbearia_id,	professional_id,	service_id,	status,	date_created) VALUES (?, ?, ?, ?, ?, ?, ?)';
+    db.query(sqlInsert, [paymentId, userId, barbeariaId, professionalId, serviceId, paymentStatus, date_created], (error, result) =>{
+      if(error){
+        console.error('Error on insert a new payment:', error);
+        return res.status(500).json({ error: 'on insert a new payment - Internal Server Error' });
       }
-      if(resu.length > 0){//To overwrite the payment of user if status was pending
-          if(resu[0].status === "pending"){
-            const sqlUpdate = 'UPDATE payments SET payment_id = ?,	user_id = ?,	barbearia_id = ?,	professional_id = ?,	service_id = ?,	status = ?,	date_created = ?';
-            db.query(sqlUpdate, [paymentId, userId, barbeariaId, professionalId, serviceId, paymentStatus, date_created], (erro, resul) =>{
-              if(erro){
-                console.error('Error on update payment:', erro);
-                return res.status(500).json({ error: 'on update payment - Internal Server Error' });
-              }
-              if(resul){
-                return res.status(200).json({ Success: true, fullResponse: response});
-              }
-            })
-          }else if(resu[0].status === "approved"){//To insert a new payment of user if status was approved
-              const sqlInsert = 'INSERT INTO payments (payment_id,	user_id,	barbearia_id,	professional_id,	service_id,	status,	date_created) VALUES (?, ?, ?, ?, ?, ?, ?)';
-              db.query(sqlInsert, [paymentId, userId, barbeariaId, professionalId, serviceId, paymentStatus, date_created], (error, result) =>{
-                if(error){
-                  console.error('Error on insert a new payment:', error);
-                  return res.status(500).json({ error: 'on insert a new payment - Internal Server Error' });
-                }
-                if(result){
-                  return res.status(200).json({ Success: true, fullResponse: response});
-                }
-              })
-          }
-      }else{//To insert a new payment if the user does not have one
-        const sqlInsert = 'INSERT INTO payments (payment_id,	user_id,	barbearia_id,	professional_id,	service_id,	status,	date_created) VALUES (?, ?, ?, ?, ?, ?, ?)';
-        db.query(sqlInsert, [paymentId, userId, barbeariaId, professionalId, serviceId, paymentStatus, date_created], (error, result) =>{
-          if(error){
-            console.error('Error on insert a new payment:', error);
-            return res.status(500).json({ error: 'on insert a new payment - Internal Server Error' });
-          }
-          if(result){
-            return res.status(200).json({ Success: true, fullResponse: response});
-          }
-        })
+      if(result){
+        return res.status(200).json({ Success: true, fullResponse: response});
       }
     })
   })
