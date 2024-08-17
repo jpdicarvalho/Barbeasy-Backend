@@ -2514,6 +2514,7 @@ app.post('/api/v1/createBooking/', AuthenticateJWT, (req, res) => {
     req.body.barbeariaId,
     req.body.professionalId,
     req.body.serviceId,
+    req.body.payment_id,
     req.body.selectedDay,
     req.body.timeSelected,
   ];
@@ -2532,7 +2533,7 @@ app.post('/api/v1/createBooking/', AuthenticateJWT, (req, res) => {
     if(resut.length > 0){
       return res.status(401).json({ Unauthorized: 'Unauthorized' });
     }else{
-      const sqlInsert = "INSERT INTO bookings (user_id, barbearia_id, professional_id, service_id, booking_date, booking_time, date_created, token, paymentStatus) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+      const sqlInsert = "INSERT INTO bookings (user_id, barbearia_id, professional_id, service_id, payment_id, booking_date, booking_time, date_created, token) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
       db.query(sqlInsert, [...values, formatDate, token, initialPaymentStatus], (erro, results) => {
         if(erro){
           console.error('Erro ao realizar agendamento:', erro);
