@@ -833,7 +833,16 @@ const offsetMinutes = pad(Math.abs(timezoneOffset) % 60);
         return res.status(500).json({ error: 'on insert a new payment - Internal Server Error' });
       }
       if(result){
-        return res.status(200).json({ Success: true, fullResponse: response});
+        const sqlSelect = 'SELECT id FROM payments WHERE payment_id = ?';
+        db.query(sqlSelect, [paymentId], (err, resu) =>{
+          if(err){
+            console.error('Error on selection of id from payments:', error);
+            return res.status(500).json({ error: 'on selection of id from payments - Internal Server Error' });
+          }
+          if(resu.length > 0){
+            return res.status(200).json({ Success: true, fullResponse: response, payment_id: resu[0].id});
+          }
+        })
       }
     })
   })
