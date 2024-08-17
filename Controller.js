@@ -983,7 +983,7 @@ app.post("/api/v1/SignUpBarbearia", async (req, res) => {
       N: number,
       bairro: neighborhood,
       cidade: city,
-      access_token: 'access_token'
+      amountVisibility: 'visible'
     };
 
     db.query('INSERT INTO barbearia SET ?', barbearia, (error, results) => {
@@ -2413,13 +2413,17 @@ app.get('/api/v1/listProfessionalToBarbearia/:barbeariaId', AuthenticateJWT, (re
 app.get('/api/v1/listBarbeariaToProfessional/:professionalId', AuthenticateJWT, (req, res) => {
   const professionalId = req.params.professionalId;
 
-  const sql=`SELECT barbearia_id AS barbeariaId,
-                    barbearia.name AS nameBarbearia,
-                    barbearia.status AS statusBarbearia,
-                    barbearia.banner_main AS banner_main
-             FROM Barb_Professional
-             INNER JOIN barbearia ON barbearia.id = Barb_Professional.barbearia_id
-             WHERE professional_id = ?`
+  const sql=`SELECT barbearia.name AS nameBarbearia,
+                    barbearia.banner_main AS bannerBarbearia,
+                    barbearia.rua AS ruaBarbearia,
+                    barbearia.N AS nRuaBarbearia,
+                    barbearia.bairro AS bairroBarbearia,
+                    barbearia.cidade AS cidadeBarbearia,
+                    averageAvaliations.totalAvaliations AS totalAvaliations,
+                    averageAvaliations.average AS average
+             FROM barbearia
+             INNER JOIN Barb_Professional ON Barb_Professional.barbearia_id = barbearia.id AND Barb_Professional.professional_id = ?
+             LEFT JOIN averageAvaliations ON averageAvaliations.barbearia_id = Barb_Professional.barbearia`
 
   db.query(sql, [professionalId], (err, result) =>{
     if(err){
