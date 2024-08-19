@@ -2653,7 +2653,7 @@ app.get('/api/v1/professionalBookings/:professionalId/:selectedDate', Authentica
 
   const sql=`SELECT barbearia.id AS barbearia_id,
                     barbearia.name AS nameBarbearia,
-                    user.name user_name,
+                    user.name AS user_name,
                     user.celular AS user_phone,
                     user.user_image AS user_image,
                     bookings.id AS booking_id,
