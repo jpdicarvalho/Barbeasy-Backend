@@ -2651,22 +2651,28 @@ app.get('/api/v1/professionalBookings/:professionalId/:selectedDate', Authentica
   const professionalId = req.params.professionalId;
   const selectedDate = req.params.selectedDate;
 
-  const sql=`
-        SELECT
-          user.name user_name,
-          user.celular AS user_phone,
-          user.user_image AS user_image,
-          bookings.id AS booking_id,
-          bookings.booking_date AS booking_date,
-          bookings.booking_time AS booking_time,
-          servico.name AS service_name,
-          servico.preco AS service_price,
-          servico.duracao AS service_duration,
-          servico.commission_fee AS service_commission_fee
-      FROM user
-      INNER JOIN bookings ON user.id = bookings.user_id AND bookings.booking_date = ?
-      INNER JOIN professional ON professional.id = ?
-      INNER JOIN servico ON servico.id = bookings.service_id`;
+  const sql=`SELECT barbearia.id AS barbearia_id,
+                    barbearia.name AS nameBarbearia,
+                    user.name user_name,
+                    user.celular AS user_phone,
+                    user.user_image AS user_image,
+                    bookings.id AS booking_id,
+                    bookings.booking_time AS booking_time,
+                    bookings.date_created AS date_created,
+                    servico.id AS service_id,
+                    servico.name AS service_name,
+                    servico.preco AS service_price,
+                    servico.duracao AS service_duration,
+                    servico.commission_fee AS service_commission_fee,
+                    payments.status AS paymentStatus
+      FROM barbearia
+      INNER JOIN user ON user.id = bookings.user_id
+      INNER JOIN bookings ON bookings.barbearia_id = barbearia.id
+                          AND bookings.professional_id = ?
+                          AND bookings.booking_date = ?
+      INNER JOIN servico ON servico.id = bookings.service_id
+      INNER JOIN payments ON payments.id = bookings.payment_id AND payments.status = 'approved'`;
+
       db.query(sql, [selectedDate, professionalId], (err, result) =>{
         if(err){
           console.error("Erro ao obter agendamentos", err);
