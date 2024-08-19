@@ -2647,8 +2647,7 @@ app.get('/api/v1/bookings/:barbeariaId/:selectedDate', AuthenticateJWT, (req, re
 })
 
 //Route to get bookings of professional
-app.get('/api/v1/professionalBookings/:barbeariaId/:professionalId/:selectedDate', AuthenticateJWT, (req, res) =>{
-  const barbeariaId = req.params.barbeariaId;
+app.get('/api/v1/professionalBookings/:professionalId/:selectedDate', AuthenticateJWT, (req, res) =>{
   const professionalId = req.params.professionalId;
   const selectedDate = req.params.selectedDate;
 
@@ -2665,10 +2664,10 @@ app.get('/api/v1/professionalBookings/:barbeariaId/:professionalId/:selectedDate
           servico.duracao AS service_duration,
           servico.commission_fee AS service_commission_fee
       FROM user
-      INNER JOIN bookings ON user.id = bookings.user_id AND bookings.barbearia_id = ? AND bookings.booking_date = ?
+      INNER JOIN bookings ON user.id = bookings.user_id AND bookings.booking_date = ?
       INNER JOIN professional ON professional.id = ?
       INNER JOIN servico ON servico.id = bookings.service_id`;
-      db.query(sql, [barbeariaId, selectedDate, professionalId], (err, result) =>{
+      db.query(sql, [selectedDate, professionalId], (err, result) =>{
         if(err){
           console.error("Erro ao obter agendamentos", err);
           return res.status(500).json({ Error: "Internal Server Error" });
