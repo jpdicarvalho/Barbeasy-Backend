@@ -2651,12 +2651,12 @@ app.get('/api/v1/professionalBookings/:professionalId/:selectedDate', Authentica
   const professionalId = req.params.professionalId;
   const selectedDate = req.params.selectedDate;
 
-  const sql=`SELECT user.name AS user_name,
-                    user.celular AS user_phone,
-                    user.user_image AS user_image,
-                    bookings.id AS booking_id,
+  const sql=`SELECT bookings.id AS booking_id,
                     bookings.booking_time AS booking_time,
                     bookings.date_created AS date_created,
+                    user.name AS user_name,
+                    user.celular AS user_phone,
+                    user.user_image AS user_image,
                     barbearia.id AS barbearia_id,
                     barbearia.name AS nameBarbearia,
                     servico.id AS service_id,
@@ -2665,15 +2665,14 @@ app.get('/api/v1/professionalBookings/:professionalId/:selectedDate', Authentica
                     servico.duracao AS service_duration,
                     servico.commission_fee AS service_commission_fee,
                     payments.status AS paymentStatus
-      FROM user
-      INNER JOIN bookings ON bookings.user_id = user.id
-                          AND bookings.professional_id = ?
-                          AND bookings.booking_date = ?
+      FROM bookings
+      INNER JOIN user ON user.id = bookings.user_id
       INNER JOIN barbearia ON barbearia.id = bookings.barbearia_id
       INNER JOIN servico ON servico.id = bookings.service_id
-      INNER JOIN payments ON payments.id = bookings.payment_id`;
+      INNER JOIN payments ON payments.id = bookings.payment_id
+      WHERE bookings.professional_id = ? AND bookings.booking_date = ?`;
 
-      db.query(sql, [selectedDate, professionalId], (err, result) =>{
+      db.query(sql, [professionalId, selectedDate], (err, result) =>{
         if(err){
           console.error("Erro ao obter agendamentos", err);
           return res.status(500).json({ Error: "Internal Server Error" });
