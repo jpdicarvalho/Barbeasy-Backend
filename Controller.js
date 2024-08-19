@@ -2671,7 +2671,7 @@ app.get('/api/v1/professionalBookings/:professionalId/:selectedDate', Authentica
                           AND bookings.booking_date = ?
       INNER JOIN barbearia ON barbearia.id = bookings.barbearia_id
       INNER JOIN servico ON servico.id = bookings.service_id
-      INNER JOIN payments ON payments.id = bookings.payment_id AND payments.status = 'approved'`;
+      INNER JOIN payments ON payments.id = bookings.payment_id`;
 
       db.query(sql, [selectedDate, professionalId], (err, result) =>{
         if(err){
