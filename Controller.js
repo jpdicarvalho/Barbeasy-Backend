@@ -2666,8 +2666,8 @@ app.get('/api/v1/professionalBookings/:professionalId/:selectedDate', Authentica
                     servico.commission_fee AS service_commission_fee,
                     payments.status AS paymentStatus
       FROM barbearia
-      INNER JOIN user ON user.id = bookings.user_id
       INNER JOIN bookings ON bookings.barbearia_id = barbearia.id
+                          AND bookings.user_id = user.id
                           AND bookings.professional_id = ?
                           AND bookings.booking_date = ?
       INNER JOIN servico ON servico.id = bookings.service_id
