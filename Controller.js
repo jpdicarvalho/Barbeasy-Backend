@@ -2651,25 +2651,25 @@ app.get('/api/v1/professionalBookings/:professionalId/:selectedDate', Authentica
   const professionalId = req.params.professionalId;
   const selectedDate = req.params.selectedDate;
 
-  const sql=`SELECT barbearia.id AS barbearia_id,
-                    barbearia.name AS nameBarbearia,
-                    user.name AS user_name,
+  const sql=`SELECT user.name AS user_name,
                     user.celular AS user_phone,
                     user.user_image AS user_image,
                     bookings.id AS booking_id,
                     bookings.booking_time AS booking_time,
                     bookings.date_created AS date_created,
+                    barbearia.id AS barbearia_id,
+                    barbearia.name AS nameBarbearia,
                     servico.id AS service_id,
                     servico.name AS service_name,
                     servico.preco AS service_price,
                     servico.duracao AS service_duration,
                     servico.commission_fee AS service_commission_fee,
                     payments.status AS paymentStatus
-      FROM barbearia
-      INNER JOIN bookings ON bookings.barbearia_id = barbearia.id
-                          AND bookings.user_id = user.id
+      FROM user
+      INNER JOIN bookings ON bookings.user_id = user.id
                           AND bookings.professional_id = ?
                           AND bookings.booking_date = ?
+      INNER JOIN barbearia ON barbearia.id = bookings.barbearia_id
       INNER JOIN servico ON servico.id = bookings.service_id
       INNER JOIN payments ON payments.id = bookings.payment_id AND payments.status = 'approved'`;
 
