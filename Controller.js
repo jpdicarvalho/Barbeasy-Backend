@@ -1110,7 +1110,7 @@ app.put('/api/v1/updateAmountVisibility', AuthenticateJWT, (req, res) =>{
 })
 
 //Route to get amount visibility
-app.get('/api/v1/amountVibility/:barbeariaId', AuthenticateJWT, (req, res) =>{
+app.get('/api/v1/amountVibility/:professionalId', AuthenticateJWT, (req, res) =>{
   const barbeariaId = req.params.barbeariaId;
 
   const sql = 'SELECT amountVisibility FROM barbearia WHERE id = ?';
@@ -1124,7 +1124,40 @@ app.get('/api/v1/amountVibility/:barbeariaId', AuthenticateJWT, (req, res) =>{
     }
   })
 })
+//================= I'M STOPED HEE================================================================
+//Route to update amount visibility to professional
+app.put('/api/v1/updateAmountVisibilityProfessional', AuthenticateJWT, (req, res) =>{
+  const professionalId = req.body.professionalId;
+  const changeVisibilityAmount = req.body.changeVisibilityAmount;
 
+  const sql='UPDATE professional SET amountVisibility = ? WHERE id = ?';
+  db.query(sql, [changeVisibilityAmount, professionalId], (err, resu) =>{
+    if (err) {
+      console.error('Erro ao atualizar visibilidade:', err);
+      return res.status(500).json({ error: 'Internal Server Error' });
+    }
+    if(resu){
+      return res.status(200).json({Success: true})
+    }
+  })
+})
+
+//Route to get amount visibility to professional
+app.get('/api/v1/amountVibilityProfessional/:professionalId', AuthenticateJWT, (req, res) =>{
+  const professionalId = req.params.professionalId;
+
+  const sql = 'SELECT amountVisibility FROM professional WHERE id = ?';
+  db.query(sql, [professionalId], (err, resu) =>{
+    if (err) {
+      console.error('Erro ao verificar visibilidade:', err);
+      return res.status(500).json({ error: 'Internal Server Error' });
+    }
+    if(resu.length > 0){
+      return res.status(200).json({visibility: resu[0].amountVisibility})
+    }
+  })
+})
+//=====================================================================================================
 //Upload de Imagem do Usuário Barbearia, na AWS S3  #VERIFIED
 app.put('/api/v1/updateUserImageProfessional', AuthenticateJWT, upload.single('image'), (req, res) => {
   const professionalId = req.body.professionalId;
@@ -2263,6 +2296,7 @@ app.post('/api/v1/createProfessional', AuthenticateJWT, (req, res) => {
   const newEmailProfessional = req.body.newEmailProfessional;
   const newPasswordProfessional = req.body.newPasswordProfessional;
   const fakeNameUserImage = 'default.png';
+  const amountVisibility = 'vibible'
 
   // Verifica se newNameProfessional contém apenas letras maiúsculas e minúsculas
   if (!isNameValided(newNameProfessional) && newNameProfessional.length > 30) {
@@ -2293,8 +2327,8 @@ app.post('/api/v1/createProfessional', AuthenticateJWT, (req, res) => {
     if(resul.length > 0){
       return res.status(401).json({ Unauthorized: "Unauthorized"});
     }else{
-      const sqlInsertOnProfessional="INSERT INTO professional (name, email, password, cell_phone, user_image) VALUES (?, ?, ?, ?, ?);"
-      db.query(sqlInsertOnProfessional, [newNameProfessional, newEmailProfessional, newPasswordProfessional, newPhoneProfessional, fakeNameUserImage], (erro, result) =>{
+      const sqlInsertOnProfessional="INSERT INTO professional (name, email, password, cell_phone, user_image, amountVisibility) VALUES (?, ?, ?, ?, ?, ?)"
+      db.query(sqlInsertOnProfessional, [newNameProfessional, newEmailProfessional, newPasswordProfessional, newPhoneProfessional, fakeNameUserImage, amountVisibility], (erro, result) =>{
         if(erro){
           console.error('Erro ao criar profissional:', erro);
           return res.status(500).json({ Error: "Error" });
