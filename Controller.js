@@ -2809,7 +2809,7 @@ app.get('/api/v1/getAmountOfMonthProfessional/:professionalId', AuthenticateJWT,
   const sql=`SELECT 
                 servico.commission_fee AS commission_fee
               FROM servico
-              INNER JOIN bookings ON bookings.professional = ? AND bookings.service_id = servico.id AND booking_date LIKE '%${CurrentMonthAndYear}%'
+              INNER JOIN bookings ON bookings.professional_id = ? AND bookings.service_id = servico.id AND booking_date LIKE '%${CurrentMonthAndYear}%'
               INNER JOIN payments ON payments.id = bookings.payment_id AND payments.status = 'approved'`;
 
   db.query(sql, [professionalId], (err, resul) =>{
