@@ -2774,8 +2774,8 @@ app.get('/api/v1/getAmountOfMonth/:barbeariaId', AuthenticateJWT, (req, res) =>{
 })
 
 //Route to get all service by month and calucule total amount for professional
-app.get('/api/v1/getAmountOfMonthProfessional/:barbeariaId', AuthenticateJWT, (req, res) =>{
-  const professional = req.params.professional;
+app.get('/api/v1/getAmountOfMonthProfessional/:professionalId', AuthenticateJWT, (req, res) =>{
+  const professionalId = req.params.professionalId;
 
   const months = [
     'Jan', 'Fev', 'Mar', 'Abr', 'Maio', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'
