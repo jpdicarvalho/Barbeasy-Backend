@@ -2773,6 +2773,59 @@ app.get('/api/v1/getAmountOfMonth/:barbeariaId', AuthenticateJWT, (req, res) =>{
   })
 })
 
+//Route to get all service by month and calucule total amount for professional
+app.get('/api/v1/getAmountOfMonthProfessional/:barbeariaId', AuthenticateJWT, (req, res) =>{
+  const professional = req.params.professional;
+
+  const months = [
+    'Jan', 'Fev', 'Mar', 'Abr', 'Maio', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'
+  ];
+
+  const today = new Date();
+  const month = months[today.getMonth()];
+  const year = today.getFullYear();
+
+  let CurrentMonthAndYear = `${month} de ${year}`;
+  
+  //Function to calcule total amount of current month
+  function caluclateAmount (mesAtual){
+    let totalAmount = 0;
+  
+    for(let i = 0; i < mesAtual.length; i++){
+      Object.entries(mesAtual[i]).forEach(([key, value]) => {
+          let valueService = value.replace(/[^0-9,]/g, '').replace(',', '.');
+          // Convertendo a string resultante para número
+          valueService = Number(valueService);
+          totalAmount += valueService;
+      });
+    }
+  
+    // Formatando o totalAmount para 2 casas decimais e substituindo o ponto por vírgula
+    totalAmount = totalAmount.toFixed(2).replace('.', ',');
+  
+    return totalAmount;
+  }
+
+  const sql=`SELECT 
+                servico.commission_fee AS commission_fee
+              FROM servico
+              INNER JOIN bookings ON bookings.professional = ? AND bookings.service_id = servico.id AND booking_date LIKE '%${CurrentMonthAndYear}%'
+              INNER JOIN payments ON payments.id = bookings.payment_id AND payments.status = 'approved'`;
+
+  db.query(sql, [professionalId], (err, resul) =>{
+    if(err){
+      console.error("Erro ao obter agendamentos", err);
+      return res.status(500).json({ Error: "Internal Server Error" });
+    }
+    if(resul.length > 0){
+      const totalAmount = caluclateAmount(resul)
+      return res.status(200).json({ totalAmount });
+    }else{
+      return res.status(200).json({ Message: "false"});
+    }
+  })
+})
+
 app.delete('/api/v1/unlinkProfessional/:barbeariaId/:professionalId/:confirmPassword', AuthenticateJWT, (req, res) => {
   const barbeariaId = req.params.barbeariaId;
   const professionalId = req.params.professionalId;
