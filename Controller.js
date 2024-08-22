@@ -2825,6 +2825,7 @@ app.get('/api/v1/getAmountOfMonthProfessional/:professionalId', AuthenticateJWT,
   })
 })
 
+//Route for professional delete all conections between professional and barbearia
 app.delete('/api/v1/unlinkProfessional/:barbeariaId/:professionalId/:confirmPassword', AuthenticateJWT, (req, res) => {
   const barbeariaId = req.params.barbeariaId;
   const professionalId = req.params.professionalId;
