@@ -2879,6 +2879,7 @@ app.delete('/api/v1/unlinkProfessional/:barbeariaId/:professionalId/:confirmPass
   })
 })
 
+//Route for barbearia delete all conections between professional and barbearia
 app.delete('/api/v1/unlinkBarbearia/:barbeariaId/:professionalId/:confirmPassword', AuthenticateJWT, (req, res) => {
   const barbeariaId = req.params.barbeariaId;
   const professionalId = req.params.professionalId;
