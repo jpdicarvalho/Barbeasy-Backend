@@ -1110,7 +1110,7 @@ app.put('/api/v1/updateAmountVisibility', AuthenticateJWT, (req, res) =>{
 })
 
 //Route to get amount visibility
-app.get('/api/v1/amountVibility/:professionalId', AuthenticateJWT, (req, res) =>{
+app.get('/api/v1/amountVibility/:barbeariaId', AuthenticateJWT, (req, res) =>{
   const barbeariaId = req.params.barbeariaId;
 
   const sql = 'SELECT amountVisibility FROM barbearia WHERE id = ?';
