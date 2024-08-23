@@ -1092,7 +1092,7 @@ app.get('/api/v1/AuthToUpdateData/', AuthenticateJWT, (req, res) =>{
   })
 });
 
-//Route to update amount visibility
+//Route to update amount visibility from barbearia
 app.put('/api/v1/updateAmountVisibility', AuthenticateJWT, (req, res) =>{
   const barbeariaId = req.body.barbeariaId;
   const changeVisibilityAmount = req.body.changeVisibilityAmount;
@@ -1109,7 +1109,7 @@ app.put('/api/v1/updateAmountVisibility', AuthenticateJWT, (req, res) =>{
   })
 })
 
-//Route to get amount visibility
+//Route to get amount visibility from barbearia
 app.get('/api/v1/amountVibility/:barbeariaId', AuthenticateJWT, (req, res) =>{
   const barbeariaId = req.params.barbeariaId;
 
