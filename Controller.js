@@ -698,17 +698,17 @@ app.get('/api/v1/bookingsOfUser/:userId', AuthenticateJWT, (req, res) =>{
             
             if(monthAndYearBookingsA === monthAndYearBookingsB){
                 if(bookingDayA === bookingDayB){
-                    if(bookingTimesA > bookingTimesB){
+                    if(bookingTimesA < bookingTimesB){
                         return 1
                     }else{
                         return -1
                     }
-                }else if(bookingDayA > bookingDayB){
+                }else if(bookingDayA < bookingDayB){
                         return 1
                     }else{
                         return -1
                     }
-            }else if(monthAndYearBookingsA > monthAndYearBookingsB){
+            }else if(monthAndYearBookingsA < monthAndYearBookingsB){
                     return 1
             }else{
                     return -1
