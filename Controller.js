@@ -587,8 +587,9 @@ app.post("/api/v1/saveAvaliation", AuthenticateJWT, (req, res) => {
 });
 
 //Buscando a avaliação da barbearia em especifico
-app.get('/api/v1/allAvaliation/:barbeariaId', AuthenticateJWT, async(req, res)=>{
+app.get('/api/v1/allAvaliation/:barbeariaId', (req, res)=>{
   const barbeariaId = req.params.barbeariaId;
+
   const sql=`SELECT avaliations.id,
                     avaliations.user_id,
                     avaliations.barbearia_id,
@@ -600,6 +601,7 @@ app.get('/api/v1/allAvaliation/:barbeariaId', AuthenticateJWT, async(req, res)=>
               FROM avaliations
               INNER JOIN user ON user.id = avaliations.user_id
               WHERE barbearia_id = ?`;
+
     db.query(sql, [barbeariaId], (err, resultAllAvaliations) => {
       if (err){
         console.error("Erro ao buscar avaliações:", err);
@@ -2467,7 +2469,7 @@ app.delete('/api/v1/rejectNotification/:barbeariaId/:professionalId', Authentica
 });
 
 //Rota para obter os profissionais da barbearia em  específico
-app.get('/api/v1/listProfessionalToBarbearia/:barbeariaId', AuthenticateJWT, (req, res) => {
+app.get('/api/v1/listProfessionalToBarbearia/:barbeariaId', (req, res) => {
   const barbeariaId = req.params.barbeariaId;
 
   const sql=`SELECT professional.id,
@@ -2538,7 +2540,7 @@ app.get('/api/v1/listProfessional/:searchProfessional', AuthenticateJWT, (req, r
 });
 
 //Rota obter os serviços cadastrados
-app.get('/api/v1/listService/:barbeariaId', AuthenticateJWT, (req, res) =>{
+app.get('/api/v1/listService/:barbeariaId', (req, res) =>{
   const barbeariaId = req.params.barbeariaId;
 
   const sql="SELECT * FROM servico WHERE barbearia_id = ?"
