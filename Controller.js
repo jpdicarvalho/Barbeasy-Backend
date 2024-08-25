@@ -516,6 +516,7 @@ app.get('/api/v1/barbeariaDetails/:barbeariaId', (req, res) =>{
       return res.status(500).json({ Success: "Error", Message: "Erro ao buscar barbearia" });
     }
     if(resul.length > 0){
+      console.log(resul)
       return res.status(200).json({barbearia: resul});
     }
   })
