@@ -493,6 +493,36 @@ app.get('/api/v1/getAllBarbearias', AuthenticateJWT, async (req, res) => {
   }
 });
 
+//Route to get a specific barbearia
+app.get('/api/v1/barbeariaDetails/:barbeariaId', (req, res) =>{
+  const barbeariaId = req.params.barbeariaId;
+
+  const sql=`SELECT barbearia.id AS barbearia_id,
+                    barbearia.name AS nameBarbearia,
+                    barbearia.status AS statusBarbearia,
+                    barbearia.banner_main AS bannerBarbearia,
+                    barbearia.rua AS ruaBarbearia,
+                    barbearia.N AS NruaBarbearia,
+                    barbearia.bairro AS bairroBarbearia,
+                    barbearia.cidade AS cidadeBarbearia,
+                    averageAvaliations.totalAvaliations AS totalAvaliationsBarbearia,
+                    averageAvaliations.average AS averageAvaliationsBarbearia,
+                    professional.name AS nameProfessional,
+                    professional
+                FROM barbearia
+                LEFT JOIN averageAvaliations ON averageAvaliations.barbearia_id = barbearia.id
+                WHERE barbearia.id = ?`;
+  db.query(sql, [barbeariaId], (err, resul) =>{
+    if (err){
+      console.error("Erro ao buscar barbearia:", err);
+      return res.status(500).json({ Success: "Error", Message: "Erro ao buscar barbearia" });
+    }
+    if(resul.length > 0){
+      return res.status(200).json({barbearia: resul});
+    }
+  })
+
+})
 /*listando os Serviços cadastrados pelas barbearias*/
 app.get('/api/v1/getAllServices', AuthenticateJWT, async (req, res)=>{
   try {
