@@ -506,9 +506,7 @@ app.get('/api/v1/barbeariaDetails/:barbeariaId', (req, res) =>{
                     barbearia.bairro AS bairroBarbearia,
                     barbearia.cidade AS cidadeBarbearia,
                     averageAvaliations.totalAvaliations AS totalAvaliationsBarbearia,
-                    averageAvaliations.average AS averageAvaliationsBarbearia,
-                    professional.name AS nameProfessional,
-                    professional
+                    averageAvaliations.average AS averageAvaliationsBarbearia
                 FROM barbearia
                 LEFT JOIN averageAvaliations ON averageAvaliations.barbearia_id = barbearia.id
                 WHERE barbearia.id = ?`;
