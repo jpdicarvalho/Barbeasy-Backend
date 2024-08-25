@@ -500,7 +500,7 @@ app.get('/api/v1/barbeariaDetails/:barbeariaId', (req, res) =>{
   const sql=`SELECT barbearia.id AS barbearia_id,
                     barbearia.name AS nameBarbearia,
                     barbearia.status AS statusBarbearia,
-                    barbearia.banner_main AS bannerBarbearia,
+                    barbearia.banners AS bannersBarbearia,
                     barbearia.rua AS ruaBarbearia,
                     barbearia.N AS NruaBarbearia,
                     barbearia.bairro AS bairroBarbearia,
