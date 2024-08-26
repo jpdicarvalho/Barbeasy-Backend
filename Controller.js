@@ -1907,7 +1907,7 @@ app.put('/api/v1/updateAgenda/:barbeariaId/:professionalId', AuthenticateJWT, (r
 });
 
 //Route to get professional 'agenda' of especific barbearia
-app.get('/api/v1/agenda/:barbeariaId/:professionalId', AuthenticateJWT, (req, res) => {
+app.get('/api/v1/agenda/:barbeariaId/:professionalId', (req, res) => {
   const barbeariaId = req.params.barbeariaId;
   const professionalId = req.params.professionalId;
 
@@ -2018,7 +2018,7 @@ app.put('/api/v1/updateAgendaDiaSelecionado/:barbeariaId/:professionalId', Authe
 });
 
 //Rota para obter os horarios definidos para cada dia em específico
-app.get('/api/v1/agendaDiaSelecionado/:barbeariaId/:professionalId', AuthenticateJWT, (req, res) =>{
+app.get('/api/v1/agendaDiaSelecionado/:barbeariaId/:professionalId', (req, res) =>{
   const barbeariaId = req.params.barbeariaId;
   const professionalId = req.params.professionalId;
 
