@@ -2598,7 +2598,7 @@ app.post('/api/v1/createBooking/', AuthenticateJWT, (req, res) => {
 });
 
 // Rota para buscar todos os agendamentos de uma barbearia específica
-app.get('/api/v1/bookingsTimes/:barbeariaId/:professionalId/:selectedDate', AuthenticateJWT, (req, res) => {
+app.get('/api/v1/bookingsTimes/:barbeariaId/:professionalId/:selectedDate', (req, res) => {
   const barbeariaId = req.params.barbeariaId;
   const professionalId = req.params.professionalId;
   const selectedDate = req.params.selectedDate;
