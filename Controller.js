@@ -2982,6 +2982,15 @@ app.delete('/api/v1/unlinkBarbearia/:barbeariaId/:professionalId/:confirmPasswor
   })
 })
 
+app.put('/api/v1/updateBookingPoliceis/', AuthenticateJWT, (req, res) =>{
+  const barbeariaId = req.body.barbeariaId;
+  const confirmPassword = req.body.confirmPassword;
+  const bookingWithPayment = req.body.bookingWithPayment;
+  const servicePercentage = req.body.servicePercentage;
+
+  console.log(barbeariaId, confirmPassword, bookingWithPayment, servicePercentage)
+
+})
 
 // Inicia o servidor na porta especificada
 app.listen(port, () => {
