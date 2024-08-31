@@ -2988,8 +2988,50 @@ app.put('/api/v1/updateBookingPoliceis/', AuthenticateJWT, (req, res) =>{
   const bookingWithPayment = req.body.bookingWithPayment;
   const servicePercentage = req.body.servicePercentage;
 
-  console.log(barbeariaId, confirmPassword, bookingWithPayment, servicePercentage)
+  const sqlVerifyPassword = 'SELECT EXISTS(SELECT 1 FROM barbearia WHERE id = ? AND senha = ?) as exists';
+  db.query(sqlVerifyPassword, [barbeariaId, confirmPassword], (err, resu) =>{
+    if(err){
+      console.error("Erro ao atualizar as políticas de agendamento", err);
+      return res.status(500).json({ Error: "Internal Server Error" });
+    }
+    const passwordExists = resu[0].exists;
 
+    if(passwordExists){
+      const sqlSelectPoliceisBarbearia = 'SELECT EXISTS(SELECT 1 FROM bookingPolicies WHERE barbearia_id = ?) as exists';
+      db.query(sqlSelectPoliceisBarbearia, [barbeariaId], (erro, resul) =>{
+        if(erro){
+          console.error("Erro ao atualizar as políticas de agendamento", erro);
+          return res.status(500).json({ Error: "Internal Server Error" });
+        }
+        const policeisBarbearia = resul[0].exists;
+
+        if(policeisBarbearia){
+          const sqlUpdateBookingPoliceis = 'UPDATE bookingPolicies SET booking_with_payment = ?, service_percentage = ? WHERE barbearia_id = ?';
+          db.query(sqlUpdateBookingPoliceis, [bookingWithPayment, servicePercentage, barbeariaId], (error, result) =>{
+            if(error){
+              console.error("Erro ao atualizar as políticas de agendamento", error);
+              return res.status(500).json({ Error: "Internal Server Error" });
+            }
+            if(result){
+              return res.status(200).json({ Success: "Success"});
+            }
+          })
+
+        }else{
+          const sqlCreatePoliceisBarbearia = 'INSERT INTO bookingPolicies (barbearia_id, booking_with_payment, service_percentage) VALUES (?,?,?)';
+          db.query(sqlCreatePoliceisBarbearia, [barbeariaId, bookingWithPayment, servicePercentage], (errInCreation, resultCreation) =>{
+            if(errInCreation){
+              console.error("Erro ao criar as políticas de agendamento", errInCreation);
+              return res.status(500).json({ Error: "Internal Server Error" });
+            }
+            if(resultCreation){
+              return res.status(200).json({ Success: "Success"});
+            }
+          })
+        }
+      })      
+    }
+  })
 })
 
 // Inicia o servidor na porta especificada
