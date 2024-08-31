@@ -3034,6 +3034,20 @@ app.put('/api/v1/updateBookingPoliceis/', AuthenticateJWT, (req, res) =>{
   })
 })
 
+app.get('/api/v1/bookingPoliceis/:barbeariaId', AuthenticateJWT, (req, res) =>{
+  const barbeariaId = req.params.barbeariaId;
+
+  const sql = 'SELECT booking_with_payment, service_percentage FROM bookingPolicies WHERE barbearia_id = ?';
+  db.query(sql, [barbeariaId], (err, resu) =>{
+    if(err){
+      console.error("Erro ao buscar as políticas de agendamento", err);
+      return res.status(500).json({ Error: "Internal Server Error" });
+    }
+    if(resu.length > 0){
+      return res.status(200).json({ bookingPoliceis: resu[0]})
+    }
+  })
+})
 // Inicia o servidor na porta especificada
 app.listen(port, () => {
     console.log("Servidor rodando");
