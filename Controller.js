@@ -2988,22 +2988,22 @@ app.put('/api/v1/updateBookingPoliceis/', AuthenticateJWT, (req, res) =>{
   const bookingWithPayment = req.body.bookingWithPayment;
   const servicePercentage = req.body.servicePercentage;
 
-  const sqlVerifyPassword = 'SELECT EXISTS(SELECT 1 FROM barbearia WHERE id = ? AND senha = ?) as exists';
+  const sqlVerifyPassword = 'SELECT EXISTS(SELECT 1 FROM barbearia WHERE id = ? AND senha = ?) as passwordExists';
   db.query(sqlVerifyPassword, [barbeariaId, confirmPassword], (err, resu) =>{
     if(err){
       console.error("Erro ao atualizar as políticas de agendamento", err);
       return res.status(500).json({ Error: "Internal Server Error" });
     }
-    const passwordExists = resu[0].exists;
+    const passwordExists = resu[0].passwordExists;
 
     if(passwordExists){
-      const sqlSelectPoliceisBarbearia = 'SELECT EXISTS(SELECT 1 FROM bookingPolicies WHERE barbearia_id = ?) as exists';
+      const sqlSelectPoliceisBarbearia = 'SELECT EXISTS(SELECT 1 FROM bookingPolicies WHERE barbearia_id = ?) as policeisBarbearia';
       db.query(sqlSelectPoliceisBarbearia, [barbeariaId], (erro, resul) =>{
         if(erro){
           console.error("Erro ao atualizar as políticas de agendamento", erro);
           return res.status(500).json({ Error: "Internal Server Error" });
         }
-        const policeisBarbearia = resul[0].exists;
+        const policeisBarbearia = resul[0].policeisBarbearia;
 
         if(policeisBarbearia){
           const sqlUpdateBookingPoliceis = 'UPDATE bookingPolicies SET booking_with_payment = ?, service_percentage = ? WHERE barbearia_id = ?';
