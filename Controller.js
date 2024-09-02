@@ -2557,7 +2557,7 @@ app.get('/api/v1/listService/:barbeariaId', (req, res) =>{
 });
 
 //Rota para realizar o agendamento
-app.post('/api/v1/createBooking/', AuthenticateJWT, (req, res) => {
+app.post('/api/v1/createBookingWithPayment/', AuthenticateJWT, (req, res) => {
   //Create object to make a toke for booking
   const values = [
     req.body.userId,
