@@ -918,6 +918,7 @@ app.put('/api/v1/updatePaymentStatus', AuthenticateJWT, (req, res) =>{
   })
 })
 
+//Route to update payment status to cancelled
 app.post('/api/v1/notificationPayment', (req, res) => {
   const urlGetPayment = 'https://api.mercadopago.com/v1/payments/';
 
@@ -968,7 +969,6 @@ app.post('/api/v1/notificationPayment', (req, res) => {
 });
 
 //======================================= ROTAS USER-BARBEARIA ====================================
-
 //Cadastro de ususário Barbearia   #VERIFIED
 app.post("/api/v1/SignUpBarbearia", async (req, res) => {
   const { name, street, number, neighborhood, city, usuario, email, senha } = req.body;
@@ -2655,9 +2655,17 @@ app.get('/api/v1/bookingsTimes/:barbeariaId/:professionalId/:selectedDate', (req
               FROM days_off
               WHERE days_off.barbearia_id = ?
                 AND days_off.professional_id = ?
-                AND days_off.day = ?`;
+                AND days_off.day = ?
+                
+              UNION
 
-  db.query(sql, [barbeariaId, professionalId, selectedDate, barbeariaId, professionalId, selectedDate], (err, result) => {
+              SELECT bookings.booking_time
+              FROM bookings
+              WHERE bookings.barbearia_id = ?
+                AND bookings.professional_id = ?
+                AND booking_date = ?`;
+
+  db.query(sql, [barbeariaId, professionalId, selectedDate, barbeariaId, professionalId, selectedDate, barbeariaId, professionalId, selectedDate], (err, result) => {
     if (err) {
       console.error('Erro ao buscar agendamentos da barbearia:', err);
       return res.status(500).json({ Error: 'Internal Server Error.' }); 
