@@ -516,7 +516,6 @@ app.get('/api/v1/barbeariaDetails/:barbeariaId', (req, res) =>{
       return res.status(500).json({ Success: "Error", Message: "Erro ao buscar barbearia" });
     }
     if(resul.length > 0){
-      console.log(resul)
       return res.status(200).json({barbearia: resul});
     }
   })
@@ -1353,7 +1352,6 @@ app.put('/api/v1/updateBannersImages', AuthenticateJWT, upload.array('images'), 
       console.error('Erro ao buscar o nome das imagens banners no banco de dados:', currentErr);
       return res.status(500).json({ error: 'Internal Server Error' });
     }
-    console.log(barbeariaId, confirmPassword)
     if(currentResult.length > 0) {
       const bannerImagesName = currentResult[0].banners;
       const bannerImagesArray = bannerImagesName.split(',');
@@ -2486,7 +2484,6 @@ app.get('/api/v1/listProfessionalToBarbearia/:barbeariaId', (req, res) => {
       return res.status(500).json({ Error: 'Erro ao buscar profissionais da barbearia:' });
     }
     if(result){
-      //console.log(result)
       return res.status(200).json({ Success: "Success", Professional: result});//Enviando o array com os profissionais
     }
   })
@@ -2608,7 +2605,6 @@ app.post('/api/v1/createBookingWithoutPayment/', AuthenticateJWT, (req, res) => 
     req.body.selectedDay,
     req.body.timeSelected,
   ];
-  const paymentStatus = 'approvedNoPayment'
   const formatDate = req.body.formattedDate;
   const token = values.join('-');
 
@@ -2630,16 +2626,7 @@ app.post('/api/v1/createBookingWithoutPayment/', AuthenticateJWT, (req, res) => 
           return res.status(500).json({ Error: ' Internal Server Error' });
         }
         if(results){
-            const sqlInsert = 'INSERT INTO payments (payment_id,	user_id,	barbearia_id,	professional_id,	service_id,	status,	date_created) VALUES (?, ?, ?, ?, ?, ?, ?)';
-            db.query(sqlInsert, [values[4], values[0], values[1], values[2], values[3], paymentStatus, formatDate], (error, result) =>{
-              if(error){
-                console.error('Error on insert a new payment:', error);
-                return res.status(500).json({ error: 'on insert a new payment - Internal Server Error' });
-              }
-              if(result){
-                return res.status(200).json({ Success: "Success"});
-              }
-            })
+          return res.status(200).json({ Success: "Success"});
         }
       })
     }
@@ -3097,6 +3084,8 @@ app.get('/api/v1/bookingPoliceis/:barbeariaId', AuthenticateJWT, (req, res) =>{
     }
   })
 })
+
+
 // Inicia o servidor na porta especificada
 app.listen(port, () => {
     console.log("Servidor rodando");
