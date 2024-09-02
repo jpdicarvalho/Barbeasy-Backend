@@ -2569,7 +2569,6 @@ app.post('/api/v1/createBookingWithPayment/', AuthenticateJWT, (req, res) => {
     req.body.timeSelected,
   ];
 
-  const initialPaymentStatus = req.body.initialPaymentStatus;
   const formatDate = req.body.formattedDate;
   const token = values.join('-');
 
@@ -2577,15 +2576,55 @@ app.post('/api/v1/createBookingWithPayment/', AuthenticateJWT, (req, res) => {
   const sqlSelect="SELECT token FROM bookings WHERE token = ?";
   db.query(sqlSelect, [token], (err, result) =>{
     if(err){
-      console.error('Erro ao verificar disponibilidade da barbearia:', err);
-      return res.status(500).json({ Error: 'Erro ao verificar disponibilidade da barbearia.' });
+      console.error('Erro ao verificar token de agendamento:', err);
+      return res.status(500).json({ Error: 'Erro ao verificar token de agendamento.' });
     }
     if(result.length > 0){
       return res.status(401).json({ Unauthorized: 'Unauthorized' });
     }
     if(result.length < 1){
       const sqlInsert = "INSERT INTO bookings (user_id, barbearia_id, professional_id, service_id, payment_id, booking_date, booking_time, date_created, token) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
-      db.query(sqlInsert, [...values, formatDate, token, initialPaymentStatus], (erro, results) => {
+      db.query(sqlInsert, [...values, formatDate, token], (erro, results) => {
+        if(erro){
+          console.error('Erro ao realizar agendamento:', erro);
+          return res.status(500).json({ Error: ' Internal Server Error' });
+        }if(results){
+          return res.status(200).json({ Success: "Success"});
+        }
+      })
+    }
+  })
+});
+
+//Rota para realizar o agendamento
+app.post('/api/v1/createBookingWithoutPayment/', AuthenticateJWT, (req, res) => {
+  //Create object to make a toke for booking
+  const values = [
+    req.body.userId,
+    req.body.barbeariaId,
+    req.body.professionalId,
+    req.body.serviceId,
+    req.body.payment_id,
+    req.body.selectedDay,
+    req.body.timeSelected,
+  ];
+
+  const formatDate = req.body.formattedDate;
+  const token = values.join('-');
+
+  
+  const sqlSelect="SELECT token FROM bookings WHERE token = ?";
+  db.query(sqlSelect, [token], (err, result) =>{
+    if(err){
+      console.error('Erro ao verificar token de agendamento:', err);
+      return res.status(500).json({ Error: 'Erro ao verificar token de agendamento.' });
+    }
+    if(result.length > 0){
+      return res.status(401).json({ Unauthorized: 'Unauthorized' });
+    }
+    if(result.length < 1){
+      const sqlInsert = "INSERT INTO bookings (user_id, barbearia_id, professional_id, service_id, payment_id, booking_date, booking_time, date_created, token) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+      db.query(sqlInsert, [...values, formatDate, token], (erro, results) => {
         if(erro){
           console.error('Erro ao realizar agendamento:', erro);
           return res.status(500).json({ Error: ' Internal Server Error' });
