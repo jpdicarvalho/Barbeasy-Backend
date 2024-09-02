@@ -2608,7 +2608,7 @@ app.post('/api/v1/createBookingWithoutPayment/', AuthenticateJWT, (req, res) => 
     req.body.selectedDay,
     req.body.timeSelected,
   ];
-  const paymentStatus = 'approvedWithoutPayment'
+  const paymentStatus = 'approvedNoPayment'
   const formatDate = req.body.formattedDate;
   const token = values.join('-');
 
