@@ -2608,7 +2608,7 @@ app.post('/api/v1/createBookingWithoutPayment/', AuthenticateJWT, (req, res) => 
     req.body.selectedDay,
     req.body.timeSelected,
   ];
-
+  const paymentStatus = 'approvedWithoutPayment'
   const formatDate = req.body.formattedDate;
   const token = values.join('-');
 
@@ -2628,8 +2628,18 @@ app.post('/api/v1/createBookingWithoutPayment/', AuthenticateJWT, (req, res) => 
         if(erro){
           console.error('Erro ao realizar agendamento:', erro);
           return res.status(500).json({ Error: ' Internal Server Error' });
-        }if(results){
-          return res.status(200).json({ Success: "Success"});
+        }
+        if(results){
+            const sqlInsert = 'INSERT INTO payments (payment_id,	user_id,	barbearia_id,	professional_id,	service_id,	status,	date_created) VALUES (?, ?, ?, ?, ?, ?, ?)';
+            db.query(sqlInsert, [values[4], values[0], values[1], values[2], values[3], paymentStatus, formatDate], (error, result) =>{
+              if(error){
+                console.error('Error on insert a new payment:', error);
+                return res.status(500).json({ error: 'on insert a new payment - Internal Server Error' });
+              }
+              if(result){
+                return res.status(200).json({ Success: "Success"});
+              }
+            })
         }
       })
     }
