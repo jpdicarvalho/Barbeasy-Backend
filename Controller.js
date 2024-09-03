@@ -2616,10 +2616,10 @@ app.post('/api/v1/createBookingWithoutPayment/', AuthenticateJWT, (req, res) => 
       console.error('Erro ao verificar agendamentos do usuário:', err);
       return res.status(500).json({ Error: 'Erro ao verificar agendamentos do usuário.' });
     }
-    if(result.length >= 2){
+    if(result.length >= 1){
       const timeSelected = values[6].split(',');
       const timesFound = result[0].split(',');
-      
+
       console.log('timeSelected', timeSelected)
       console.log('timesFound', timesFound)
 
