@@ -2618,10 +2618,10 @@ app.post('/api/v1/createBookingWithoutPayment/', AuthenticateJWT, (req, res) => 
     }
     if(result.length >= 1){
       const timeSelected = values[6].split(',');
-      const timesFound = result[0].split(',');
+      //const timesFound = result[0].split(',');
 
       console.log('timeSelected', timeSelected)
-      console.log('timesFound', timesFound)
+      console.log('result', result)
 
       return res.status(401).json({ Unauthorized: 'Número de agendamentos excedido' });
     }else{
