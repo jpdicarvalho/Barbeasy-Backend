@@ -2570,16 +2570,15 @@ app.post('/api/v1/createBookingWithPayment/', AuthenticateJWT, (req, res) => {
   const token = values.join('-');
 
   
-  const sqlSelect="SELECT token FROM bookings WHERE token = ?";
-  db.query(sqlSelect, [token], (err, result) =>{
+  const sqlSelect="SELECT user_id FROM bookings WHERE user_id = ? AND booking_date = ?";
+  db.query(sqlSelect, [values[0], values[5]], (err, result) =>{
     if(err){
-      console.error('Erro ao verificar token de agendamento:', err);
-      return res.status(500).json({ Error: 'Erro ao verificar token de agendamento.' });
+      console.error('Erro ao verificar agendamentos do usuário:', err);
+      return res.status(500).json({ Error: 'Erro ao verificar agendamentos do usuário.' });
     }
-    if(result.length > 0){
-      return res.status(401).json({ Unauthorized: 'Unauthorized' });
-    }
-    if(result.length < 1){
+    if(result.length >= 2){
+      return res.status(401).json({ Unauthorized: 'Número de agendamentos excedido' });
+    }else{
       const sqlInsert = "INSERT INTO bookings (user_id, barbearia_id, professional_id, service_id, payment_id, booking_date, booking_time, date_created, token) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
       db.query(sqlInsert, [...values, formatDate, token], (erro, results) => {
         if(erro){
@@ -2615,8 +2614,7 @@ app.post('/api/v1/createBookingWithoutPayment/', AuthenticateJWT, (req, res) => 
       console.error('Erro ao verificar agendamentos do usuário:', err);
       return res.status(500).json({ Error: 'Erro ao verificar agendamentos do usuário.' });
     }
-    if(result.length > 2){
-      console.log(result)
+    if(result.length >= 2){
       return res.status(401).json({ Unauthorized: 'Número de agendamentos excedido' });
     }else{
       const sqlInsert = "INSERT INTO bookings (user_id, barbearia_id, professional_id, service_id, payment_id, booking_date, booking_time, date_created, token) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
