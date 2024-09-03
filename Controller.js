@@ -2618,7 +2618,7 @@ app.post('/api/v1/createBookingWithoutPayment/', AuthenticateJWT, (req, res) => 
     if(result.length > 2){
       return res.status(401).json({ Unauthorized: 'Número de agendamentos excedido' });
     }
-    if(result.length < 2){
+    if(result.length <= 1){
       const sqlInsert = "INSERT INTO bookings (user_id, barbearia_id, professional_id, service_id, payment_id, booking_date, booking_time, date_created, token) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
       db.query(sqlInsert, [...values, formatDate, token], (erro, results) => {
         if(erro){
