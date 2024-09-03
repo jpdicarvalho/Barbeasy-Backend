@@ -663,6 +663,7 @@ app.get('/api/v1/bookingsOfUser/:userId', AuthenticateJWT, (req, res) =>{
   const sql=`SELECT bookings.booking_date AS bookingDate,
                     bookings.booking_time AS bookingTime,
                     bookings.date_created AS dateMakedBooking,
+                    bookings.payment_id AS payment_id,
                     barbearia.name AS barbeariaName,
                     barbearia.banner_main AS bannerBarbearia,
                     barbearia.rua AS ruaBarbearia,
@@ -678,8 +679,9 @@ app.get('/api/v1/bookingsOfUser/:userId', AuthenticateJWT, (req, res) =>{
               INNER JOIN barbearia ON barbearia.id = bookings.barbearia_id
               INNER JOIN professional ON professional.id = bookings.professional_id
               INNER JOIN servico ON servico.id = bookings.service_id
-              INNER JOIN payments ON payments.id = bookings.payment_id AND payments.status = 'approved'
-              WHERE bookings.user_id = ?`;
+              LEFT JOIN payments ON payments.id = bookings.payment_id
+              WHERE bookings.user_id = ?
+                AND (payments.status = 'approved' OR bookings.payment_id = 0);`;
 
   db.query(sql, [userId], (err, result) =>{
     if(err){
