@@ -2616,12 +2616,14 @@ app.post('/api/v1/createBookingWithoutPayment/', AuthenticateJWT, (req, res) => 
       console.error('Erro ao verificar agendamentos do usuário:', err);
       return res.status(500).json({ Error: 'Erro ao verificar agendamentos do usuário.' });
     }
-    if(result.length >= 1){
-      const timeSelected = values[6].split(',');
-      const timesFound = result[0].booking_time.split(',');
-      //for(let i=0; i < timeSelected)
-
-      return res.status(401).json({ Unauthorized: 'Número de agendamentos excedido' });
+    if(result.length === 1){
+      const timeSelected = values[6].split(',');//Novos horários selecionados pelo usuário
+      const timesFound = result[0].booking_time.split(',');//horários já agendados pleo usuário
+      const timesMach = timeSelected.filter(item => timesFound.includes(item));//Verificar se há compatibilidade entre os horários
+      if(timesMach){
+        return res.status(401).json({ Unauthorized: 'timesMach', timesMach: timesMach });
+      }
+      
     }else{
       const sqlInsert = "INSERT INTO bookings (user_id, barbearia_id, professional_id, service_id, payment_id, booking_date, booking_time, date_created, token) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
       db.query(sqlInsert, [...values, formatDate, token], (erro, results) => {
