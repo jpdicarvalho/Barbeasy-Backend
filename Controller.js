@@ -2618,10 +2618,8 @@ app.post('/api/v1/createBookingWithoutPayment/', AuthenticateJWT, (req, res) => 
     }
     if(result.length >= 1){
       const timeSelected = values[6].split(',');
-      //const timesFound = result[0].split(',');
-
-      console.log('timeSelected', timeSelected)
-      console.log('result', result)
+      const timesFound = result[0].booking_time.split(',');
+      //for(let i=0; i < timeSelected)
 
       return res.status(401).json({ Unauthorized: 'Número de agendamentos excedido' });
     }else{
@@ -2742,28 +2740,29 @@ app.get('/api/v1/bookings/:barbeariaId/:selectedDate', AuthenticateJWT, (req, re
   const barbeariaId = req.params.barbeariaId;
   const selectedDate = req.params.selectedDate;
 
-  const sql=`
-        SELECT
-          user.id AS user_id,
-          user.name user_name,
-          user.celular AS user_phone,
-          user.user_image AS user_image,
-          bookings.id AS booking_id,
-          bookings.booking_time AS booking_time,
-          bookings.date_created AS date_created,
-          professional.id AS professional_id,
-          professional.name AS professional_name,
-          servico.id AS service_id,
-          servico.name AS service_name,
-          servico.preco AS service_price,
-          servico.duracao AS service_duration,
-          servico.commission_fee AS service_commission_fee,
-          payments.status AS paymentStatus
-      FROM user
-      INNER JOIN bookings ON user.id = bookings.user_id AND bookings.barbearia_id = ? AND bookings.booking_date = ?
-      INNER JOIN professional ON professional.id = bookings.professional_id
-      INNER JOIN servico ON servico.id = bookings.service_id
-      INNER JOIN payments ON payments.id = bookings.payment_id AND payments.status = 'approved'`;
+  const sql=`SELECT
+                  user.id AS user_id,
+                  user.name user_name,
+                  user.celular AS user_phone,
+                  user.user_image AS user_image,
+                  bookings.id AS booking_id,
+                  bookings.booking_time AS booking_time,
+                  bookings.date_created AS date_created,
+                  professional.id AS professional_id,
+                  professional.name AS professional_name,
+                  servico.id AS service_id,
+                  servico.name AS service_name,
+                  servico.preco AS service_price,
+                  servico.duracao AS service_duration,
+                  servico.commission_fee AS service_commission_fee,
+                  payments.status AS paymentStatus
+              FROM bookings
+              INNER JOIN user ON user.id = bookings.user_id
+              INNER JOIN professional ON professional.id = bookings.professional_id
+              INNER JOIN servico ON servico.id = bookings.service_id
+              LEFT JOIN payments ON payments.id = bookings.payment_id
+              WHERE bookings.barbearia_id = ? AND bookings.booking_date = ?
+                        AND (payments.status = 'approved' OR bookings.payment_id = 0)`;
 
       db.query(sql, [barbeariaId, selectedDate], (err, result) =>{
         if(err){
