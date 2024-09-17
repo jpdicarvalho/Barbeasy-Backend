@@ -750,6 +750,9 @@ app.get('/api/v1/bookingsOfUser/:userId', AuthenticateJWT, (req, res) =>{
       orderBookings(result);
       return res.status(200).json({Success: "Success", Bookings: result});
     }
+    if(result.length === 0){
+      return res.status(200).json({Success: "Success", Bookings: 0});
+    }
   })
 })
 
@@ -2640,7 +2643,7 @@ app.post('/api/v1/createBookingWithoutPayment/', AuthenticateJWT, (req, res) => 
 
       return createBooking()
     }
-    
+
     if(result.length === 0){
       return createBooking()
     }
