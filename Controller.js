@@ -2610,13 +2610,13 @@ app.post('/api/v1/createBookingWithoutPayment/', AuthenticateJWT, (req, res) => 
   const token = values.join('-');
 
   
-  const sqlSelect="SELECT booking_time FROM bookings WHERE user_id = ? AND booking_date = ?";
-  db.query(sqlSelect, [values[0], values[5]], (err, result) =>{
+  const sqlSelect="SELECT booking_time FROM bookings WHERE booking_date = ?";
+  db.query(sqlSelect, [values[5]], (err, result) =>{
     if(err){
       console.error('Erro ao verificar agendamentos do usuário:', err);
       return res.status(500).json({ Error: 'Erro ao verificar agendamentos do usuário.' });
     }
-    if(result.length === 1){
+    if(result.length > 0){
       const timeSelected = values[6].split(',');//Novos horários selecionados pelo usuário
       const timesFound = result[0].booking_time.split(',');//horários já agendados pleo usuário
       const timesMach = timeSelected.filter(item => timesFound.includes(item));//Verificar se há compatibilidade entre os horários
