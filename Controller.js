@@ -2596,6 +2596,7 @@ app.post('/api/v1/createBookingWithPayment/', AuthenticateJWT, (req, res) => {
 
 //Rota para realizar o agendamento
 app.post('/api/v1/createBookingWithoutPayment/', AuthenticateJWT, (req, res) => {
+  
   //Create object to make a toke for booking
   const values = [
     req.body.userId,
@@ -2609,6 +2610,18 @@ app.post('/api/v1/createBookingWithoutPayment/', AuthenticateJWT, (req, res) => 
   const formatDate = req.body.formattedDate;
   const token = values.join('-');
 
+  function createBooking () {
+    const sqlInsert = "INSERT INTO bookings (user_id, barbearia_id, professional_id, service_id, payment_id, booking_date, booking_time, date_created, token) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        db.query(sqlInsert, [...values, formatDate, token], (erro, results) => {
+          if(erro){
+            console.error('Erro ao realizar agendamento:', erro);
+            return res.status(500).json({ Error: ' Internal Server Error' });
+          }
+          if(results){
+            return res.status(200).json({ Success: "Success"});
+          }
+        })
+  }
   
   const sqlSelect="SELECT booking_time FROM bookings WHERE booking_date = ?";
   db.query(sqlSelect, [values[5]], (err, result) =>{
@@ -2617,24 +2630,19 @@ app.post('/api/v1/createBookingWithoutPayment/', AuthenticateJWT, (req, res) => 
       return res.status(500).json({ Error: 'Erro ao verificar agendamentos do usuário.' });
     }
     if(result.length > 0){
-      const timeSelected = values[6].split(',');//Novos horários selecionados pelo usuário
-      const timesFound = result[0].booking_time.split(',');//horários já agendados pleo usuário
-      const timesMach = timeSelected.filter(item => timesFound.includes(item));//Verificar se há compatibilidade entre os horários
-      if(timesMach.length > 0){
-        return res.status(401).json({ Unauthorized: 'timesMach', timesMach: timesMach });
-      }
-      
-    }else{
-      const sqlInsert = "INSERT INTO bookings (user_id, barbearia_id, professional_id, service_id, payment_id, booking_date, booking_time, date_created, token) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
-      db.query(sqlInsert, [...values, formatDate, token], (erro, results) => {
-        if(erro){
-          console.error('Erro ao realizar agendamento:', erro);
-          return res.status(500).json({ Error: ' Internal Server Error' });
+        const timeSelected = values[6].split(',');//Novos horários selecionados pelo usuário
+        const timesFound = result[0].booking_time.split(',');//horários já agendados pleo usuário
+        const timesMach = timeSelected.filter(item => timesFound.includes(item));//Verificar se há compatibilidade entre os horários
+        
+        if(timesMach.length > 0){
+          return res.status(401).json({ Unauthorized: 'timesMach', timesMach: timesMach });
         }
-        if(results){
-          return res.status(200).json({ Success: "Success"});
-        }
-      })
+
+      return createBooking()
+    }
+    
+    if(result.length === 0){
+      return createBooking()
     }
   })
 });
