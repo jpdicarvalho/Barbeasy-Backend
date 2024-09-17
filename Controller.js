@@ -2620,7 +2620,7 @@ app.post('/api/v1/createBookingWithoutPayment/', AuthenticateJWT, (req, res) => 
       const timeSelected = values[6].split(',');//Novos horários selecionados pelo usuário
       const timesFound = result[0].booking_time.split(',');//horários já agendados pleo usuário
       const timesMach = timeSelected.filter(item => timesFound.includes(item));//Verificar se há compatibilidade entre os horários
-      if(timesMach){
+      if(timesMach.length > 0){
         return res.status(401).json({ Unauthorized: 'timesMach', timesMach: timesMach });
       }
       
