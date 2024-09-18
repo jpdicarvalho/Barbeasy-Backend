@@ -147,7 +147,7 @@ const s3 = new S3Client({
 //=-=-=-=-= ROTAS USER-CLIENT-BARBEARIA =-=-=-=-=
 
 // Cadastro de usuário com senha criptografada
-app.post("/api/v1/SignUp", async (req, res) => {
+app.post("/api/v1/SignUp", (req, res) => {
   const { name, email, senha, celular } = req.body;
 
   // Verifica se name contém apenas letras maiúsculas e minúsculas
@@ -205,7 +205,7 @@ app.post("/api/v1/SignUp", async (req, res) => {
 });
 
 //Realizando Login e Gerando Token de autenticação
-app.post('/api/v1/SignIn', async (req, res) => {
+app.post('/api/v1/SignIn', (req, res) => {
   const {email, senha} = req.body;
 
   // Buscar usuário pelo email
@@ -975,7 +975,7 @@ app.post('/api/v1/notificationPayment', (req, res) => {
 
 //======================================= ROTAS USER-BARBEARIA ====================================
 //Cadastro de ususário Barbearia   #VERIFIED
-app.post("/api/v1/SignUpBarbearia", async (req, res) => {
+app.post("/api/v1/SignUpBarbearia", (req, res) => {
   const { name, street, number, neighborhood, city, usuario, email, senha } = req.body;
 
   // Verifica se name contém apenas letras maiúsculas e minúsculas
@@ -1053,7 +1053,7 @@ app.post("/api/v1/SignUpBarbearia", async (req, res) => {
 });
 
 //Realizando Login e Gerando Token de autenticação para a barbearia  #VERIFIED
-app.get('/api/v1/SignInBarbearia/:email/:senha', async (req, res) => {
+app.get('/api/v1/SignInBarbearia/:email/:senha', (req, res) => {
   const email = req.params.email;
   const senha = req.params.senha;
 
@@ -1087,7 +1087,7 @@ app.get('/api/v1/SignInBarbearia/:email/:senha', async (req, res) => {
 });
 
 //Realizando Login e Gerando Token de autenticação para a barbearia  #VERIFIED
-app.get('/api/v1/SignInProfessional/:email/:senha', async (req, res) => {
+app.get('/api/v1/SignInProfessional/:email/:senha', (req, res) => {
   const email = req.params.email;
   const senha = req.params.senha;
 
