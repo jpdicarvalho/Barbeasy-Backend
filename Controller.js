@@ -3115,14 +3115,25 @@ app.get('/api/v1/amountBookings/:barbeariaId', AuthenticateJWT, (req, res) =>{
   const barbeariaId = req.params.barbeariaId;
 
   const sql = `SELECT 
-                    MONTHNAME(STR_TO_DATE(booking_date, '%a, %e de %b de %Y')) AS mes,
-                    MONTH(STR_TO_DATE(booking_date, '%a, %e de %b de %Y')) AS mes_num,
-                    COUNT(*) AS total_agendamentos
-                FROM bookings
-                WHERE YEAR(STR_TO_DATE(booking_date, '%a, %e de %b de %Y')) = ? 
-                    AND barbearia_id = ?
-                GROUP BY mes, mes_num
-                ORDER BY mes_num`;
+                  CASE 
+                      WHEN MONTH(STR_TO_DATE(booking_date, '%a, %e de %b de %Y')) = 1 THEN 'Jan'
+                      WHEN MONTH(STR_TO_DATE(booking_date, '%a, %e de %b de %Y')) = 2 THEN 'Fev'
+                      WHEN MONTH(STR_TO_DATE(booking_date, '%a, %e de %b de %Y')) = 3 THEN 'Mar'
+                      WHEN MONTH(STR_TO_DATE(booking_date, '%a, %e de %b de %Y')) = 4 THEN 'Abr'
+                      WHEN MONTH(STR_TO_DATE(booking_date, '%a, %e de %b de %Y')) = 5 THEN 'Mai'
+                      WHEN MONTH(STR_TO_DATE(booking_date, '%a, %e de %b de %Y')) = 6 THEN 'Jun'
+                      WHEN MONTH(STR_TO_DATE(booking_date, '%a, %e de %b de %Y')) = 7 THEN 'Jul'
+                      WHEN MONTH(STR_TO_DATE(booking_date, '%a, %e de %b de %Y')) = 8 THEN 'Ago'
+                      WHEN MONTH(STR_TO_DATE(booking_date, '%a, %e de %b de %Y')) = 9 THEN 'Set'
+                      WHEN MONTH(STR_TO_DATE(booking_date, '%a, %e de %b de %Y')) = 10 THEN 'Out'
+                      WHEN MONTH(STR_TO_DATE(booking_date, '%a, %e de %b de %Y')) = 11 THEN 'Nov'
+                      WHEN MONTH(STR_TO_DATE(booking_date, '%a, %e de %b de %Y')) = 12 THEN 'Dez'
+                  END AS mes,
+                  COUNT(*) AS total_agendamentos
+              FROM bookings
+              WHERE YEAR(STR_TO_DATE(booking_date, '%a, %e de %b de %Y')) = ? AND barbearia_id = ?
+              GROUP BY mes
+              ORDER BY FIELD(mes, 'Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez')`;
   db.query(sql, [2024, 1], (err, resu) =>{
     if(err){
       console.error("Erro ao buscar agendamento", err);
