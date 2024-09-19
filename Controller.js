@@ -3134,13 +3134,13 @@ app.get('/api/v1/amountBookings/:barbeariaId', AuthenticateJWT, (req, res) =>{
               WHERE YEAR(STR_TO_DATE(booking_date, '%a, %e de %b de %Y')) = ? AND barbearia_id = ?
               GROUP BY mes
               ORDER BY FIELD(mes, 'Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez')`;
-  db.query(sql, [2024, 1], (err, resu) =>{
+  db.query(sql, [2024, barbeariaId], (err, resu) =>{
     if(err){
       console.error("Erro ao buscar agendamento", err);
       return res.status(500).json({ Error: "Internal Server Error" });
     }
+    console.log(resu)
     if(resu.length > 0){
-      console.log(resu)
       return res.status(200).json({ allBookings: resu})
     }
   })
