@@ -3115,13 +3115,14 @@ app.get('/api/v1/amountBookings/:barbeariaId', AuthenticateJWT, (req, res) =>{
   const barbeariaId = req.params.barbeariaId;
 
   const sql = `SELECT 
-                    MONTHNAME(STR_TO_DATE(booking_date, '%a, %e de %b de %Y')) AS mes,
-                    COUNT(*) AS total_agendamentos
-                FROM bookings
-                WHERE YEAR(STR_TO_DATE(booking_date, '%a, %e de %b de %Y')) = ? 
-                    AND barbearia_id = ?
-                GROUP BY mes
-                ORDER BY MONTH(STR_TO_DATE(booking_date, '%a, %e de %b de %Y'))`;
+    MONTHNAME(STR_TO_DATE(booking_date, '%a, %e de %b de %Y')) AS mes,
+    MONTH(STR_TO_DATE(booking_date, '%a, %e de %b de %Y')) AS mes_num,
+    COUNT(*) AS total_agendamentos
+FROM bookings
+WHERE YEAR(STR_TO_DATE(booking_date, '%a, %e de %b de %Y')) = ? 
+    AND barbearia_id = ?
+GROUP BY mes, mes_num
+ORDER BY mes_num`;
   db.query(sql, [2024, 1], (err, resu) =>{
     if(err){
       console.error("Erro ao buscar agendamento", err);
