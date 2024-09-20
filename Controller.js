@@ -2572,6 +2572,8 @@ app.post('/api/v1/createBookingWithPayment/', AuthenticateJWT, (req, res) => {
   ];
 
   const formatDate = req.body.formattedDate;
+  const selectedDayFormated = req.body.selectedDayFormated;
+
   const token = values.join('-');
 
   
@@ -2584,8 +2586,8 @@ app.post('/api/v1/createBookingWithPayment/', AuthenticateJWT, (req, res) => {
     if(result.length >= 2){
       return res.status(401).json({ Unauthorized: 'Número de agendamentos excedido' });
     }else{
-      const sqlInsert = "INSERT INTO bookings (user_id, barbearia_id, professional_id, service_id, payment_id, booking_date, booking_time, date_created, token) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
-      db.query(sqlInsert, [...values, formatDate, token], (erro, results) => {
+      const sqlInsert = "INSERT INTO bookings (user_id, barbearia_id, professional_id, service_id, payment_id, booking_date, booking_time, date_created, token, selectedDayFormated) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+      db.query(sqlInsert, [...values, formatDate, token, selectedDayFormated], (erro, results) => {
         if(erro){
           console.error('Erro ao realizar agendamento:', erro);
           return res.status(500).json({ Error: ' Internal Server Error' });
