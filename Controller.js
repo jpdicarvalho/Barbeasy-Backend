@@ -3120,17 +3120,17 @@ app.get('/api/v1/amountBookings/:barbeariaId', AuthenticateJWT, (req, res) => {
   const year = 2024;
 
       const sql = `SELECT 
-                        DATE_FORMAT(booking_date_no_formated, '%b') AS month,
-                        COUNT(*) AS total_bookings
-                    FROM 
-                        bookings
-                    WHERE 
-                        barbearia_id = ?
-                        AND YEAR(booking_date_no_formated) = ?
-                    GROUP BY 
-                        MONTH(booking_date_no_formated)
-                    ORDER BY 
-                        MONTH(booking_date_no_formated)`;
+                      MONTH(booking_date_no_formated) AS month,
+                      COUNT(*) AS total_bookings
+                  FROM 
+                      bookings
+                  WHERE 
+                      barbearia_id = 4
+                      AND YEAR(booking_date_no_formated) = 2024
+                  GROUP BY 
+                      MONTH(booking_date_no_formated)
+                  ORDER BY 
+                      month`;
 
       db.query(sql, [barbeariaId, year], (err, result) => {
         if (err) {
