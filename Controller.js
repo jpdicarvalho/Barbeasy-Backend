@@ -3145,7 +3145,7 @@ app.get('/api/v1/amountBookings/:barbeariaId', AuthenticateJWT, (req, res) => {
             const matchingMonth = result.find(item => item.month === i + 1); // Encontra o mês correspondente no SQL data
 
             data.push({
-              name: monthNames[i], // Nome do mês correspondente
+              month: monthNames[i], // Nome do mês correspondente
               Agendamentos: matchingMonth ? matchingMonth.total_bookings : 0, // Se encontrar, use o valor, senão 0
             });
           }
