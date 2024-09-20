@@ -3191,7 +3191,7 @@ app.get('/api/v1/bookingsByMonth/:barbeariaId/:month/:year', AuthenticateJWT, (r
             return res.status(500).send({ error: 'Error fetching data' });
         }
         if(result.length > 0){
-          return res.status(200).json({bookings: data});
+          return res.status(200).json({bookings: result});
         }
         
       });
