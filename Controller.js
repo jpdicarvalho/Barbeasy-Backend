@@ -3118,15 +3118,25 @@ app.get('/api/v1/bookingPoliceis/:barbeariaId', AuthenticateJWT, (req, res) =>{
 app.get('/api/v1/amountBookings/:barbeariaId', AuthenticateJWT, (req, res) =>{
   const barbeariaId = req.params.barbeariaId;
 
- 
-  db.query(sql, [2024], (err, resu) =>{
+ const sql=`SELECT 
+                MONTH(booking_date_no_formated) AS month,
+                COUNT(*) AS total_bookings
+            FROM 
+                bookings
+            WHERE 
+                barbearia_id = ? -- Parâmetro da barbearia
+                AND YEAR(booking_date_no_formated) = ? -- Parâmetro do ano
+            GROUP BY 
+                MONTH(booking_date_no_formated)
+            ORDER BY 
+                month`;
+  db.query(sql, [barbeariaId, 2024], (err, resu) =>{
     if(err){
       console.error("Erro ao buscar agendamento", err);
       return res.status(500).json({ Error: "Internal Server Error" });
     }
-    console.log(resu)
     if(resu.length > 0){
-      return res.status(200).json({ allBookings: resu})
+      return res.status(200).json({ amountBookings: resu})
     }
   })
 })
