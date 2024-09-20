@@ -3167,6 +3167,7 @@ app.get('/api/v1/bookingsByMonth/:barbeariaId/:month/:year', AuthenticateJWT, (r
                       user.user_image AS user_image,
                       bookings.id AS booking_id,
                       bookings.booking_time AS booking_time,
+                      bookings.booking_date AS booking_date,
                       bookings.date_created AS date_created,
                       professional.id AS professional_id,
                       professional.name AS professional_name,
