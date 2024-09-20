@@ -3115,33 +3115,43 @@ app.get('/api/v1/bookingPoliceis/:barbeariaId', AuthenticateJWT, (req, res) =>{
   })
 })
 
-app.get('/api/v1/amountBookings/:barbeariaId', AuthenticateJWT, (req, res) =>{
+app.get('/api/v1/amountBookings/:barbeariaId', AuthenticateJWT, (req, res) => {
   const barbeariaId = req.params.barbeariaId;
+  const year = 2024;
 
-  const sql = `SET lc_time_names = 'pt_BR';
-                SELECT 
-                    DATE_FORMAT(booking_date_no_formated, '%b') AS month,
-                    COUNT(*) AS total_bookings
-                FROM 
-                    bookings
-                WHERE 
-                    barbearia_id = ? 
-                    AND YEAR(booking_date_no_formated) = ?
-                GROUP BY 
-                    MONTH(booking_date_no_formated)
-                ORDER BY 
-                    MONTH(booking_date_no_formated)`;
+  // Primeiro, define o idioma para português
+  const setLanguageSql = "SET lc_time_names = 'pt_BR'";
 
-  db.query(sql, [barbeariaId, 2024], (err, resu) =>{
-    if(err){
-      console.error("Erro ao buscar agendamento", err);
-      return res.status(500).json({ Error: "Internal Server Error" });
-    }
-    if(resu.length > 0){
-      return res.status(200).json({ amountBookings: resu})
-    }
-  })
-})
+  db.query(setLanguageSql, (err) => {
+      if (err) {
+          return res.status(500).send({ error: 'Error setting language' });
+      }
+
+      // Agora executa a query principal
+      const sql = `
+          SELECT 
+              DATE_FORMAT(booking_date_no_formated, '%b') AS month, 
+              COUNT(*) AS total_bookings
+          FROM 
+              bookings
+          WHERE 
+              barbearia_id = ? 
+              AND YEAR(booking_date_no_formated) = ?
+          GROUP BY 
+              MONTH(booking_date_no_formated)
+          ORDER BY 
+              MONTH(booking_date_no_formated);
+      `;
+
+      db.query(sql, [barbeariaId, year], (err, result) => {
+          if (err) {
+              return res.status(500).send({ error: 'Error fetching data' });
+          }
+          res.status(200).json(result);
+      });
+  });
+});
+
 
 // Inicia o servidor na porta especificada
 app.listen(port, () => {
