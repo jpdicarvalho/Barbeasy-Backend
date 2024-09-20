@@ -3161,31 +3161,33 @@ app.get('/api/v1/bookingsByMonth/:barbeariaId/:month/:year', AuthenticateJWT, (r
   const year = Number(req.params.year);
 
       const sql = `SELECT
-                      user.id AS user_id,
-                      user.name user_name,
-                      user.celular AS user_phone,
-                      user.user_image AS user_image,
-                      bookings.id AS booking_id,
-                      bookings.booking_time AS booking_time,
-                      bookings.booking_date AS booking_date,
-                      bookings.date_created AS date_created,
-                      professional.id AS professional_id,
-                      professional.name AS professional_name,
-                      servico.id AS service_id,
-                      servico.name AS service_name,
-                      servico.preco AS service_price,
-                      servico.duracao AS service_duration,
-                      servico.commission_fee AS service_commission_fee,
-                      payments.status AS paymentStatus
-                  FROM bookings
-                  INNER JOIN user ON user.id = bookings.user_id
-                  INNER JOIN professional ON professional.id = bookings.professional_id
-                  INNER JOIN servico ON servico.id = bookings.service_id
-                  LEFT JOIN payments ON payments.id = bookings.payment_id
-                  WHERE bookings.barbearia_id = ? 
-                        AND MONTH(bookings.booking_date_no_formated) = ?
-                        AND YEAR(bookings.booking_date_no_formated) = ?
-                        AND (payments.status = 'approved' OR bookings.payment_id = 0)`;
+    user.id AS user_id,
+    user.name AS user_name,
+    user.celular AS user_phone,
+    user.user_image AS user_image,
+    bookings.id AS booking_id,
+    bookings.booking_time AS booking_time,
+    bookings.booking_date AS booking_date,
+    bookings.date_created AS date_created,
+    professional.id AS professional_id,
+    professional.name AS professional_name,
+    servico.id AS service_id,
+    servico.name AS service_name,
+    servico.preco AS service_price,
+    servico.duracao AS service_duration,
+    servico.commission_fee AS service_commission_fee,
+    payments.status AS paymentStatus
+FROM bookings
+INNER JOIN user ON user.id = bookings.user_id
+INNER JOIN professional ON professional.id = bookings.professional_id
+INNER JOIN servico ON servico.id = bookings.service_id
+LEFT JOIN payments ON payments.id = bookings.payment_id
+WHERE bookings.barbearia_id = ? 
+  AND MONTH(bookings.booking_date_no_formated) = ? 
+  AND YEAR(bookings.booking_date_no_formated) = ? 
+  AND (payments.status = 'approved' OR bookings.payment_id = 0)
+ORDER BY bookings.booking_date_no_formated, bookings.booking_time;
+`;
 
       db.query(sql, [barbeariaId, month, year], (err, result) => {
         if (err) {
