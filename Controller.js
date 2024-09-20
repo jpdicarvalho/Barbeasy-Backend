@@ -3125,8 +3125,8 @@ app.get('/api/v1/amountBookings/:barbeariaId', AuthenticateJWT, (req, res) => {
                   FROM 
                       bookings
                   WHERE 
-                      barbearia_id = 4
-                      AND YEAR(booking_date_no_formated) = 2024
+                      barbearia_id = ?
+                      AND YEAR(booking_date_no_formated) = ?
                   GROUP BY 
                       MONTH(booking_date_no_formated)
                   ORDER BY 
