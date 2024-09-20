@@ -3155,6 +3155,47 @@ app.get('/api/v1/amountBookings/:barbeariaId/:year', AuthenticateJWT, (req, res)
       });
 });
 
+app.get('/api/v1/bookingsByMonth/:barbeariaId/:month/:year', AuthenticateJWT, (req, res) => {
+  const barbeariaId = req.params.barbeariaId;
+  const month = Number (req.params.month);
+  const year = Number(req.params.year);   // Ano passado como parâmetro
+
+      const sql = `SELECT
+                      user.id AS user_id,
+                      user.name user_name,
+                      user.celular AS user_phone,
+                      user.user_image AS user_image,
+                      bookings.id AS booking_id,
+                      bookings.booking_time AS booking_time,
+                      bookings.date_created AS date_created,
+                      professional.id AS professional_id,
+                      professional.name AS professional_name,
+                      servico.id AS service_id,
+                      servico.name AS service_name,
+                      servico.preco AS service_price,
+                      servico.duracao AS service_duration,
+                      servico.commission_fee AS service_commission_fee,
+                      payments.status AS paymentStatus
+                  FROM bookings
+                  INNER JOIN user ON user.id = bookings.user_id
+                  INNER JOIN professional ON professional.id = bookings.professional_id
+                  INNER JOIN servico ON servico.id = bookings.service_id
+                  LEFT JOIN payments ON payments.id = bookings.payment_id
+                  WHERE bookings.barbearia_id = ? 
+                        AND MONTH(bookings.booking_date_no_formated) = ?
+                        AND YEAR(bookings.booking_date_no_formated) = ?
+                        AND (payments.status = 'approved' OR bookings.payment_id = 0)`;
+
+      db.query(sql, [barbeariaId, month+1, year], (err, result) => {
+        if (err) {
+            return res.status(500).send({ error: 'Error fetching data' });
+        }
+        if(result.length > 0){
+          return res.status(200).json({bookings: data});
+        }
+        
+      });
+});
 
 // Inicia o servidor na porta especificada
 app.listen(port, () => {
