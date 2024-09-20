@@ -3118,18 +3118,20 @@ app.get('/api/v1/bookingPoliceis/:barbeariaId', AuthenticateJWT, (req, res) =>{
 app.get('/api/v1/amountBookings/:barbeariaId', AuthenticateJWT, (req, res) =>{
   const barbeariaId = req.params.barbeariaId;
 
- const sql=`SELECT 
-                MONTH(booking_date_no_formated) AS month,
-                COUNT(*) AS total_bookings
-            FROM 
-                bookings
-            WHERE 
-                barbearia_id = ? -- Parâmetro da barbearia
-                AND YEAR(booking_date_no_formated) = ? -- Parâmetro do ano
-            GROUP BY 
-                MONTH(booking_date_no_formated)
-            ORDER BY 
-                month`;
+  const sql = `SET lc_time_names = 'pt_BR';
+                SELECT 
+                    DATE_FORMAT(booking_date_no_formated, '%b') AS month,
+                    COUNT(*) AS total_bookings
+                FROM 
+                    bookings
+                WHERE 
+                    barbearia_id = ? 
+                    AND YEAR(booking_date_no_formated) = ?
+                GROUP BY 
+                    MONTH(booking_date_no_formated)
+                ORDER BY 
+                    MONTH(booking_date_no_formated)`;
+
   db.query(sql, [barbeariaId, 2024], (err, resu) =>{
     if(err){
       console.error("Erro ao buscar agendamento", err);
