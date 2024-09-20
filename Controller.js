@@ -2608,14 +2608,16 @@ app.post('/api/v1/createBookingWithoutPayment/', AuthenticateJWT, (req, res) => 
     req.body.serviceId,
     req.body.payment_id,
     req.body.selectedDay,
-    req.body.timeSelected, 
+    req.body.timeSelected,
   ];
   const formatDate = req.body.formattedDate;
+  const selectedDayFormated = req.body.selectedDayFormated;
+  
   const token = values.join('-');
 
   function createBooking () {
-    const sqlInsert = "INSERT INTO bookings (user_id, barbearia_id, professional_id, service_id, payment_id, booking_date, booking_time, date_created, token) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        db.query(sqlInsert, [...values, formatDate, token], (erro, results) => {
+    const sqlInsert = "INSERT INTO bookings (user_id, barbearia_id, professional_id, service_id, payment_id, booking_date, booking_time, date_created, token, selectedDayFormated) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        db.query(sqlInsert, [...values, formatDate, token, selectedDayFormated], (erro, results) => {
           if(erro){
             console.error('Erro ao realizar agendamento:', erro);
             return res.status(500).json({ Error: ' Internal Server Error' });
@@ -3114,26 +3116,7 @@ app.get('/api/v1/bookingPoliceis/:barbeariaId', AuthenticateJWT, (req, res) =>{
 app.get('/api/v1/amountBookings/:barbeariaId', AuthenticateJWT, (req, res) =>{
   const barbeariaId = req.params.barbeariaId;
 
-  const sql = `SELECT 
-                  CASE 
-                      WHEN MONTH(STR_TO_DATE(booking_date, '%a, %e de %b de %Y')) = 1 THEN 'Jan'
-                      WHEN MONTH(STR_TO_DATE(booking_date, '%a, %e de %b de %Y')) = 2 THEN 'Fev'
-                      WHEN MONTH(STR_TO_DATE(booking_date, '%a, %e de %b de %Y')) = 3 THEN 'Mar'
-                      WHEN MONTH(STR_TO_DATE(booking_date, '%a, %e de %b de %Y')) = 4 THEN 'Abr'
-                      WHEN MONTH(STR_TO_DATE(booking_date, '%a, %e de %b de %Y')) = 5 THEN 'Mai'
-                      WHEN MONTH(STR_TO_DATE(booking_date, '%a, %e de %b de %Y')) = 6 THEN 'Jun'
-                      WHEN MONTH(STR_TO_DATE(booking_date, '%a, %e de %b de %Y')) = 7 THEN 'Jul'
-                      WHEN MONTH(STR_TO_DATE(booking_date, '%a, %e de %b de %Y')) = 8 THEN 'Ago'
-                      WHEN MONTH(STR_TO_DATE(booking_date, '%a, %e de %b de %Y')) = 9 THEN 'Set'
-                      WHEN MONTH(STR_TO_DATE(booking_date, '%a, %e de %b de %Y')) = 10 THEN 'Out'
-                      WHEN MONTH(STR_TO_DATE(booking_date, '%a, %e de %b de %Y')) = 11 THEN 'Nov'
-                      WHEN MONTH(STR_TO_DATE(booking_date, '%a, %e de %b de %Y')) = 12 THEN 'Dez'
-                  END AS mes,
-                  COUNT(*) AS total_agendamentos
-              FROM bookings
-              WHERE YEAR(STR_TO_DATE(booking_date, '%a, %e de %b de %Y')) = ?
-              GROUP BY mes
-              ORDER BY FIELD(mes, 'Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez')`;
+ 
   db.query(sql, [2024], (err, resu) =>{
     if(err){
       console.error("Erro ao buscar agendamento", err);
