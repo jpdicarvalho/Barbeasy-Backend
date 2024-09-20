@@ -3157,8 +3157,8 @@ app.get('/api/v1/amountBookings/:barbeariaId/:year', AuthenticateJWT, (req, res)
 
 app.get('/api/v1/bookingsByMonth/:barbeariaId/:month/:year', AuthenticateJWT, (req, res) => {
   const barbeariaId = req.params.barbeariaId;
-  const month = Number (req.params.month);
-  const year = Number(req.params.year);   // Ano passado como parâmetro
+  const month = Number (req.params.month)
+  const year = Number(req.params.year);
 
       const sql = `SELECT
                       user.id AS user_id,
@@ -3186,7 +3186,7 @@ app.get('/api/v1/bookingsByMonth/:barbeariaId/:month/:year', AuthenticateJWT, (r
                         AND YEAR(bookings.booking_date_no_formated) = ?
                         AND (payments.status = 'approved' OR bookings.payment_id = 0)`;
 
-      db.query(sql, [barbeariaId, month+1, year], (err, result) => {
+      db.query(sql, [barbeariaId, month, year], (err, result) => {
         if (err) {
             return res.status(500).send({ error: 'Error fetching data' });
         }
