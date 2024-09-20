@@ -2586,7 +2586,7 @@ app.post('/api/v1/createBookingWithPayment/', AuthenticateJWT, (req, res) => {
     if(result.length >= 2){
       return res.status(401).json({ Unauthorized: 'Número de agendamentos excedido' });
     }else{
-      const sqlInsert = "INSERT INTO bookings (user_id, barbearia_id, professional_id, service_id, payment_id, booking_date, booking_time, date_created, token, selectedDayFormated) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+      const sqlInsert = "INSERT INTO bookings (user_id, barbearia_id, professional_id, service_id, payment_id, booking_date, booking_time, date_created, token, booking_date_no_formated) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
       db.query(sqlInsert, [...values, formatDate, token, selectedDayFormated], (erro, results) => {
         if(erro){
           console.error('Erro ao realizar agendamento:', erro);
@@ -2618,7 +2618,7 @@ app.post('/api/v1/createBookingWithoutPayment/', AuthenticateJWT, (req, res) => 
   const token = values.join('-');
 
   function createBooking () {
-    const sqlInsert = "INSERT INTO bookings (user_id, barbearia_id, professional_id, service_id, payment_id, booking_date, booking_time, date_created, token, selectedDayFormated) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    const sqlInsert = "INSERT INTO bookings (user_id, barbearia_id, professional_id, service_id, payment_id, booking_date, booking_time, date_created, token, booking_date_no_formated) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         db.query(sqlInsert, [...values, formatDate, token, selectedDayFormated], (erro, results) => {
           if(erro){
             console.error('Erro ao realizar agendamento:', erro);
