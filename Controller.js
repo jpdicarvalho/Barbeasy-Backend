@@ -3115,9 +3115,9 @@ app.get('/api/v1/bookingPoliceis/:barbeariaId', AuthenticateJWT, (req, res) =>{
   })
 })
 
-app.get('/api/v1/amountBookings/:barbeariaId', AuthenticateJWT, (req, res) => {
+app.get('/api/v1/amountBookings/:barbeariaId/:year', AuthenticateJWT, (req, res) => {
   const barbeariaId = req.params.barbeariaId;
-  const year = 2024;
+  const year = Number (req.params.year);
 
       const sql = `SELECT 
                       MONTH(booking_date_no_formated) AS month,
