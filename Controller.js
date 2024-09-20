@@ -3119,15 +3119,6 @@ app.get('/api/v1/amountBookings/:barbeariaId', AuthenticateJWT, (req, res) => {
   const barbeariaId = req.params.barbeariaId;
   const year = 2024;
 
-  // Primeiro, define o idioma para português
-  const setLanguageSql = "SET lc_time_names = 'pt_BR'";
-
-  db.query(setLanguageSql, (err) => {
-      if (err) {
-          return res.status(500).send({ error: 'Error setting language' });
-      }
-
-      // Agora executa a query principal
       const sql = `
           SELECT 
               DATE_FORMAT(booking_date_no_formated, '%b') AS month, 
@@ -3144,12 +3135,14 @@ app.get('/api/v1/amountBookings/:barbeariaId', AuthenticateJWT, (req, res) => {
       `;
 
       db.query(sql, [barbeariaId, year], (err, result) => {
-          if (err) {
-              return res.status(500).send({ error: 'Error fetching data' });
-          }
-          res.status(200).json(result);
+        if (err) {
+            return res.status(500).send({ error: 'Error fetching data' });
+        }
+        if(result.length > 0){
+          return res.status(200).json({amountBookings: result});
+        }
+        
       });
-  });
 });
 
 
