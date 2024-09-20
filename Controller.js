@@ -3137,7 +3137,19 @@ app.get('/api/v1/amountBookings/:barbeariaId', AuthenticateJWT, (req, res) => {
             return res.status(500).send({ error: 'Error fetching data' });
         }
         if(result.length > 0){
-          return res.status(200).json({amountBookings: result});
+          const monthNames = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
+          const data = [];
+
+          // Preenche os meses vazios (caso existam) com valores padrão de agendamentos
+          for (let i = 0; i < 12; i++) {
+            const matchingMonth = result.find(item => item.month === i + 1); // Encontra o mês correspondente no SQL data
+
+            data.push({
+              name: monthNames[i], // Nome do mês correspondente
+              Agendamentos: matchingMonth ? matchingMonth.total_bookings : 0, // Se encontrar, use o valor, senão 0
+            });
+          }
+          return res.status(200).json({amountBookings: data});
         }
         
       });
