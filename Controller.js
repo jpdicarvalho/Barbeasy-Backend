@@ -3212,23 +3212,23 @@ app.get('/api/v1/bookingsByMonth/:barbeariaId/:month/:year', AuthenticateJWT, (r
             booking.sort((a, b) =>{
                 //========== Elemento A ==========
                 //obtendo o mês e o ano do agandamento
-                const yearBookingA = Number (a.bookingDate.substring(17).replace(/[^0-9]/g, ''));
-                const monthBookingA = a.bookingDate.match(/(Jan|Fev|Mar|Abr|Mai|Jun|Jul|Ago|Set|Out|Nov|Dez)/g, '');
+                const yearBookingA = Number (a.booking_date.substring(17).replace(/[^0-9]/g, ''));
+                const monthBookingA = a.booking_date.match(/(Jan|Fev|Mar|Abr|Mai|Jun|Jul|Ago|Set|Out|Nov|Dez)/g, '');
                 const monthAndYearBookingsA = Number (`${numbersMonth[monthBookingA]}` + `${yearBookingA}`);
                 //obtendo o dia do agendamento
-                const bookingDayA = Number (a.bookingDate.split(', ')[1].split(' ')[0]);
+                const bookingDayA = Number (a.booking_date.split(', ')[1].split(' ')[0]);
                 //Obtendo o horário inicial do agendamento
-                const bookingTimesA = Number (a.bookingTime.split(',')[a.bookingTime.split(',').length-1].replace(/[^0-9]/g, ''));
+                const bookingTimesA = Number (a.booking_time.split(',')[a.booking_time.split(',').length-1].replace(/[^0-9]/g, ''));
                 
                 //========== Elemento B ==========
                 //obtendo o mês e o ano do agandamento
-                const yearBookingB = Number (b.bookingDate.substring(17).replace(/[^0-9]/g, ''));
-                const monthBookingB = b.bookingDate.match(/(Jan|Fev|Mar|Abr|Mai|Jun|Jul|Ago|Set|Out|Nov|Dez)/g, '');
+                const yearBookingB = Number (b.booking_date.substring(17).replace(/[^0-9]/g, ''));
+                const monthBookingB = b.booking_date.match(/(Jan|Fev|Mar|Abr|Mai|Jun|Jul|Ago|Set|Out|Nov|Dez)/g, '');
                 const monthAndYearBookingsB = Number (`${numbersMonth[monthBookingB]}` + `${yearBookingB}`);
                 //obtendo o dia do agendamento
-                const bookingDayB = Number (b.bookingDate.split(', ')[1].split(' ')[0]);
+                const bookingDayB = Number (b.booking_date.split(', ')[1].split(' ')[0]);
                 //Obtendo o horário inicial do agendamento
-                const bookingTimesB = Number (b.bookingTime.split(',')[b.bookingTime.split(',').length-1].replace(/[^0-9]/g, ''));
+                const bookingTimesB = Number (b.booking_time.split(',')[b.booking_time.split(',').length-1].replace(/[^0-9]/g, ''));
 
                 
                 if(monthAndYearBookingsA === monthAndYearBookingsB){
@@ -3252,7 +3252,7 @@ app.get('/api/v1/bookingsByMonth/:barbeariaId/:month/:year', AuthenticateJWT, (r
           }
 
           orderBookings(result);
-          
+
           return res.status(200).json({bookings: result});
         }
         
