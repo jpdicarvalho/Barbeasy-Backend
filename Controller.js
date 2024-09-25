@@ -2836,18 +2836,13 @@ app.get('/api/v1/professionalBookings/:professionalId/:selectedDate', Authentica
 })
 
 //Route to get all service by month and calucule total amount
-app.get('/api/v1/getAmountOfMonth/:barbeariaId', AuthenticateJWT, (req, res) =>{
+app.get('/api/v1/getAmountOfMonth/:barbeariaId/:monthAndYear', AuthenticateJWT, (req, res) =>{
   const barbeariaId = req.params.barbeariaId;
+  const CurrentMonthAndYear = req.params.monthAndYear;
 
   const months = [
     'Jan', 'Fev', 'Mar', 'Abr', 'Maio', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'
   ];
-
-  const today = new Date();
-  const month = months[today.getMonth()];
-  const year = today.getFullYear();
-
-  let CurrentMonthAndYear = `${month} de ${year}`;
   
   //Function to calcule total amount of current month
   function caluclateAmount (mesAtual){
