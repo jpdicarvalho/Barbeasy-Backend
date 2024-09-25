@@ -3276,6 +3276,9 @@ app.get('/api/v1/bookingsByMonth/:barbeariaId/:monthAndYear', AuthenticateJWT, (
 
           return res.status(200).json({bookings: result});
         }
+        if(result.length === 0){
+          return res.status(200).json({bookings: 0});
+        }
         
       });
 });
