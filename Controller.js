@@ -3159,7 +3159,7 @@ app.get('/api/v1/totalBookings/:barbeariaId/:year', AuthenticateJWT, (req, res) 
         if (err) {
             return res.status(500).send({ error: 'Error fetching data' });
         }
-        if(result.length > 0){
+        if(result.length >= 0){
           const monthNames = ['Jan', 'Fev', 'Mar', 'Abr', 'Maio', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
           const data = [];
 
@@ -3174,9 +3174,7 @@ app.get('/api/v1/totalBookings/:barbeariaId/:year', AuthenticateJWT, (req, res) 
           }
           return res.status(200).json({totalBookings: data});
         }
-        if(result.length === 0){
-          return res.status(200).json({totalBookings: 0});
-        }
+        
         
       });
 });
