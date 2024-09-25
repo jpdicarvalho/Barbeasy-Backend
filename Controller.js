@@ -2846,10 +2846,12 @@ app.get('/api/v1/getAmountOfMonth/:barbeariaId/:monthAndYear', AuthenticateJWT, 
   
     for(let i = 0; i < mesAtual.length; i++){
       Object.entries(mesAtual[i]).forEach(([key, value]) => {
+        if(key === 'service_price'){
           let valueService = value.replace(/[^0-9,]/g, '').replace(',', '.');
           // Convertendo a string resultante para número
           valueService = Number(valueService);
           totalAmount += valueService;
+        }
       });
     }
   
@@ -2880,9 +2882,8 @@ app.get('/api/v1/getAmountOfMonth/:barbeariaId/:monthAndYear', AuthenticateJWT, 
       return res.status(500).json({ Error: "Internal Server Error" });
     }
     if(resul.length > 0){
-      console.log(resul)
-      const totalAmount = caluclateAmount(resul[0].service_price)
-      return res.status(200).json({ totalAmount: resul });
+      const totalAmount = caluclateAmount(resul)
+      return res.status(200).json({ totalAmount: totalAmount, object: resul });
     }else{
       return res.status(200).json({ Message: "false"});
     }
