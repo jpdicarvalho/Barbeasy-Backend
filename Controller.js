@@ -2834,7 +2834,7 @@ app.get('/api/v1/professionalBookings/:professionalId/:selectedDate', Authentica
         }
       })
 })
-//======================================================================================================parei aqui: como puxar a comissão de cada profissional?
+
 //Route to get all service by month and calucule total amount
 app.get('/api/v1/getAmountOfMonth/:barbeariaId/:monthAndYear', AuthenticateJWT, (req, res) =>{
   const barbeariaId = req.params.barbeariaId;
@@ -3178,10 +3178,9 @@ app.get('/api/v1/amountBookings/:barbeariaId/:year', AuthenticateJWT, (req, res)
       });
 });
 
-app.get('/api/v1/bookingsByMonth/:barbeariaId/:month/:year', AuthenticateJWT, (req, res) => {
+app.get('/api/v1/bookingsByMonth/:barbeariaId/:monthAndYear', AuthenticateJWT, (req, res) => {
   const barbeariaId = req.params.barbeariaId;
-  const month = Number (req.params.month)
-  const year = Number(req.params.year);
+  const monthAndYear = req.params.monthAndYear;
 
       const sql = `SELECT
                       user.id AS user_id,
@@ -3206,11 +3205,10 @@ app.get('/api/v1/bookingsByMonth/:barbeariaId/:month/:year', AuthenticateJWT, (r
                   INNER JOIN servico ON servico.id = bookings.service_id
                   LEFT JOIN payments ON payments.id = bookings.payment_id
                   WHERE bookings.barbearia_id = ? 
-                        AND MONTH(bookings.booking_date_no_formated) = ?
-                        AND YEAR(bookings.booking_date_no_formated) = ?
+                        AND booking_date LIKE '%${monthAndYear}%'
                         AND (payments.status = 'approved' OR bookings.payment_id = 0)`;
 
-      db.query(sql, [barbeariaId, month, year], (err, result) => {
+      db.query(sql, [barbeariaId], (err, result) => {
         if (err) {
             return res.status(500).send({ error: 'Error fetching data' });
         }
