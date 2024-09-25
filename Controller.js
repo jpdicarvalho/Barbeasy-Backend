@@ -3174,6 +3174,9 @@ app.get('/api/v1/totalBookings/:barbeariaId/:year', AuthenticateJWT, (req, res) 
           }
           return res.status(200).json({totalBookings: data});
         }
+        if(result.length === 0){
+          return res.status(200).json({totalBookings: 0});
+        }
         
       });
 });
