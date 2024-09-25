@@ -2839,10 +2839,6 @@ app.get('/api/v1/professionalBookings/:professionalId/:selectedDate', Authentica
 app.get('/api/v1/getAmountOfMonth/:barbeariaId/:monthAndYear', AuthenticateJWT, (req, res) =>{
   const barbeariaId = req.params.barbeariaId;
   const CurrentMonthAndYear = req.params.monthAndYear;
-
-  const months = [
-    'Jan', 'Fev', 'Mar', 'Abr', 'Maio', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'
-  ];
   
   //Function to calcule total amount of current month
   function caluclateAmount (mesAtual){
@@ -2863,11 +2859,20 @@ app.get('/api/v1/getAmountOfMonth/:barbeariaId/:monthAndYear', AuthenticateJWT, 
     return totalAmount;
   }
 
-  const sql=`SELECT 
-                servico.preco AS service_price
-              FROM servico
-              INNER JOIN bookings ON bookings.barbearia_id = ? AND bookings.service_id = servico.id AND booking_date LIKE '%${CurrentMonthAndYear}%'
-              LEFT JOIN payments ON payments.id = bookings.payment_id AND (payments.status = 'approved' OR bookings.payment_id = 0)`;
+  const sql=`SELECT servico.preco AS service_price,
+                    servico.commission_fee AS commission_fee,
+                    professional.name AS name_professional
+                FROM 
+                    servico
+                INNER JOIN bookings 
+                    ON bookings.service_id = servico.id
+                INNER JOIN professional 
+                    ON professional.id = bookings.professional_id
+                LEFT JOIN payments
+                    ON payments.id = bookings.payment_id
+                    AND (payments.status = 'approved' OR bookings.payment_id = 0)
+                WHERE bookings.barbearia_id = ?
+                    AND booking_date LIKE '%${CurrentMonthAndYear}%'`;
 
   db.query(sql, [barbeariaId], (err, resul) =>{
     if(err){
@@ -2875,7 +2880,8 @@ app.get('/api/v1/getAmountOfMonth/:barbeariaId/:monthAndYear', AuthenticateJWT, 
       return res.status(500).json({ Error: "Internal Server Error" });
     }
     if(resul.length > 0){
-      const totalAmount = caluclateAmount(resul)
+      console.log(resul)
+      const totalAmount = caluclateAmount(resul[0].service_price)
       return res.status(200).json({ totalAmount });
     }else{
       return res.status(200).json({ Message: "false"});
