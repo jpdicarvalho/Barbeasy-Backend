@@ -3138,7 +3138,7 @@ app.get('/api/v1/bookingPoliceis/:barbeariaId', AuthenticateJWT, (req, res) =>{
   })
 })
 
-app.get('/api/v1/amountBookings/:barbeariaId/:year', AuthenticateJWT, (req, res) => {
+app.get('/api/v1/totalBookings/:barbeariaId/:year', AuthenticateJWT, (req, res) => {
   const barbeariaId = req.params.barbeariaId;
   const year = Number (req.params.year);
 
@@ -3172,7 +3172,7 @@ app.get('/api/v1/amountBookings/:barbeariaId/:year', AuthenticateJWT, (req, res)
               Agendamentos: matchingMonth ? matchingMonth.total_bookings : 0, // Se encontrar, use o valor, senão 0
             });
           }
-          return res.status(200).json({amountBookings: data});
+          return res.status(200).json({totalBookings: data});
         }
         
       });
