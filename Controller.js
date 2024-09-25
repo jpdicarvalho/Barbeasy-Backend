@@ -2834,14 +2834,14 @@ app.get('/api/v1/professionalBookings/:professionalId/:selectedDate', Authentica
         }
       })
 })
-
+//======================================================================================================parei aqui: como puxar a comissão de cada profissional?
 //Route to get all service by month and calucule total amount
 app.get('/api/v1/getAmountOfMonth/:barbeariaId/:monthAndYear', AuthenticateJWT, (req, res) =>{
   const barbeariaId = req.params.barbeariaId;
   const CurrentMonthAndYear = req.params.monthAndYear;
   
-  //Function to calcule total amount of current month
-  function caluclateAmount (mesAtual){
+  //Function to calcule total amount of Barbearia
+  function caluclateAmountBarbearia (mesAtual){
     let totalAmount = 0;
   
     for(let i = 0; i < mesAtual.length; i++){
@@ -2859,6 +2859,26 @@ app.get('/api/v1/getAmountOfMonth/:barbeariaId/:monthAndYear', AuthenticateJWT, 
     totalAmount = totalAmount.toFixed(2).replace('.', ',');
   
     return totalAmount;
+  }
+  //Function to calculete the comission fee of professional
+  function calculateCommissionByProfessional(mesAtual) {
+    const commissions = {}; // Objeto para armazenar as comissões por profissional
+  
+    // Iterar sobre o array de forma otimizada
+    for (const { name_professional, commission_fee } of mesAtual) {
+      // Limpar e converter o valor de commission_fee uma única vez
+      const commissionFee = parseFloat(commission_fee.replace(/[^0-9,]/g, '').replace(',', '.'));
+  
+      // Somar ao total de comissões para o profissional
+      commissions[name_professional] = (commissions[name_professional] ?? 0) + commissionFee;
+    }
+  
+    // Formatar os valores finais de comissão para duas casas decimais e substituir ponto por vírgula
+    for (const professional in commissions) {
+      commissions[professional] = commissions[professional].toFixed(2).replace('.', ',');
+    }
+  
+    return commissions;
   }
 
   const sql=`SELECT servico.preco AS service_price,
@@ -2882,8 +2902,9 @@ app.get('/api/v1/getAmountOfMonth/:barbeariaId/:monthAndYear', AuthenticateJWT, 
       return res.status(500).json({ Error: "Internal Server Error" });
     }
     if(resul.length > 0){
-      const totalAmount = caluclateAmount(resul)
-      return res.status(200).json({ totalAmount: totalAmount, object: resul });
+      const totalAmountBarbearia = caluclateAmountBarbearia(resul)
+      const comissionFee = calculateCommissionByProfessional(resul)
+      return res.status(200).json({ totalAmountBarbearia: totalAmountBarbearia, comissionByProfessional: comissionFee });
     }else{
       return res.status(200).json({ Message: "false"});
     }
