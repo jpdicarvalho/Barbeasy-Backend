@@ -2882,7 +2882,7 @@ app.get('/api/v1/getAmountOfMonth/:barbeariaId/:monthAndYear', AuthenticateJWT, 
     if(resul.length > 0){
       console.log(resul)
       const totalAmount = caluclateAmount(resul[0].service_price)
-      return res.status(200).json({ totalAmount });
+      return res.status(200).json({ totalAmount: resul });
     }else{
       return res.status(200).json({ Message: "false"});
     }
