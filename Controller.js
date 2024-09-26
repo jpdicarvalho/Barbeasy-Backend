@@ -3160,7 +3160,7 @@ app.get('/api/v1/totalBookings/:barbeariaId/:year', AuthenticateJWT, (req, res) 
             return res.status(500).send({ error: 'Error fetching data' });
         }
         if(result.length >= 0){
-          const monthNames = ['Jan', 'Fev', 'Mar', 'Abr', 'Maio', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
+          const monthNames = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junnho', 'Jullho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
           const data = [];
 
           // Preenche os meses vazios (caso existam) com valores padrão de agendamentos
@@ -3305,7 +3305,7 @@ app.get('/api/v1/MostScheduledServices/:barbeariaId/:monthAndYear', Authenticate
           return res.status(500).send({ error: 'Error to get most sheduled services' });
         }
         if(result.length >= 0){
-          return res.status(200).json({mostScheduledServices: result});
+          return res.status(200).json({mostScheduledServices: result.length});
         }
       });
 });
