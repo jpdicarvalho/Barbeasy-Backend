@@ -3305,7 +3305,7 @@ app.get('/api/v1/MostScheduledServices/:barbeariaId/:monthAndYear', Authenticate
           return res.status(500).send({ error: 'Error to get most sheduled services' });
         }
         if(result.length >= 0){
-          return res.status(200).json({mostScheduledServices: result.length});
+          return res.status(200).json({mostScheduledServices: result});
         }
       });
 });
