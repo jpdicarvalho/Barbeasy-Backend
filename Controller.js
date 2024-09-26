@@ -3284,6 +3284,32 @@ app.get('/api/v1/bookingsByMonth/:barbeariaId/:monthAndYear', AuthenticateJWT, (
       });
 });
 
+app.get('/api/v1/MostScheduledServices/:barbeariaId/:monthAndYear', AuthenticateJWT, (req, res) => {
+  const barbeariaId = req.params.barbeariaId;
+  const monthAndYear = req.params.monthAndYear;
+
+      const sql = `SELECT
+                          servico.name AS name_service, COUNT(*) AS quantidade
+                    FROM servico
+                    INNER JOIN
+                          bookings
+                          ON bookings.service_id = servico.id
+                    WHERE bookings.barbearia_id = ?
+                          AND bookings.booking_date LIKE '%${monthAndYear}%'
+                    GROUP BY servico.name
+                    ORDER BY quantidade DESC
+                    LIMIT 5`;
+
+      db.query(sql, [barbeariaId], (err, result) => {
+        if (err) {
+          return res.status(500).send({ error: 'Error to get most sheduled services' });
+        }
+        if(result.length >= 0){
+          return res.status(200).json({mostScheduledServices: result});
+        }
+      });
+});
+
 // Inicia o servidor na porta especificada
 app.listen(port, () => {
     console.log("Servidor rodando");
