@@ -1323,7 +1323,7 @@ app.put('/api/v1/updateBannersImages', AuthenticateJWT, upload.array('images'), 
 
     //check if the image array has up to 5 files
     if(imagesBanners.length > 5){
-        console.error('Error to update image')
+        console.error('Error to update image: is to long')
         return res.status(400).json({ error: 'size are not allowed'});
     }
 
@@ -1336,7 +1336,7 @@ app.put('/api/v1/updateBannersImages', AuthenticateJWT, upload.array('images'), 
 
       //verify if pre-fix name is valided
       if(nameImgaSubstring != formatNameBanner){
-        console.error('Error to update image')
+        console.error('Error to update image: names is different')
         return res.status(400).json({ error: 'name are not allowed'});
       }
 
@@ -1345,7 +1345,7 @@ app.put('/api/v1/updateBannersImages', AuthenticateJWT, upload.array('images'), 
 
       // Verifica se a extensão é permitida
       if (!allowedExtensions.includes(fileExtension)) {
-        console.error('Error to update image')
+        console.error('Error to update image: extensio is different')
         return res.status(400).json({ error: 'extensions are not allowed'});
       }
     }
