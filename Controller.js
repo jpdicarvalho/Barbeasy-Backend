@@ -815,7 +815,7 @@ app.get('/api/v1/barbeariaCredentials/:barbeariaId', AuthenticateJWT, (req, res)
 })
 
 //Route to Create payment
-app.post('/api/v1/payment', AuthenticateJWT, (req, res) =>{
+app.post('/api/v1/createPayment', AuthenticateJWT, (req, res) =>{
 const accessTokenBarbearia = req.body.accessTokenBarbearia;
 
 const { transaction_amount, description, paymentMethodId, email, identificationType, number } = req.body;//To create payment
@@ -879,8 +879,8 @@ const offsetMinutes = pad(Math.abs(timezoneOffset) % 60);
     const paymentStatus = response.status;
     const date_created = response.date_created;
 
-    const sqlInsert = 'INSERT INTO payments (payment_id,	user_id,	barbearia_id,	professional_id,	service_id,	status,	date_created) VALUES (?, ?, ?, ?, ?, ?, ?)';
-    db.query(sqlInsert, [paymentId, userId, barbeariaId, professionalId, serviceId, paymentStatus, date_created], (error, result) =>{
+    const sqlInsert = 'INSERT INTO payments (payment_id,	user_id,	barbearia_id,	professional_id, service_id, transaction_amount, status,	date_created) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
+    db.query(sqlInsert, [paymentId, userId, barbeariaId, professionalId, serviceId, transaction_amount, paymentStatus, date_created], (error, result) =>{
       if(error){
         console.error('Error on insert a new payment:', error);
         return res.status(500).json({ error: 'on insert a new payment - Internal Server Error' });
