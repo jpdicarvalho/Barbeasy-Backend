@@ -2666,7 +2666,7 @@ app.get('/api/v1/bookingsTimes/:barbeariaId/:professionalId/:selectedDate', (req
               FROM bookings
               INNER JOIN payments 
                   ON payments.id = bookings.payment_id 
-                  AND payments.status != 'cancelled'
+                  AND (payments.status = 'approved' OR payments.status = 'pending')
               WHERE bookings.barbearia_id = ?
                 AND bookings.professional_id = ?
                 AND bookings.booking_date = ?
