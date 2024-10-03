@@ -674,14 +674,15 @@ app.get('/api/v1/bookingsOfUser/:userId', AuthenticateJWT, (req, res) =>{
                     professional.cell_phone AS professionalPhone,
                     professional.user_image AS userImageProfessional,
                     servico.name AS serviceName,
-                    servico.preco AS servicePrice
+                    servico.preco AS servicePrice,
+                    payments.transaction_amount AS transaction_amount
               FROM bookings
               INNER JOIN barbearia ON barbearia.id = bookings.barbearia_id
               INNER JOIN professional ON professional.id = bookings.professional_id
               INNER JOIN servico ON servico.id = bookings.service_id
               LEFT JOIN payments ON payments.id = bookings.payment_id
               WHERE bookings.user_id = ?
-                AND (payments.status = 'approved' OR bookings.payment_id = 0);`;
+                AND (payments.status = 'approved' OR bookings.payment_id = 0)`;
 
   db.query(sql, [userId], (err, result) =>{
     if(err){
