@@ -2663,7 +2663,7 @@ app.get('/api/v1/bookingsTimes/:barbeariaId/:professionalId/:selectedDate', (req
 
   const sql = `SELECT bookings.booking_time AS timesLocked
               FROM bookings
-              INNER JOIN payments 
+              LEFT JOIN payments 
                   ON payments.id = bookings.payment_id 
               WHERE bookings.barbearia_id = ?
                 AND bookings.professional_id = ?
