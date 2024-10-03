@@ -2668,7 +2668,7 @@ app.get('/api/v1/bookingsTimes/:barbeariaId/:professionalId/:selectedDate', (req
               WHERE bookings.barbearia_id = ?
                 AND bookings.professional_id = ?
                 AND bookings.booking_date = ?
-                AND (payments.status = 'approved' OR payments.status = 'pending')
+                AND (payments.status = 'approved' OR payments.status = 'pending' OR bookings.payment_id = 0)
 
               UNION
 
