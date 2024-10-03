@@ -2661,8 +2661,7 @@ app.get('/api/v1/bookingsTimes/:barbeariaId/:professionalId/:selectedDate', (req
   const professionalId = req.params.professionalId;
   const selectedDate = req.params.selectedDate;
 
-  const sql = `
-              SELECT bookings.booking_time AS timesLocked
+  const sql = `SELECT bookings.booking_time AS timesLocked
               FROM bookings
               INNER JOIN payments 
                   ON payments.id = bookings.payment_id 
@@ -2677,17 +2676,9 @@ app.get('/api/v1/bookingsTimes/:barbeariaId/:professionalId/:selectedDate', (req
               FROM days_off
               WHERE days_off.barbearia_id = ?
                 AND days_off.professional_id = ?
-                AND days_off.day = ?
-                
-              UNION
+                AND days_off.day = ?`;
 
-              SELECT bookings.booking_time
-              FROM bookings
-              WHERE bookings.barbearia_id = ?
-                AND bookings.professional_id = ?
-                AND booking_date = ?`;
-
-  db.query(sql, [barbeariaId, professionalId, selectedDate, barbeariaId, professionalId, selectedDate, barbeariaId, professionalId, selectedDate], (err, result) => {
+  db.query(sql, [barbeariaId, professionalId, selectedDate, barbeariaId, professionalId, selectedDate], (err, result) => {
     if (err) {
       console.error('Erro ao buscar agendamentos da barbearia:', err);
       return res.status(500).json({ Error: 'Internal Server Error.' }); 
