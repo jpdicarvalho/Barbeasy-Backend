@@ -2576,26 +2576,40 @@ app.post('/api/v1/createBookingWithPayment/', AuthenticateJWT, (req, res) => {
   const selectedDayFormated = req.body.selectedDayFormated;
 
   const token = values.join('-');
-
   
-  const sqlSelect="SELECT user_id FROM bookings WHERE user_id = ? AND booking_date = ?";
-  db.query(sqlSelect, [values[0], values[5]], (err, result) =>{
+  function createBooking () {
+    const sqlInsert = "INSERT INTO bookings (user_id, barbearia_id, professional_id, service_id, payment_id, booking_date, booking_time, date_created, token, booking_date_no_formated) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        db.query(sqlInsert, [...values, formatDate, token, selectedDayFormated], (erro, results) => {
+          if(erro){
+            console.error('Erro ao realizar agendamento:', erro);
+            return res.status(500).json({ Error: ' Internal Server Error' });
+          }
+          if(results){
+            return res.status(200).json({ Success: "Success"});
+          }
+        })
+  }
+  
+  const sqlSelect="SELECT booking_time FROM bookings WHERE booking_date = ?";
+  db.query(sqlSelect, [values[5]], (err, result) =>{
     if(err){
       console.error('Erro ao verificar agendamentos do usuário:', err);
       return res.status(500).json({ Error: 'Erro ao verificar agendamentos do usuário.' });
     }
-    if(result.length >= 2){
-      return res.status(401).json({ Unauthorized: 'Número de agendamentos excedido' });
-    }else{
-      const sqlInsert = "INSERT INTO bookings (user_id, barbearia_id, professional_id, service_id, payment_id, booking_date, booking_time, date_created, token, booking_date_no_formated) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-      db.query(sqlInsert, [...values, formatDate, token, selectedDayFormated], (erro, results) => {
-        if(erro){
-          console.error('Erro ao realizar agendamento:', erro);
-          return res.status(500).json({ Error: ' Internal Server Error' });
-        }if(results){
-          return res.status(200).json({ Success: "Success"});
+    if(result.length > 0){
+        const timeSelected = values[6].split(',');//Novos horários selecionados pelo usuário
+        const timesFound = result[0].booking_time.split(',');//horários já agendados pleo usuário
+        const timesMach = timeSelected.filter(item => timesFound.includes(item));//Verificar se há compatibilidade entre os horários
+        
+        if(timesMach.length > 0){
+          return res.status(401).json({ Unauthorized: 'timesMach', timesMach: timesMach });
         }
-      })
+
+      return createBooking()
+    }
+    
+    if(result.length === 0){
+      return createBooking()
     }
   })
 });
