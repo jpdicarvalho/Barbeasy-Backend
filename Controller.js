@@ -3207,7 +3207,8 @@ app.get('/api/v1/bookingsByMonth/:barbeariaId/:monthAndYear', AuthenticateJWT, (
                       servico.preco AS service_price,
                       servico.duracao AS service_duration,
                       servico.commission_fee AS service_commission_fee,
-                      payments.status AS paymentStatus
+                      payments.status AS paymentStatus,
+                      payments.transaction_amount	AS transaction_amount
                   FROM bookings
                   INNER JOIN user ON user.id = bookings.user_id
                   INNER JOIN professional ON professional.id = bookings.professional_id
