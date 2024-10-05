@@ -29,7 +29,7 @@ const AuthenticateJWT = (req, res, next) => {
         });
       } else {
         req.user = user;
-        next();
+        next(); 
       }
     });
   } else {

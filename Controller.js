@@ -20,6 +20,8 @@ import UAParser from 'ua-parser-js';
 import rateLimit from 'express-rate-limit';
 
 import axios from 'axios';
+
+import nodemailer from 'nodemailer';
 //import { serveSwaggerUI, setupSwaggerUI } from './swaggerConfig.js';
 
 import 'dotenv/config'
@@ -74,9 +76,10 @@ const logger = winston.createLogger({// Configuração do Winston para registrar
 //===================== MIDDLEWARE TO RATE LIMIT =====================
 const limiter = rateLimit({// Configurar limitação de taxa
   windowMs: 3 * 60 * 1000, // 15 minutos
-  max: 100000, // Limite de 100 requisições por IP
+  max: 1000, // Limite de 100 requisições por IP
   message: 'Error in request'
 });
+//===================================================================
 
 const port = process.env.PORT || 3000;
 
@@ -122,7 +125,33 @@ const isEmailValided = (input) => /^[a-z0-9.@]+$/i.test(input);
 const isPasswordValided = (input) => /^[a-zA-Z0-9@.#%]+$/.test(input);
 const isSignUpBarbeariaValid = (input) => /^[a-zA-Z\sçéúíóáõãèòìàêôâ.!?+]*$/.test(input);
 
+//====================== Settings to send emails ========================
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+      user: 'joaopedroroyale.jp@gmail.com',
+      pass: '193746Jp'
+  }
+});
 
+const sendVerificationEmail = (email, token) => {
+  const mailOptions = {
+      from: 'joaopedroroyale.jp@gmail.com',
+      to: email,
+      subject: 'Verificação de E-mail',
+      text: `Seu código de verificação é: ${token}`
+  };
+
+  transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+          console.log(error);
+      } else {
+          console.log('E-mail enviado: ' + info.response);
+      }
+  });
+};
+
+//=======================================================================
 /* Inicializando o Swagger
 app.use('/api-docs', serveSwaggerUI, setupSwaggerUI);*/
 
@@ -146,6 +175,13 @@ const s3 = new S3Client({
 
 //=-=-=-=-= ROTAS USER-CLIENT-BARBEARIA =-=-=-=-=
 
+//Route to verify email of new user client
+app.post("/api/v1/VerifyEmail", (req, res) =>{
+  const { email, verificationCode } = req.body;
+
+  console.log(email, verificationCode)
+})
+
 // Cadastro de usuário com senha criptografada
 app.post("/api/v1/SignUp", (req, res) => {
   const { name, email, senha, celular } = req.body;
@@ -154,6 +190,7 @@ app.post("/api/v1/SignUp", (req, res) => {
   if (!isSignUpBarbeariaValid(name) && name.length > 30) {
     return res.status(400).json({ error: 'Error in values' });
   }
+
   // Verifica se email é válido
   const isValidEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   if(isValidEmail){
@@ -161,13 +198,17 @@ app.post("/api/v1/SignUp", (req, res) => {
       return res.status(400).json({ error: 'Error in values' });
     }
   }
+
   // Verifica se senha contém apenas letras maiúsculas e minúsculas e alguns caracteres especiais
   if (!isPasswordValided(senha) && senha.length <= 8) {
     return res.status(400).json({ error: 'Error in values' });
   }
+
+  //Verifica se o número de celular é minimamente válido
   if (!isOnlyNumberValided(celular) && celular.length > 11 || celular.length < 10 ) {
     return res.status(400).json({ error: 'Error in values' });
   }
+
   // Verificação se o e-mail ou o número de celular já estão cadastrado
   db.query('SELECT id, name, email, celular, user_image FROM user WHERE email = ? OR celular = ?', [email, celular], (error, results) => {
     if (error) {
@@ -184,13 +225,21 @@ app.post("/api/v1/SignUp", (req, res) => {
         return res.status(400).send('Número de celular já cadastrado. Por favor, escolha outro número.');
       }
     }
-    
+
+    // Gere um token de verificação com validade (15 minutos neste exemplo)
+    const token = jwt.sign({ email: email }, process.env.TOKEN_SECRET_VERIFY_EMAIL, { expiresIn: '15m' });
+
+    // Enviar o e-mail de verificação
+    sendVerificationEmail(email, token);
+
+    // user object as status false
     const user = {
       name,
       email,
       senha,
       celular,
-      user_image: 'default.jpg'
+      user_image: 'default.jpg',
+      isVerified: 'false'
     };
 
     db.query('INSERT INTO user SET ?', user, (error, results) => {
