@@ -128,14 +128,22 @@ const isSignUpBarbeariaValid = (input) => /^[a-zA-Z\sçéúíóáõãèòìàê�
 //====================== Settings to send emails ========================
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-const sendEmail = (email, token) =>{
-  const settings = resend.emails.send({
-    from: 'Acme barbeasy@barbeasy.com.br',
-    to: email,
-    subject: 'Hello World!',
-    html: '<strong>It works!</strong>',
-  });
-}
+const sendEmail = async (email, token) => {
+  try {
+    const response = await resend.emails.send({
+      from: 'Acme <barbeasy@barbeasy.com.br>', // Ajuste na formatação do e-mail
+      to: email,
+      subject: 'Verificação de E-mail',
+      html: `<strong>Seu token de verificação é: ${token}</strong>`, // Incluindo o token no e-mail
+    });
+
+    console.log('E-mail enviado com sucesso:', response);
+    return response; // Retorne a resposta se precisar manipular o resultado
+  } catch (error) {
+    console.error('Erro ao enviar o e-mail:', error);
+    throw error; // Repropaga o erro para ser tratado externamente, se necessário
+  }
+};
 //=======================================================================
 /* Inicializando o Swagger
 app.use('/api-docs', serveSwaggerUI, setupSwaggerUI);*/
@@ -212,10 +220,10 @@ app.post("/api/v1/SignUp", (req, res) => {
     }
 
     // Gere um token de verificação com validade (15 minutos neste exemplo)
-    //const token = jwt.sign({ email: email }, process.env.TOKEN_SECRET_VERIFY_EMAIL, { expiresIn: '15m' });
+    const token = jwt.sign({ email: email }, process.env.TOKEN_SECRET_VERIFY_EMAIL, { expiresIn: '15m' });
 
     // Enviar o e-mail de verificação
-    sendEmail(email);
+    sendEmail(email, token);
 
     // user object as status false
     const user = {
