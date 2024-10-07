@@ -21,7 +21,7 @@ import rateLimit from 'express-rate-limit';
 
 import axios from 'axios';
 
-import nodemailer from 'nodemailer';
+import { Resend } from 'resend';
 //import { serveSwaggerUI, setupSwaggerUI } from './swaggerConfig.js';
 
 import 'dotenv/config'
@@ -126,31 +126,16 @@ const isPasswordValided = (input) => /^[a-zA-Z0-9@.#%]+$/.test(input);
 const isSignUpBarbeariaValid = (input) => /^[a-zA-Z\sçéúíóáõãèòìàêôâ.!?+]*$/.test(input);
 
 //====================== Settings to send emails ========================
-const transporter = nodemailer.createTransport({
-  service: 'gmail',
-  auth: {
-      user: 'joaopedroroyale.jp@gmail.com',
-      pass: '193746Jp'
-  }
-});
+const resend = new Resend(process.env.RESEND_API_KEY);
 
-const sendVerificationEmail = (email, token) => {
-  const mailOptions = {
-      from: 'joaopedroroyale.jp@gmail.com',
-      to: email,
-      subject: 'Verificação de E-mail',
-      text: `Seu código de verificação é: ${token}`
-  };
-
-  transporter.sendMail(mailOptions, (error, info) => {
-      if (error) {
-          console.log(error);
-      } else {
-          console.log('E-mail enviado: ' + info.response);
-      }
+const sendEmail = (email, token) =>{
+  const settings = resend.emails.send({
+    from: 'Acme barbeasy@barbeasy.com.br',
+    to: email,
+    subject: 'Hello World!',
+    html: '<strong>It works!</strong>',
   });
-};
-
+}
 //=======================================================================
 /* Inicializando o Swagger
 app.use('/api-docs', serveSwaggerUI, setupSwaggerUI);*/
@@ -227,10 +212,10 @@ app.post("/api/v1/SignUp", (req, res) => {
     }
 
     // Gere um token de verificação com validade (15 minutos neste exemplo)
-    const token = jwt.sign({ email: email }, process.env.TOKEN_SECRET_VERIFY_EMAIL, { expiresIn: '15m' });
+    //const token = jwt.sign({ email: email }, process.env.TOKEN_SECRET_VERIFY_EMAIL, { expiresIn: '15m' });
 
     // Enviar o e-mail de verificação
-    sendVerificationEmail(email, token);
+    sendEmail(email);
 
     // user object as status false
     const user = {
