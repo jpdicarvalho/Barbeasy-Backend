@@ -126,17 +126,23 @@ const isPasswordValided = (input) => /^[a-zA-Z0-9@.#%]+$/.test(input);
 const isSignUpBarbeariaValid = (input) => /^[a-zA-Z\sçéúíóáõãèòìàêôâ.!?+]*$/.test(input);
 
 //====================== Settings to send emails ========================
+// Função para gerar um código de 8 dígitos numéricos
+const generateVerificationCode = () => {
+  return Math.floor(10000 + Math.random() * 90000); // Gera um número aleatório de 8 dígitos
+};
+
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-const sendEmail = async (email, token) => {
+const sendEmail = async (email, name, verificationCode) => {
   try {
     const response = await resend.emails.send({
-      from: 'Acme <barbeasy@barbeasy.com.br>', // Ajuste na formatação do e-mail
+      from: 'Barbeasy <barbeasy@barbeasy.com.br>', // Ajuste na formatação do e-mail
       to: email,
-      subject: 'Verificação de E-mail',
-      html: `<strong>Seu token de verificação é: ${token}</strong>`, // Incluindo o token no e-mail
+      subject: 'Verificação de E-mail para Ativação de Conta',
+      html: `<h3>Olá, ${name}!</h3>
+             <p>Seu código de verificação é: <strong>${verificationCode}</strong></p>
+             <p>Este código é válido por 15 minutos.</p>`,
     });
-
     console.log('E-mail enviado com sucesso:', response);
     return response; // Retorne a resposta se precisar manipular o resultado
   } catch (error) {
@@ -219,11 +225,11 @@ app.post("/api/v1/SignUp", (req, res) => {
       }
     }
 
-    // Gere um token de verificação com validade (15 minutos neste exemplo)
-    const token = jwt.sign({ email: email }, process.env.TOKEN_SECRET_VERIFY_EMAIL, { expiresIn: '15m' });
+    // Gere um código de verificação de 8 dígitos numéricos
+    const verificationCode = generateVerificationCode();
 
     // Enviar o e-mail de verificação
-    sendEmail(email, token);
+    sendEmail(email, name, verificationCode);
 
     // user object as status false
     const user = {
@@ -232,7 +238,7 @@ app.post("/api/v1/SignUp", (req, res) => {
       senha,
       celular,
       user_image: 'default.jpg',
-      isVerified: 'false'
+      isVerified: verificationCode
     };
 
     db.query('INSERT INTO user SET ?', user, (error, results) => {
