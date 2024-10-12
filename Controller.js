@@ -162,7 +162,7 @@ const sendSMS = (codeVerification, userPhoneNumber) => {
     .create({
       body: codeVerification, // Mensagem que será enviada
       from: process.env.TWILIO_PHONE_NUMBER, // Seu número Twilio
-      to: userPhoneNumber, // Número do destinatário
+      to: `+55${userPhoneNumber}`, // Número do destinatário
     })
     .then((message) => {
       console.log(message)
