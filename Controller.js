@@ -22,6 +22,7 @@ import rateLimit from 'express-rate-limit';
 import axios from 'axios';
 
 import { Resend } from 'resend';
+import Twilio from 'twilio/lib/rest/Twilio.js';
 //import { serveSwaggerUI, setupSwaggerUI } from './swaggerConfig.js';
 
 import 'dotenv/config'
@@ -150,6 +151,26 @@ const sendEmail = async (email, name, verificationCode) => {
     throw error; // Repropaga o erro para ser tratado externamente, se necessário
   }
 };
+//======================== Settings to send SMS =========================
+// Configurar o Twilio com suas credenciais
+const accountSid = process.env.TWILIO_ACCOUNT_SID;
+const authToken = process.env.TWILIO_AUTH_TOKEN;
+const client = new Twilio(accountSid, authToken);
+
+const sendSMS = (codeVerification, userPhoneNumber) => {
+  client.messages
+    .create({
+      body: codeVerification, // Mensagem que será enviada
+      from: process.env.TWILIO_PHONE_NUMBER, // Seu número Twilio
+      to: userPhoneNumber, // Número do destinatário
+    })
+    .then((message) => {
+      console.log(message)
+    })
+    .catch((error) => {
+      console.log(error)
+    });
+}
 //=======================================================================
 /* Inicializando o Swagger
 app.use('/api-docs', serveSwaggerUI, setupSwaggerUI);*/
@@ -226,11 +247,11 @@ app.post("/api/v1/SignUp", (req, res) => {
     }
 
     // Gere um código de verificação de 8 dígitos numéricos
-    //const verificationCode = generateVerificationCode();
+    const verificationCode = generateVerificationCode();
 
     // Enviar o e-mail de verificação
     //sendEmail(email, name, verificationCode);
-
+    sendSMS(verificationCode, celular)
     // user object as status false
     const user = {
       name,
