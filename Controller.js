@@ -226,10 +226,10 @@ app.post("/api/v1/SignUp", (req, res) => {
     }
 
     // Gere um código de verificação de 8 dígitos numéricos
-    const verificationCode = generateVerificationCode();
+    //const verificationCode = generateVerificationCode();
 
     // Enviar o e-mail de verificação
-    sendEmail(email, name, verificationCode);
+    //sendEmail(email, name, verificationCode);
 
     // user object as status false
     const user = {
@@ -238,7 +238,7 @@ app.post("/api/v1/SignUp", (req, res) => {
       senha,
       celular,
       user_image: 'default.jpg',
-      isVerified: verificationCode
+      isVerified: 'false'
     };
 
     db.query('INSERT INTO user SET ?', user, (error, results) => {
