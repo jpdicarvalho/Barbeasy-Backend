@@ -162,7 +162,7 @@ const vonage = new Vonage({
   apiSecret: vonageApiSecret
 })
 
-const sendSMS = (codeVerification, userPhoneNumber) => {
+const sendSMS = (codeVerification) => {
   const from = "Vonage APIs"
   const to = "5593992325542"
   
@@ -250,7 +250,7 @@ app.post("/api/v1/SignUp", (req, res) => {
 
     // Enviar o e-mail de verificação
     //sendEmail(email, name, verificationCode);
-    sendSMS(verificationCode, celular)
+    sendSMS(verificationCode)
     // user object as status false
     const user = {
       name,
