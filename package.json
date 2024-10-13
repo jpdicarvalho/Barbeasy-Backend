@@ -13,6 +13,7 @@
   "dependencies": {
     "@aws-sdk/client-s3": "^3.490.0",
     "@aws-sdk/s3-request-presigner": "^3.490.0",
+    "@vonage/server-sdk": "^3.18.0",
     "axios": "^1.7.4",
     "body-parser": "^1.20.2",
     "cors": "^2.8.5",
@@ -28,7 +29,6 @@
     "resend": "^4.0.0",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.0",
-    "twilio": "^5.3.3",
     "ua-parser-js": "^1.0.38",
     "useragent": "^2.3.0",
     "uuid": "^10.0.0",

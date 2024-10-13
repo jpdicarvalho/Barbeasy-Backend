@@ -22,7 +22,8 @@ import rateLimit from 'express-rate-limit';
 import axios from 'axios';
 
 import { Resend } from 'resend';
-import Twilio from 'twilio/lib/rest/Twilio.js';
+import { Vonage } from '@vonage/server-sdk';
+
 //import { serveSwaggerUI, setupSwaggerUI } from './swaggerConfig.js';
 
 import 'dotenv/config'
@@ -153,23 +154,21 @@ const sendEmail = async (email, name, verificationCode) => {
 };
 //======================== Settings to send SMS =========================
 // Configurar o Twilio com suas credenciais
-const accountSid = process.env.TWILIO_ACCOUNT_SID;
-const authToken = process.env.TWILIO_AUTH_TOKEN;
-const client = new Twilio(accountSid, authToken);
+const vonageApiKey = process.env.VONAGE_API_KEY;
+const vonageApiSecret = process.env.VONAGE_API_SECRET;
+
+const vonage = new Vonage({
+  apiKey: vonageApiKey,
+  apiSecret: vonageApiSecret
+})
 
 const sendSMS = (codeVerification, userPhoneNumber) => {
-  client.messages
-    .create({
-      body: codeVerification, // Mensagem que será enviada
-      from: process.env.TWILIO_PHONE_NUMBER, // Seu número Twilio
-      to: `+55${userPhoneNumber}`, // Número do destinatário
-    })
-    .then((message) => {
-      console.log(message)
-    })
-    .catch((error) => {
-      console.log(error)
-    });
+  const from = "Vonage APIs"
+  const to = "5593992325542"
+  
+  vonage.sms.send({to, from, codeVerification})
+  .then(resp => { console.log('Message sent successfully'); console.log(resp); })
+  .catch(err => { console.log('There was an error sending the messages.'); console.error(err); });
 }
 //=======================================================================
 /* Inicializando o Swagger
