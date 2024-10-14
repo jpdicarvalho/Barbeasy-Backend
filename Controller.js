@@ -1399,7 +1399,7 @@ app.put('/api/v1/updateBannersImages', AuthenticateJWT, upload.array('images'), 
     for (let i = 0; i < imagesBanners.length; i++) {
       const file = imagesBanners[i].originalname;
       
-      const nameImgaSubstring = file.substring(0, 33)
+      const nameImgaSubstring = file.substring(0, 34)
       const formatNameBanner = `barbeariaId_${barbeariaId < 100 ? `0${barbeariaId}`:barbeariaId}_banner_${i+1}_${currentDateTime.getFullYear()}${(currentDateTime.getMonth() + 1).toString().padStart(2, '0')}${currentDateTime.getDate().toString().padStart(2, '0')}_`;
       console.log(nameImgaSubstring)
       console.log(formatNameBanner)
