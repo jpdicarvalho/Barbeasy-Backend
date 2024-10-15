@@ -1107,7 +1107,7 @@ app.post("/api/v1/SignUpBarbearia", (req, res) => {
       cidade: city,
       amountVisibility: 'visible'
     };
-console.log(barbearia)
+
     db.query('INSERT INTO barbearia SET ?', barbearia, (error, results) => {
       if (error) {
         console.error(error);
