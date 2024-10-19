@@ -2186,54 +2186,6 @@ app.put('/api/v1/clearTimes/:barbeariaId/:professionalId', AuthenticateJWT, (req
   })
 });
 
-//Rota para cadastrar um novo serviço
-app.post('/api/v1/addService/:barbeariaId/:professionalId', AuthenticateJWT, (req, res) => {
-  const barbearia_id = req.params.barbeariaId;
-  const professional_id = req.params.professionalId;
-
-  const name = req.body.newNameService; 
-  const preco = req.body.newPriceService;
-  const commission_fee = req.body.newCommissionFee;
-  const duracao = req.body.newDuration;
-
-  // Verifica se number contém apenas números
-  if (!isSignUpBarbeariaValid(name) && name.length > 150) {
-    return res.status(400).json({ error: 'Error in values' });
-  }
-  // Verifica se number contém apenas números
-  if (!isOnlyNumberValided(preco) && preco.length > 10) {
-    return res.status(400).json({ error: 'Error in values' });
-  }
-  // Verifica se number contém apenas números
-  if (!isOnlyNumberValided(commission_fee) && commission_fee.length > 10) {
-    return res.status(400).json({ error: 'Error in values' });
-  }
-  // Verifica se a str de duração do serviço contém letras e números apenaas
-  if (!isEmailValided(duracao) && duracao.length > 5) {
-    return res.status(400).json({ error: 'Error in values' });
-  }
-
-  const service = {
-    name,
-    preco,
-    duracao,
-    commission_fee,
-    barbearia_id,
-    professional_id
-  };
-
-  db.query('INSERT INTO servico SET ?', service, (err, result) =>{
-    if(err){
-      console.error("Erro ao cadastrar o serviço da barbearia", err);
-      return res.status(500).json({ Error: "Internal Server Error" });
-    }else{
-      if(result){
-        return res.status(201).json({ Success: "Success" });
-      }
-    }
-  })
-
-})
 
 //Rota obter os serviços cadastrados
 app.get('/api/v1/getService/:barbeariaId/:professionalId', AuthenticateJWT, (req, res) =>{
@@ -2871,45 +2823,6 @@ app.get('/api/v1/bookings/:barbeariaId/:selectedDate', AuthenticateJWT, (req, re
       })
 })
 
-//Route to get bookings of professional
-app.get('/api/v1/professionalBookings/:professionalId/:selectedDate', AuthenticateJWT, (req, res) =>{
-  const professionalId = req.params.professionalId;
-  const selectedDate = req.params.selectedDate;
-
-  const sql=`SELECT bookings.id AS booking_id,
-                    bookings.booking_time AS booking_time,
-                    bookings.date_created AS date_created,
-                    user.name AS user_name,
-                    user.celular AS user_phone,
-                    user.user_image AS user_image,
-                    barbearia.id AS barbearia_id,
-                    barbearia.name AS nameBarbearia,
-                    servico.id AS service_id,
-                    servico.name AS service_name,
-                    servico.preco AS service_price,
-                    servico.duracao AS service_duration,
-                    servico.commission_fee AS service_commission_fee,
-                    payments.status AS paymentStatus
-      FROM bookings
-      INNER JOIN user ON user.id = bookings.user_id
-      INNER JOIN barbearia ON barbearia.id = bookings.barbearia_id
-      INNER JOIN servico ON servico.id = bookings.service_id
-      INNER JOIN payments ON payments.id = bookings.payment_id AND payments.status = 'approved'
-      WHERE bookings.professional_id = ? AND bookings.booking_date = ?`;
-
-      db.query(sql, [professionalId, selectedDate], (err, result) =>{
-        if(err){
-          console.error("Erro ao obter agendamentos", err);
-          return res.status(500).json({ Error: "Internal Server Error" });
-        }else{
-          if(result.length > 0){
-            return res.status(200).json({ Message: "true", bookings: result });
-          }else{
-            return res.status(200).json({ Message: "false"});
-          }
-        }
-      })
-})
 
 //Route to get all service by month and calucule total amount
 app.get('/api/v1/getAmountOfMonth/:barbeariaId/:monthAndYear', AuthenticateJWT, (req, res) =>{
@@ -3093,6 +3006,95 @@ app.delete('/api/v1/unlinkProfessional/:barbeariaId/:professionalId/:confirmPass
   })
 })
 
+//Route to get bookings of professional
+app.get('/api/v1/professionalBookings/:professionalId/:selectedDate', AuthenticateJWT, (req, res) =>{
+  const professionalId = req.params.professionalId;
+  const selectedDate = req.params.selectedDate;
+
+  const sql=`SELECT bookings.id AS booking_id,
+                    bookings.booking_time AS booking_time,
+                    bookings.date_created AS date_created,
+                    user.name AS user_name,
+                    user.celular AS user_phone,
+                    user.user_image AS user_image,
+                    barbearia.id AS barbearia_id,
+                    barbearia.name AS nameBarbearia,
+                    servico.id AS service_id,
+                    servico.name AS service_name,
+                    servico.preco AS service_price,
+                    servico.duracao AS service_duration,
+                    servico.commission_fee AS service_commission_fee,
+                    payments.status AS paymentStatus
+      FROM bookings
+      INNER JOIN user ON user.id = bookings.user_id
+      INNER JOIN barbearia ON barbearia.id = bookings.barbearia_id
+      INNER JOIN servico ON servico.id = bookings.service_id
+      INNER JOIN payments ON payments.id = bookings.payment_id AND payments.status = 'approved'
+      WHERE bookings.professional_id = ? AND bookings.booking_date = ?`;
+
+      db.query(sql, [professionalId, selectedDate], (err, result) =>{
+        if(err){
+          console.error("Erro ao obter agendamentos", err);
+          return res.status(500).json({ Error: "Internal Server Error" });
+        }else{
+          if(result.length > 0){
+            return res.status(200).json({ Message: "true", bookings: result });
+          }else{
+            return res.status(200).json({ Message: "false"});
+          }
+        }
+      })
+})
+
+//Rute to create a new service
+app.post('/api/v1/addService/:barbeariaId/:professionalId', AuthenticateJWT, (req, res) => {
+  const barbearia_id = req.params.barbeariaId;
+  const professional_id = req.params.professionalId;
+
+  const name = req.body.newNameService; 
+  const preco = req.body.newPriceService;
+  const commission_fee = req.body.newCommissionFee;
+  const duracao = req.body.newDuration;
+
+  // Verifica se number contém apenas números
+  if (!isSignUpBarbeariaValid(name) && name.length > 150) {
+    return res.status(400).json({ error: 'Error in values' });
+  }
+  // Verifica se number contém apenas números
+  if (!isOnlyNumberValided(preco) && preco.length > 10) {
+    return res.status(400).json({ error: 'Error in values' });
+  }
+  // Verifica se number contém apenas números
+  if (!isOnlyNumberValided(commission_fee) && commission_fee.length > 10) {
+    return res.status(400).json({ error: 'Error in values' });
+  }
+  // Verifica se a str de duração do serviço contém letras e números apenaas
+  if (!isEmailValided(duracao) && duracao.length > 5) {
+    return res.status(400).json({ error: 'Error in values' });
+  }
+
+  const service = {
+    name,
+    preco,
+    duracao,
+    commission_fee,
+    barbearia_id,
+    professional_id
+  };
+
+  db.query('INSERT INTO servico SET ?', service, (err, result) =>{
+    if(err){
+      console.error("Erro ao cadastrar o serviço da barbearia", err);
+      return res.status(500).json({ Error: "Internal Server Error" });
+    }else{
+      if(result){
+        return res.status(201).json({ Success: "Success" });
+      }
+    }
+  })
+
+})
+
 //Route for barbearia delete all conections between professional and barbearia
 app.delete('/api/v1/unlinkBarbearia/:barbeariaId/:professionalId/:confirmPassword', AuthenticateJWT, (req, res) => {
   const barbeariaId = req.params.barbeariaId;
@@ -3147,6 +3149,7 @@ app.delete('/api/v1/unlinkBarbearia/:barbeariaId/:professionalId/:confirmPasswor
   })
 })
 
+//Route to barbearia update your bookings policies
 app.put('/api/v1/updateBookingPoliceis/', AuthenticateJWT, (req, res) =>{
   const barbeariaId = req.body.barbeariaId;
   const confirmPassword = req.body.confirmPassword;
