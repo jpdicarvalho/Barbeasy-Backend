@@ -221,9 +221,8 @@ app.post('/api/v1/oauth2/google/callback', async (req, res) => {
           audience: process.env.GOOGLE_CLIENT_ID,
       });
       const payload = ticket.getPayload();
-      // Aqui você pode verificar se o usuário já existe em seu banco de dados
-      // e criar uma nova conta se necessário
-      res.json({ user: payload }); // Retorne os dados do usuário
+      
+      res.status(200).json({ user: payload }); // Retorne os dados do usuário
   } catch (error) {
       res.status(401).json({ error: 'Autenticação falhou' });
   }
