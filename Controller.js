@@ -200,15 +200,14 @@ cron.schedule("* * * * *", async () => {
       const response = await axios.post("https://barbeasy.up.railway.app/api/v1/ping", {
           message: "ping"
       });
-      console.log("Ping enviado com sucesso:", response.data);
+      console.log("Status da API:", response.data);
   } catch (error) {
-      console.error("Erro ao enviar ping:", error.message);
+      console.error("Erro na requisição de monitoramento, API inativa...:", error.message);
   }
 });
-//Route to verify email of new user client
+
 app.post("/api/v1/ping", (req, res) =>{
-  console.log("Ping recebido na rota");
-  res.send("Ping recebido com sucesso.");
+  res.send("Ativa...");
 })
 
 // Cadastro de usuário com senha criptografada
