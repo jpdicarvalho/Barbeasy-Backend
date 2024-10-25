@@ -192,9 +192,8 @@ const s3 = new S3Client({
   },
   region: awsRegion
 });
-
-//=-=-=-=-= ROTAS USER-CLIENT-BARBEARIA =-=-=-=-=
-// Agendamento de requisição "ping" a cada 3 horas
+//===============================================
+// Agendamento de requisição a cada 3 horas
 cron.schedule("0 */2 * * *", async () => {
   try {
       const response = await axios.post("https://barbeasy.up.railway.app/api/v1/ping", {
@@ -209,6 +208,7 @@ cron.schedule("0 */2 * * *", async () => {
 app.post("/api/v1/ping", (req, res) =>{
   res.send("Ativa...");
 })
+//=-=-=-=-= ROTAS USER-CLIENT-BARBEARIA =-=-=-=-=
 
 // Cadastro de usuário com senha criptografada
 app.post("/api/v1/SignUp", (req, res) => {
