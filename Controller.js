@@ -23,7 +23,6 @@ import axios from 'axios';
 
 import { Resend } from 'resend';
 import { Vonage } from '@vonage/server-sdk';
-import { OAuth2Client } from 'google-auth-library';
 
 import cron from 'node-cron'
 //import { serveSwaggerUI, setupSwaggerUI } from './swaggerConfig.js';
@@ -211,22 +210,7 @@ app.post("/api/v1/ping", (req, res) =>{
   res.send("Ativa...");
 })
 //==============================================================
-app.post('/api/v1/oauth2/google/callback', async (req, res) => {
-  const clientBarbeasy = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
-  const { token } = req.body;
 
-  try {
-      const ticket = await clientBarbeasy.verifyIdToken({
-          idToken: token,
-          audience: process.env.GOOGLE_CLIENT_ID,
-      });
-      const payload = ticket.getPayload();
-      
-      res.status(200).json({ user: payload }); // Retorne os dados do usuário
-  } catch (error) {
-      res.status(401).json({ error: 'Autenticação falhou' });
-  }
-});
 //=-=-=-=-= ROTAS USER-CLIENT-BARBEARIA =-=-=-=-=
 
 // Cadastro de usuário com senha criptografada
