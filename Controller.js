@@ -195,7 +195,7 @@ const s3 = new S3Client({
 
 //=-=-=-=-= ROTAS USER-CLIENT-BARBEARIA =-=-=-=-=
 // Agendamento de requisição "ping" a cada 3 horas
-cron.schedule("* * * * *", async () => {
+cron.schedule("0 */2 * * *", async () => {
   try {
       const response = await axios.post("https://barbeasy.up.railway.app/api/v1/ping", {
           message: "ping"
