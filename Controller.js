@@ -24,6 +24,7 @@ import axios from 'axios';
 import { Resend } from 'resend';
 import { Vonage } from '@vonage/server-sdk';
 
+import cron from 'node-cron'
 //import { serveSwaggerUI, setupSwaggerUI } from './swaggerConfig.js';
 
 import 'dotenv/config'
@@ -193,12 +194,21 @@ const s3 = new S3Client({
 });
 
 //=-=-=-=-= ROTAS USER-CLIENT-BARBEARIA =-=-=-=-=
-
+// Agendamento de requisição "ping" a cada 3 horas
+cron.schedule("* * * * *", async () => {
+  try {
+      const response = await axios.post("https://barbeasy.up.railway.app/api/v1/ping", {
+          message: "ping"
+      });
+      console.log("Ping enviado com sucesso:", response.data);
+  } catch (error) {
+      console.error("Erro ao enviar ping:", error.message);
+  }
+});
 //Route to verify email of new user client
-app.post("/api/v1/VerifyEmail", (req, res) =>{
-  const { email, verificationCode } = req.body;
-
-  console.log(email, verificationCode)
+app.post("/api/v1/ping", (req, res) =>{
+  console.log("Ping recebido na rota");
+  res.send("Ping recebido com sucesso.");
 })
 
 // Cadastro de usuário com senha criptografada
