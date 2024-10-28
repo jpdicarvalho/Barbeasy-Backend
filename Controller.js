@@ -205,7 +205,7 @@ cron.schedule("* * * * *", () => {
       }) 
 });
 
-app.post("/api/v1//ping-db", (req, res) =>{
+app.post("/api/v1/ping-db", (req, res) =>{
   db.query('DO 1', (err) => {
     if (err) {
         console.error('Erro ao executar DO 1:', err);
