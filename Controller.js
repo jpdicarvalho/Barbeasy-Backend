@@ -195,19 +195,24 @@ const s3 = new S3Client({
 });
 //==================== cron.schedule ===========================
 // Agendamento de requisição a cada 3 horas
-cron.schedule("0 */2 * * *", async () => {
-  try {
-      const response = await axios.post("https://barbeasy.up.railway.app/api/v1/ping", {
-          message: "ping"
-      });
-      console.log("Status da API:", response.data);
-  } catch (error) {
-      console.error("Erro na requisição de monitoramento, API inativa...:", error.message);
-  }
+cron.schedule("* * * * *", () => {
+      //send request to route '/api/v1/ping-db'
+      axios.post("https://barbeasy.up.railway.app/api/v1/ping-db")
+      .then(res =>{
+        console.log(res)
+      }).catch(err =>{
+        console.error(err);
+      }) 
 });
 
-app.post("/api/v1/ping", (req, res) =>{
-  res.send("Ativa...");
+app.post("/api/v1//ping-db", (req, res) =>{
+  db.query('DO 1', (err) => {
+    if (err) {
+        console.error('Erro ao executar DO 1:', err);
+        return res.status(500).send('Erro ao manter o banco ativo');
+    }
+    res.send('Banco de dados ativo...');
+});
 })
 //==============================================================
 
