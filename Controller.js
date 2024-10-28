@@ -199,7 +199,7 @@ cron.schedule("* * * * *", () => {
       //send request to route '/api/v1/ping-db'
       axios.post("https://barbeasy.up.railway.app/api/v1/ping-db")
       .then(res =>{
-        console.log(res)
+        console.log(res.data)
       }).catch(err =>{
         console.error(err);
       }) 
