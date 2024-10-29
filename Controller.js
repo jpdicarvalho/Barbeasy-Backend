@@ -305,7 +305,7 @@ app.post('/api/v1/SignIn', (req, res) => {
     if (result.length > 0) {
       const user = result[0];
       // Criação do token
-      const token = jwt.sign({ userId: user.id, userEmail: user.email }, process.env.TOKEN_SECRET_WORD_OF_USER_CLIENT, { expiresIn: "1m" });
+      const token = jwt.sign({ userId: user.id, userEmail: user.email }, process.env.TOKEN_SECRET_WORD_OF_USER_CLIENT, { expiresIn: "4h" });
       // Envie o token no corpo da resposta
       res.status(200).json({ success: true, token: token, user: result });
       
@@ -1164,7 +1164,7 @@ app.get('/api/v1/SignInBarbearia/:email/:senha', (req, res) => {
     if (result.length > 0) {
       const barbearia = result[0];
       // Criação do token
-      const token = jwt.sign({ barbeariaId: barbearia.id, barbeariaEmail: barbearia.email }, process.env.TOKEN_SECRET_WORD_OF_USER_BARBEARIA, { expiresIn: "6h" });
+      const token = jwt.sign({ barbeariaId: barbearia.id, barbeariaEmail: barbearia.email }, process.env.TOKEN_SECRET_WORD_OF_USER_BARBEARIA, { expiresIn: "1m" });
       // Envie o token no corpo da resposta
       return res.status(200).json({ Success: 'Success', token: token, barbearia: result });
       
@@ -1198,7 +1198,7 @@ app.get('/api/v1/SignInProfessional/:email/:senha', (req, res) => {
     if (result.length > 0) {
       const professional = result[0];
       // Criação do token
-      const token = jwt.sign({ professionalId: professional.id, professionalEmail: professional.email }, process.env.TOKEN_SECRET_WORD_OF_USER_BARBEARIA, { expiresIn: "3h" });
+      const token = jwt.sign({ professionalId: professional.id, professionalEmail: professional.email }, process.env.TOKEN_SECRET_WORD_OF_USER_BARBEARIA, { expiresIn: "1m" });
       // Envie o token no corpo da resposta
       return res.status(200).json({Success: 'Success', token: token, professional: result });
       
