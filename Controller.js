@@ -293,25 +293,25 @@ app.post("/api/v1/SignUp", (req, res) => {
 });
 
 //Realizando Login e Gerando Token de autenticação
-app.post('/api/v1/SignIn', (req, res) => {
-  const {email, senha} = req.body;
+app.get('/api/v1/SignIn/:email/:senha', (req, res) => {
+  const {email, senha} = req.params;
 
   // Buscar usuário pelo email
   db.query('SELECT id, name, email, celular, user_image FROM user WHERE email = ? AND senha = ?', [email, senha],
   (err, result) => {
     if(err){
-      res.send({err: err});
+      return res.status(500).json({Error: "Internal Server Error"});
     }
     if (result.length > 0) {
       const user = result[0];
       // Criação do token
       const token = jwt.sign({ userId: user.id, userEmail: user.email }, process.env.TOKEN_SECRET_WORD_OF_USER_CLIENT, { expiresIn: "4h" });
       // Envie o token no corpo da resposta
-      res.status(200).json({ success: true, token: token, user: result });
-      
-    } else {
+      return res.status(200).json({ success: true, token: token, user: result })
+    }else{
       // Usuário não encontrado
-      res.status(404).json({success: false, message: 'Usuário não encontrado'});
+      return res.status(404).json({success: false, message: 'Usuário não encontrado'});
+
     }
   });
 });
