@@ -206,7 +206,7 @@ const whatsappClient = new Client({
     args: ['--no-sandbox', '--disable-setuid-sandbox'],
   }
 });
-whatsappClient.on("qr", () => {});
+whatsappClient.on("qr", (qr) => qrcode.generate(qr, { small: true }));
 whatsappClient.on("ready", () => console.log("Whatsapp ativo..."))
 
 whatsappClient.on("message", async (msg) =>{
