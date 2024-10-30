@@ -25,6 +25,7 @@ import { Resend } from 'resend';
 import { Vonage } from '@vonage/server-sdk';
 
 import cron from 'node-cron'
+
 //import { serveSwaggerUI, setupSwaggerUI } from './swaggerConfig.js';
 
 import 'dotenv/config'
@@ -193,6 +194,37 @@ const s3 = new S3Client({
   },
   region: awsRegion
 });
+//========================= API WhatsApp =======================
+import pkg from 'whatsapp-web.js'
+import qrcode from 'qrcode-terminal'
+
+const { Client, LocalAuth } = pkg;
+
+const whatsappClient = new Client({
+  authStrategy: new LocalAuth()
+});
+
+whatsappClient.on("qr", (qr) => qrcode.generate(qr, { small: true }));
+whatsappClient.on("ready", () => console.log("client is ready"))
+
+whatsappClient.on("message", async (msg) =>{
+  try{
+    if(msg.from != 'status@broadcast'){
+      const contact = await msg.getContact()
+      console.log(contact)
+    }
+  }catch (error) {
+    console.log(error)
+  }
+})
+whatsappClient.initialize();
+
+
+app.post("api/v1/sendCodeWhatsapp", (req, res) =>{
+  whatsappClient.sendMessage(req.body.phoneNumber, req.body.message)
+  console.log('funcionando')
+  res.send()
+})
 //==================== cron.schedule ===========================
 // Agendamento de requisição a cada 3 horas
 cron.schedule("0 */2 * * *", () => {
