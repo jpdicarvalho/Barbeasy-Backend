@@ -195,7 +195,7 @@ const s3 = new S3Client({
   region: awsRegion
 });
 //========================= API WhatsApp =======================
-/*import pkg from 'whatsapp-web.js'
+import pkg from 'whatsapp-web.js'
 import qrcode from 'qrcode-terminal'
 
 const { Client, LocalAuth } = pkg;
@@ -206,7 +206,7 @@ const whatsappClient = new Client({
     args: ['--no-sandbox', '--disable-setuid-sandbox'],
   }
 });
-
+whatsappClient.on("qr", (qr) => qrcode.generate(qr, { small: true }));
 whatsappClient.on("ready", () => console.log("client is ready"))
 
 whatsappClient.on("message", async (msg) =>{
@@ -219,7 +219,7 @@ whatsappClient.on("message", async (msg) =>{
     console.log(error)
   }
 })
-whatsappClient.initialize();*/
+whatsappClient.initialize();
 
 
 app.post("/api/v1/sendCodeWhatsapp", (req, res) =>{
