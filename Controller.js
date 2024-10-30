@@ -201,12 +201,14 @@ import qrcode from 'qrcode-terminal'
 const { Client, LocalAuth } = pkg;
 
 const whatsappClient = new Client({
-  authStrategy: new LocalAuth(),
-  puppeteer: {
-    args: ['--no-sandbox', '--disable-setuid-sandbox'],
-  }
+  authStrategy: new LocalAuth({
+    dataPath: './.wwebjs_auth'
+    }),
+    puppeteer: {
+      args: ['--no-sandbox', '--disable-setuid-sandbox'],
+    }
 });
-whatsappClient.on("qr", () => {});
+whatsappClient.on("qr", (qr) => qrcode.generate(qr, { small: true }));
 whatsappClient.on("ready", () => console.log("Whatsapp ativo..."))
 
 whatsappClient.on("message", async (msg) =>{
