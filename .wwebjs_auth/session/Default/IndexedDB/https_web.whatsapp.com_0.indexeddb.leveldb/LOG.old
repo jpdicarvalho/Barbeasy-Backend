@@ -1,24 +1,25 @@
-2024/10/30-19:10:20.343 146c Reusing MANIFEST C:\Users\João Pedro\OneDrive\Documentos\GitHub\Barbeasy-Backend\.wwebjs_auth\session\Default\IndexedDB\https_web.whatsapp.com_0.indexeddb.leveldb/MANIFEST-000001
-2024/10/30-19:10:20.344 146c Recovering log #222
-2024/10/30-19:10:20.526 146c Reusing old log C:\Users\João Pedro\OneDrive\Documentos\GitHub\Barbeasy-Backend\.wwebjs_auth\session\Default\IndexedDB\https_web.whatsapp.com_0.indexeddb.leveldb/000222.log 
-2024/10/30-19:10:22.563 1be4 Level-0 table #227: started
-2024/10/30-19:10:22.603 1be4 Level-0 table #227: 748626 bytes OK
-2024/10/30-19:10:22.605 1be4 Delete type=0 #222
-2024/10/30-19:10:22.606 1be4 Manual compaction at level-0 from '\x00Z\x00\x00\x00' @ 72057594037927935 : 1 .. '\x00[\x00\x00\x00' @ 0 : 0; will stop at '\x00[\x00\x00\x05' @ 185299 : 1
-2024/10/30-19:10:22.606 1be4 Compacting 1@0 + 1@1 files
-2024/10/30-19:10:22.734 1be4 Generated table #228@0: 44965 keys, 885159 bytes
-2024/10/30-19:10:22.734 1be4 Compacted 1@0 + 1@1 files => 885159 bytes
-2024/10/30-19:10:22.735 1be4 compacted to: files[ 0 1 1 0 0 0 0 ]
-2024/10/30-19:10:22.736 1be4 Delete type=2 #227
-2024/10/30-19:10:22.736 1be4 Manual compaction at level-0 from '\x00[\x00\x00\x05' @ 185299 : 1 .. '\x00[\x00\x00\x00' @ 0 : 0; will stop at (end)
-2024/10/30-19:10:22.739 2558 Level-0 table #230: started
-2024/10/30-19:10:22.755 2558 Level-0 table #230: 249 bytes OK
-2024/10/30-19:10:22.757 2558 Delete type=2 #224
-2024/10/30-19:10:22.757 2558 Delete type=0 #226
-2024/10/30-19:10:22.758 2558 Manual compaction at level-0 from '\x00[\x00\x00\x00' @ 72057594037927935 : 1 .. '\x00\\x00\x00\x00' @ 0 : 0; will stop at '\x00[\x00\x00\x05' @ 185332 : 0
-2024/10/30-19:10:22.758 2558 Compacting 1@0 + 1@1 files
-2024/10/30-19:10:22.840 2558 Generated table #231@0: 44963 keys, 884835 bytes
-2024/10/30-19:10:22.840 2558 Compacted 1@0 + 1@1 files => 884835 bytes
-2024/10/30-19:10:22.841 2558 compacted to: files[ 0 1 1 0 0 0 0 ]
-2024/10/30-19:10:22.842 2558 Delete type=2 #230
-2024/10/30-19:10:22.842 2558 Manual compaction at level-0 from '\x00[\x00\x00\x05' @ 185332 : 0 .. '\x00\\x00\x00\x00' @ 0 : 0; will stop at (end)
+2024/10/30-19:13:38.413 24c8 Reusing MANIFEST C:\Users\João Pedro\OneDrive\Documentos\GitHub\Barbeasy-Backend\.wwebjs_auth\session\Default\IndexedDB\https_web.whatsapp.com_0.indexeddb.leveldb/MANIFEST-000001
+2024/10/30-19:13:38.414 24c8 Recovering log #229
+2024/10/30-19:13:38.448 24c8 Reusing old log C:\Users\João Pedro\OneDrive\Documentos\GitHub\Barbeasy-Backend\.wwebjs_auth\session\Default\IndexedDB\https_web.whatsapp.com_0.indexeddb.leveldb/000229.log 
+2024/10/30-19:13:38.449 24c8 Delete type=2 #228
+2024/10/30-19:13:40.484 bf0 Level-0 table #234: started
+2024/10/30-19:13:40.496 bf0 Level-0 table #234: 153666 bytes OK
+2024/10/30-19:13:40.498 bf0 Delete type=0 #229
+2024/10/30-19:13:40.499 bf0 Manual compaction at level-0 from '\x00\\x00\x00\x00' @ 72057594037927935 : 1 .. '\x00]\x00\x00\x00' @ 0 : 0; will stop at '\x00]\x00\x00\x05' @ 191821 : 1
+2024/10/30-19:13:40.499 bf0 Compacting 1@0 + 1@1 files
+2024/10/30-19:13:40.654 bf0 Generated table #235@0: 47911 keys, 946498 bytes
+2024/10/30-19:13:40.654 bf0 Compacted 1@0 + 1@1 files => 946498 bytes
+2024/10/30-19:13:40.658 bf0 compacted to: files[ 0 1 1 0 0 0 0 ]
+2024/10/30-19:13:40.659 bf0 Delete type=2 #234
+2024/10/30-19:13:40.660 bf0 Manual compaction at level-0 from '\x00]\x00\x00\x05' @ 191821 : 1 .. '\x00]\x00\x00\x00' @ 0 : 0; will stop at (end)
+2024/10/30-19:13:40.661 26f8 Level-0 table #237: started
+2024/10/30-19:13:40.692 26f8 Level-0 table #237: 249 bytes OK
+2024/10/30-19:13:40.694 26f8 Delete type=2 #231
+2024/10/30-19:13:40.694 26f8 Delete type=0 #233
+2024/10/30-19:13:40.695 26f8 Manual compaction at level-0 from '\x00]\x00\x00\x00' @ 72057594037927935 : 1 .. '\x00^\x00\x00\x00' @ 0 : 0; will stop at '\x00]\x00\x00\x05' @ 191854 : 0
+2024/10/30-19:13:40.695 26f8 Compacting 1@0 + 1@1 files
+2024/10/30-19:13:40.784 26f8 Generated table #238@0: 47909 keys, 946473 bytes
+2024/10/30-19:13:40.784 26f8 Compacted 1@0 + 1@1 files => 946473 bytes
+2024/10/30-19:13:40.785 26f8 compacted to: files[ 0 1 1 0 0 0 0 ]
+2024/10/30-19:13:40.785 26f8 Delete type=2 #237
+2024/10/30-19:13:40.786 26f8 Manual compaction at level-0 from '\x00]\x00\x00\x05' @ 191854 : 0 .. '\x00^\x00\x00\x00' @ 0 : 0; will stop at (end)
