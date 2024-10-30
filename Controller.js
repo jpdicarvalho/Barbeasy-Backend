@@ -207,7 +207,6 @@ const whatsappClient = new Client({
   }
 });
 
-whatsappClient.on("qr", (qr) => qrcode.generate(qr, { small: true }));
 whatsappClient.on("ready", () => console.log("client is ready"))
 
 whatsappClient.on("message", async (msg) =>{
