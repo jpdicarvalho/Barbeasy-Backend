@@ -223,7 +223,7 @@ whatsappClient.on("message", async (msg) =>{
 whatsappClient.initialize();
 
 
-app.post("api/v1/sendCodeWhatsapp", (req, res) =>{
+app.post("/api/v1/sendCodeWhatsapp", (req, res) =>{
   whatsappClient.sendMessage(req.body.phoneNumber, req.body.message)
   console.log('funcionando')
   res.send()
