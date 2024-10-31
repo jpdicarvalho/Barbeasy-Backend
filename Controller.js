@@ -224,8 +224,11 @@ whatsappClient.on("message", async (msg) =>{
 whatsappClient.initialize();
 
 
-app.post("/api/v1/sendCodeWhatsapp", (req, res) =>{
-  whatsappClient.sendMessage(req.body.phoneNumber, req.body.message)
+app.post("/api/v1/sendCodeAutentication", (req, res) =>{
+  // verificação de 8 dígitos numéricos
+  const verificationCode = generateVerificationCode();
+
+  whatsappClient.sendMessage(req.body.phoneNumber, verificationCode)
   res.send()
 })
 //==================== cron.schedule ===========================
