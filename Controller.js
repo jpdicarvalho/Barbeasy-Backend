@@ -211,6 +211,7 @@ const whatsappClient = new Client({
 whatsappClient.on("qr", (qr) => console.log(qr));
 whatsappClient.on("ready", () => console.log("Whatsapp ativo..."))
 
+
 whatsappClient.on("message", async (msg) =>{
   try{
     if(msg.from != 'status@broadcast'){
