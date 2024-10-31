@@ -225,7 +225,7 @@ whatsappClient.on("message", async (msg) =>{
 whatsappClient.initialize();
 
 
-app.post("/api/v1/sendCodeWhatsapp", (req, res) =>{
+app.post("/api/v1/sendCodeAutentication", (req, res) =>{
   //verificação de 8 dígitos numéricos
   const verificationCode = generateVerificationCode();
 
