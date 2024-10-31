@@ -208,7 +208,7 @@ const whatsappClient = new Client({
       args: ['--no-sandbox', '--disable-setuid-sandbox'],
     }
 });
-whatsappClient.on("qr", (qr) => qrcode.generate(qr, { small: true }));
+whatsappClient.on("qr", (qr) => console.log(qr));
 whatsappClient.on("ready", () => console.log("Whatsapp ativo..."))
 
 whatsappClient.on("message", async (msg) =>{
@@ -221,7 +221,7 @@ whatsappClient.on("message", async (msg) =>{
     console.log(error)
   }
 })
-//whatsappClient.initialize();
+whatsappClient.initialize();
 
 
 app.post("/api/v1/sendCodeWhatsapp", (req, res) =>{
