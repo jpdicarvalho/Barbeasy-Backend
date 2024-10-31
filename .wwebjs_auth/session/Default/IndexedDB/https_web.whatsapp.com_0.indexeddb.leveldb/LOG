@@ -1,0 +1,26 @@
+2024/10/31-16:44:26.186 3448 Reusing MANIFEST C:\Users\João Pedro\OneDrive\Documentos\GitHub\Barbeasy-Backend\.wwebjs_auth\session\Default\IndexedDB\https_web.whatsapp.com_0.indexeddb.leveldb/MANIFEST-000001
+2024/10/31-16:44:26.186 3448 Recovering log #42
+2024/10/31-16:44:26.217 3448 Reusing old log C:\Users\João Pedro\OneDrive\Documentos\GitHub\Barbeasy-Backend\.wwebjs_auth\session\Default\IndexedDB\https_web.whatsapp.com_0.indexeddb.leveldb/000042.log 
+2024/10/31-16:44:26.217 3448 Delete type=2 #38
+2024/10/31-16:44:26.217 3448 Delete type=2 #44
+2024/10/31-16:44:28.480 3ccc Level-0 table #48: started
+2024/10/31-16:44:28.497 3ccc Level-0 table #48: 108170 bytes OK
+2024/10/31-16:44:28.499 3ccc Delete type=0 #42
+2024/10/31-16:44:28.500 3ccc Manual compaction at level-0 from '\x00\x18\x00\x00\x00' @ 72057594037927935 : 1 .. '\x00\x19\x00\x00\x00' @ 0 : 0; will stop at (end)
+2024/10/31-16:44:28.506 3378 Level-0 table #50: started
+2024/10/31-16:44:28.522 3378 Level-0 table #50: 445 bytes OK
+2024/10/31-16:44:28.524 3378 Delete type=0 #47
+2024/10/31-16:44:28.525 3378 Manual compaction at level-0 from '\x00\x19\x00\x00\x00' @ 72057594037927935 : 1 .. '\x00\x1a\x00\x00\x00' @ 0 : 0; will stop at '\x00\x19\x00\x00\x05' @ 92285 : 0
+2024/10/31-16:44:28.525 3378 Compacting 1@0 + 1@1 files
+2024/10/31-16:44:28.551 3378 Generated table #51@0: 2880 keys, 60677 bytes
+2024/10/31-16:44:28.551 3378 Compacted 1@0 + 1@1 files => 60677 bytes
+2024/10/31-16:44:28.552 3378 compacted to: files[ 0 1 1 0 0 0 0 ]
+2024/10/31-16:44:28.553 3378 Manual compaction at level-0 from '\x00\x19\x00\x00\x05' @ 92285 : 0 .. '\x00\x1a\x00\x00\x00' @ 0 : 0; will stop at (end)
+2024/10/31-16:44:31.601 433c Compacting 1@1 + 1@2 files
+2024/10/31-16:44:31.649 433c Generated table #52@1: 18971 keys, 732267 bytes
+2024/10/31-16:44:31.649 433c Compacted 1@1 + 1@2 files => 732267 bytes
+2024/10/31-16:44:31.655 433c compacted to: files[ 0 0 1 0 0 0 0 ]
+2024/10/31-16:44:31.656 433c Delete type=2 #45
+2024/10/31-16:44:31.656 433c Delete type=2 #48
+2024/10/31-16:44:31.656 433c Delete type=2 #50
+2024/10/31-16:44:31.656 433c Delete type=2 #51

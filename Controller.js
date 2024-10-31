@@ -221,14 +221,14 @@ whatsappClient.on("message", async (msg) =>{
     console.log(error)
   }
 })
-//whatsappClient.initialize();
+whatsappClient.initialize();
 
 
-app.post("/api/v1/sendCodeAutentication", (req, res) =>{
-  // verificação de 8 dígitos numéricos
+app.post("/api/v1/sendCodeWhatsapp", (req, res) =>{
+  //verificação de 8 dígitos numéricos
   const verificationCode = generateVerificationCode();
 
-  whatsappClient.sendMessage(req.body.phoneNumber, verificationCode)
+  whatsappClient.sendMessage(req.body.phoneNumber, req.body.message)
   res.send()
 })
 //==================== cron.schedule ===========================
