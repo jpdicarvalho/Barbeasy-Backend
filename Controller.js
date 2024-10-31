@@ -221,7 +221,7 @@ whatsappClient.on("message", async (msg) =>{
     console.log(error)
   }
 })
-whatsappClient.initialize();
+//whatsappClient.initialize();
 
 
 app.post("/api/v1/sendCodeAutentication", (req, res) =>{
