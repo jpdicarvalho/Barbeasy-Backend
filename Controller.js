@@ -202,7 +202,7 @@ const { Client, LocalAuth } = pkg;
 
 const whatsappClient = new Client({
   authStrategy: new LocalAuth({
-    dataPath: '/SessionWhatsappStogare'
+    dataPath: './SessionWhatsappStogare'
     }),
     puppeteer: {
       args: ['--no-sandbox', '--disable-setuid-sandbox'],
