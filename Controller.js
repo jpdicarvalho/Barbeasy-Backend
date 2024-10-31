@@ -228,7 +228,7 @@ app.post("/api/v1/sendCodeWhatsapp", (req, res) =>{
   //verificação de 8 dígitos numéricos
   const verificationCode = generateVerificationCode();
 
-  whatsappClient.sendMessage(req.body.phoneNumber, req.body.message)
+  whatsappClient.sendMessage(req.body.phoneNumber, verificationCode)
   res.send()
 })
 //==================== cron.schedule ===========================
