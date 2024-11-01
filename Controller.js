@@ -194,44 +194,7 @@ const s3 = new S3Client({
   },
   region: awsRegion
 });
-//========================= API WhatsApp =======================
-import pkg from 'whatsapp-web.js'
-import qrcode from 'qrcode-terminal'
 
-const { Client, LocalAuth } = pkg;
-
-const whatsappClient = new Client({
-  authStrategy: new LocalAuth({
-    dataPath: './SessionWhatsappStogare'
-    }),
-    puppeteer: {
-      args: ['--no-sandbox', '--disable-setuid-sandbox'],
-    }
-});
-whatsappClient.on("qr", (qr) => console.log(qr));
-whatsappClient.on("ready", () => console.log("Whatsapp ativo..."))
-
-
-whatsappClient.on("message", async (msg) =>{
-  try{
-    if(msg.from != 'status@broadcast'){
-      const contact = await msg.getContact()
-      console.log(contact)
-    }
-  }catch (error) {
-    console.log(error)
-  }
-})
-//whatsappClient.initialize();
-
-
-app.post("/api/v1/sendCodeAutentication", (req, res) =>{
-  //verificação de 8 dígitos numéricos
-  const verificationCode = generateVerificationCode();
-
-  whatsappClient.sendMessage(req.body.phoneNumber, verificationCode)
-  res.send()
-})
 //==================== cron.schedule ===========================
 // Agendamento de requisição a cada 3 horas
 cron.schedule("0 */2 * * *", () => {
