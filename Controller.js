@@ -255,11 +255,11 @@ app.post("/api/v1/SignUp", (req, res) => {
     if (results.length > 0) {
       const existingUser = results[0];
       //Verify if account has a pending activation
-      if(existingUser.isVerifield != 'true'){
+      if(existingUser.isVerified != 'true'){
         return res.status(302).send('Ativação de conta pendente');
       }
       //Verify if has a email OR phone registered
-      if (existingUser.isVerifield === 'true') {
+      if (existingUser.isVerified === 'true') {
         return res.status(400).send('E-mail ou celular já cadastrado');
       }
     }
