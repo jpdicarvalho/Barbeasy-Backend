@@ -131,11 +131,6 @@ const isPasswordValided = (input) => /^[a-zA-Z0-9@.#%]+$/.test(input);
 const isSignUpBarbeariaValid = (input) => /^[a-zA-Z\sçéúíóáõãèòìàêôâ.!?+]*$/.test(input);
 
 //====================== Settings to send emails ========================
-// Função para gerar um código de 8 dígitos numéricos
-const generateVerificationCode = () => {
-  return Math.floor(10000 + Math.random() * 90000); // Gera um número aleatório de 8 dígitos
-};
-
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 const sendEmail = async (email, name, verificationCode) => {
@@ -251,28 +246,24 @@ app.post("/api/v1/SignUp", (req, res) => {
   }
 
   // Verificação se o e-mail ou o número de celular já estão cadastrado
-  db.query('SELECT id, name, email, celular, user_image FROM user WHERE email = ? OR celular = ?', [email, celular], (error, results) => {
+  db.query('SELECT email, celular, isVerifield FROM user WHERE email = ? OR celular = ?', [email, celular], (error, results) => {
     if (error) {
       console.error(error);
       return res.status(500).send('Erro ao verificar o e-mail ou o número de celular');
     }
-
-    // Se houver resultados, significa que o e-mail ou o número de celular já estão cadastrado
+    //Verify is has reuslts
     if (results.length > 0) {
       const existingUser = results[0];
-      if (existingUser.email === email) {
-        return res.status(400).send('E-mail já cadastrado. Por favor, escolha outro e-mail.');
-      } else if (existingUser.celular === celular) {
-        return res.status(400).send('Número de celular já cadastrado. Por favor, escolha outro número.');
+      //Verify if account has a pending activation
+      if(existingUser.isVerifield != 'true'){
+        return res.status(302).send('Ativação de conta pendente');
+      }
+      //Verify if has a email OR phone registered
+      if (existingUser.isVerifield === 'true') {
+        return res.status(400).send('E-mail ou celular já cadastrado');
       }
     }
 
-    // Gere um código de verificação de 8 dígitos numéricos
-    const verificationCode = generateVerificationCode();
-
-    // Enviar o e-mail de verificação
-    //sendEmail(email, name, verificationCode);
-    sendSMS(verificationCode)
     // user object as status false
     const user = {
       name,
@@ -285,10 +276,10 @@ app.post("/api/v1/SignUp", (req, res) => {
 
     db.query('INSERT INTO user SET ?', user, (error, results) => {
       if (results) {
-        res.status(201).send('Usuário registrado com sucesso');
+        return res.status(201).send('Usuário registrado com sucesso');
       } else {
         console.error(error);
-        res.status(500).send('Erro ao registrar usuário');
+        return res.status(500).send('Erro ao registrar usuário');
       }
     });
   });
