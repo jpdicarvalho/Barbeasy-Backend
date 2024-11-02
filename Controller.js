@@ -246,7 +246,7 @@ app.post("/api/v1/SignUp", (req, res) => {
   }
 
   // Verificação se o e-mail ou o número de celular já estão cadastrado
-  db.query('SELECT email, celular, isVerifield FROM user WHERE email = ? OR celular = ?', [email, celular], (error, results) => {
+  db.query('SELECT email, celular, isVerified FROM user WHERE email = ? OR celular = ?', [email, celular], (error, results) => {
     if (error) {
       console.error(error);
       return res.status(500).send('Erro ao verificar o e-mail ou o número de celular');
