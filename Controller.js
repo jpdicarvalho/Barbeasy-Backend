@@ -21,7 +21,6 @@ import rateLimit from 'express-rate-limit';
 
 import axios from 'axios';
 
-import { Resend } from 'resend';
 import { Vonage } from '@vonage/server-sdk';
 
 import cron from 'node-cron'
@@ -130,44 +129,6 @@ const isEmailValided = (input) => /^[a-z0-9.@]+$/i.test(input);
 const isPasswordValided = (input) => /^[a-zA-Z0-9@.#%]+$/.test(input);
 const isSignUpBarbeariaValid = (input) => /^[a-zA-Z\sçéúíóáõãèòìàêôâ.!?+]*$/.test(input);
 
-//====================== Settings to send emails ========================
-const resend = new Resend(process.env.RESEND_API_KEY);
-
-const sendEmail = async (email, name, verificationCode) => {
-  try {
-    const response = await resend.emails.send({
-      from: 'Barbeasy <barbeasy@barbeasy.com.br>', // Ajuste na formatação do e-mail
-      to: email,
-      subject: 'Verificação de E-mail para Ativação de Conta',
-      html: `<h3>Olá, ${name}!</h3>
-             <p>Seu código de verificação é: <strong>${verificationCode}</strong></p>
-             <p>Este código é válido por 15 minutos.</p>`,
-    });
-    console.log('E-mail enviado com sucesso:', response);
-    return response; // Retorne a resposta se precisar manipular o resultado
-  } catch (error) {
-    console.error('Erro ao enviar o e-mail:', error);
-    throw error; // Repropaga o erro para ser tratado externamente, se necessário
-  }
-};
-//======================== Settings to send SMS =========================
-// Configurar o Twilio com suas credenciais
-const vonageApiKey = process.env.VONAGE_API_KEY;
-const vonageApiSecret = process.env.VONAGE_API_SECRET;
-
-const vonage = new Vonage({
-  apiKey: vonageApiKey,
-  apiSecret: vonageApiSecret
-})
-
-const sendSMS = (codeVerification) => {
-  const from = "Vonage APIs"
-  const to = "5593992325542"
-  
-  vonage.sms.send({to, from, codeVerification})
-  .then(resp => { console.log('Message sent successfully'); console.log(resp); })
-  .catch(err => { console.log('There was an error sending the messages.'); console.error(err); });
-}
 //=======================================================================
 /* Inicializando o Swagger
 app.use('/api-docs', serveSwaggerUI, setupSwaggerUI);*/
