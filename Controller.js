@@ -217,7 +217,7 @@ app.post("/api/v1/SignUp", (req, res) => {
       const existingUser = results[0];
       //Verify if account has a pending activation
       if(existingUser.isVerified != 'true'){
-        return res.status(302).send('Ativação de conta pendente');
+        return res.status(302).json({ userPending: results[0], message: 'Ativação de conta pendente'});
       }
       //Verify if has a email OR phone registered
       if (existingUser.isVerified === 'true') {
