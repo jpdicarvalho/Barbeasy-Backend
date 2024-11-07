@@ -1024,7 +1024,7 @@ app.post('/api/v1/notificationPayment', (req, res) => {
 //======================================= ROTAS USER-BARBEARIA ====================================
 //Cadastro de ususário Barbearia   #VERIFIED
 app.post("/api/v1/SignUpBarbearia", (req, res) => {
-  const { name, street, number, neighborhood, city, usuario, email, senha } = req.body;
+  const { name, street, number, neighborhood, city, usuario, email, senha, celular } = req.body;
 
   // Verifica se name contém apenas letras maiúsculas e minúsculas
   if (!isSignUpBarbeariaValid(name) && name.length <= 30) {
@@ -1058,9 +1058,14 @@ app.post("/api/v1/SignUpBarbearia", (req, res) => {
   if (!isPasswordValided(senha) && senha.length <= 8) {
     return res.status(400).json({ error: 'Error in values' });
   }
-
+  //Verifica se o número de celular é minimamente válido
+  if (!isOnlyNumberValided(celular) && celular.length > 11 || celular.length < 10 ) {
+    return res.status(400).json({ error: 'Error in values' });
+  }
   // Verificação se o e-mail já está cadastrado
-  db.query('SELECT email, rua, N, bairro, cidade FROM barbearia WHERE email = ? OR rua = ? AND N = ? AND bairro = ? AND cidade = ?', [email, street, number, neighborhood, city], (error, results) => {
+  db.query('SELECT email, rua, N, bairro, cidade, celular, isVerified FROM barbearia WHERE email = ? OR celular = ? OR (rua = ? AND N = ? AND bairro = ? AND cidade = ?)',
+    [email, celular, street, number, neighborhood, city],
+    (error, results) => {
     if (error) {
       console.error(error);
       return res.status(500).send('Erro ao verificar o e-mail');
@@ -1068,7 +1073,20 @@ app.post("/api/v1/SignUpBarbearia", (req, res) => {
 
     // Se já houver resultados, significa que o e-mail já está cadastrado
     if (results.length > 0) {
-      return res.status(401).send('E-mail ou endereço já cadastrado.');
+      const existingUser = results[0];
+      //Verify if account has a pending activation
+      if(existingUser.isVerified != 'true'){
+        //Object with user's data
+        const userData = {
+          celular: results[0].celular,
+          email: results[0].email,
+        }
+        return res.status(302).json({ userPending: userData, message: 'Ativação de conta pendente'});
+      }
+      //Verify if has a email OR phone registered
+      if (existingUser.isVerified === 'true') {
+        return res.status(400).send('E-mail ou celular já cadastrado');
+      }
     }
 
     const barbearia = {
@@ -1084,7 +1102,9 @@ app.post("/api/v1/SignUpBarbearia", (req, res) => {
       N: number,
       bairro: neighborhood,
       cidade: city,
-      amountVisibility: 'visible'
+      amountVisibility: 'visible',
+      celular: celular,
+      isVerified: 'false'
     };
 
     db.query('INSERT INTO barbearia SET ?', barbearia, (error, results) => {
@@ -1093,7 +1113,7 @@ app.post("/api/v1/SignUpBarbearia", (req, res) => {
         return res.status(500).send('Erro ao registrar usuário');
       }else{
         if(results){
-          res.status(201).send('Usuário registrado com sucesso');
+          return res.status(201).send('Usuário registrado com sucesso');
         }
       }
     });
