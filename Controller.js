@@ -322,7 +322,7 @@ app.post('/api/v1/googleSignIn', (req, res) => {
     const payload = ticket.getPayload();
     const email = payload['email'];
 
-    db.query('SELECT * FROM user WHERE email = ?', [email], (err, result) => {
+    db.query('SELECT id, name, email, celular, user_image FROM user WHERE email = ?', [email], (err, result) => {
       if (err) {
         return res.status(500).json({ error: 'Internal Server Error' });
       }
@@ -332,6 +332,10 @@ app.post('/api/v1/googleSignIn', (req, res) => {
         const token = jwt.sign({ userId: user.id, userEmail: user.email }, process.env.TOKEN_SECRET_WORD_OF_USER_CLIENT, { expiresIn: '4h' });
 
         return res.status(200).json({ success: true, token: token, user: user });
+      }
+      if(result.length === 0){
+        // Usuário não encontrado
+        return res.status(404).json({ success: false, message: 'Usuário não encontrado' });
       }
     });
   }).catch(error => {
