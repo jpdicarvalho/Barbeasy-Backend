@@ -270,7 +270,7 @@ app.post('/api/v1/SignIn', (req, res) => {
   }
 
   // Buscar usuário pelo email
-  db.query('SELECT id, name, email, celular, user_image, senha_hash FROM user WHERE email = ?', [email], (err, result) => {
+  db.query('SELECT id, name, email, celular, user_image, senha FROM user WHERE email = ?', [email], (err, result) => {
     if (err) {
       return res.status(500).json({ success: false, message: 'Erro interno do servidor' });
     }
