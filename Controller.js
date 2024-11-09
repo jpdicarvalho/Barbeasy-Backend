@@ -261,8 +261,8 @@ app.post("/api/v1/SignUp", (req, res) => {
 });
 
 //Realizando Login e Gerando Token de autenticação
-app.get('/api/v1/SignIn/:email/:senha', (req, res) => {
-  const {email, senha} = req.params;
+app.post('/api/v1/SignIn/', (req, res) => {
+  const {email, senha} = req.body;
 
   // Buscar usuário pelo email
   db.query('SELECT id, name, email, celular, user_image FROM user WHERE email = ? AND senha = ?', [email, senha],
@@ -272,14 +272,33 @@ app.get('/api/v1/SignIn/:email/:senha', (req, res) => {
     }
     if (result.length > 0) {
       const user = result[0];
-      // Criação do token
-      const token = jwt.sign({ userId: user.id, userEmail: user.email }, process.env.TOKEN_SECRET_WORD_OF_USER_CLIENT, { expiresIn: "4h" });
-      // Envie o token no corpo da resposta
-      return res.status(200).json({ success: true, token: token, user: result })
-    }else{
-      // Usuário não encontrado
-      return res.status(404).json({success: false, message: 'Usuário não encontrado'});
+      // Verificar a senha usando bcrypt
+      bcrypt.compare(senha, user.senha_hash, (err, isMatch) => {
+        if (err) {
+          return res.status(500).json({ success: false, message: 'Erro interno do servidor' });
+        }
+        
+        if (isMatch) {
+          // Criação do token JWT
+          const token = jwt.sign(
+            { userId: user.id, userEmail: user.email },
+            process.env.TOKEN_SECRET_WORD_OF_USER_CLIENT,
+            { expiresIn: '4h' }
+          );
 
+          // Remover o hash da senha antes de enviar os dados do usuário
+          delete user.senha_hash;
+
+          // Enviar o token e as informações do usuário
+          return res.status(200).json({ success: true, token: token, user: user });
+        } else {
+          // Senha incorreta
+          return res.status(401).json({ success: false, message: 'Senha incorreta' });
+        }
+      });
+    } else {
+      // Usuário não encontrado
+      return res.status(404).json({ success: false, message: 'Usuário não encontrado' });
     }
   });
 });
