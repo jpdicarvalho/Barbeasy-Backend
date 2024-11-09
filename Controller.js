@@ -279,7 +279,7 @@ app.post('/api/v1/SignIn', (req, res) => {
       const user = result[0];
 
       // Verificar a senha usando bcrypt
-      bcrypt.compare(senha, user.senha_hash, (err, isMatch) => {
+      bcrypt.compare(senha, user.senha, (err, isMatch) => {
         if (err) {
           return res.status(500).json({ success: false, message: 'Erro interno do servidor' });
         }
