@@ -238,23 +238,24 @@ app.post("/api/v1/SignUp", (req, res) => {
         return res.status(500).json({ error: 'Erro ao criptografar a senha' });
       }
 
-    // user object as status false
-    const user = {
-      name,
-      email,
-      senha: hash,
-      celular,
-      user_image: 'default.jpg',
-      isVerified: 'false'
-    };
+      // Criar objeto do usuário com senha criptografada
+      const user = {
+        name,
+        email,
+        senha: hash, // Salvar o hash no campo de senha
+        celular,
+        user_image: 'default.jpg',
+        isVerified: 'false'
+      };
 
-    db.query('INSERT INTO user SET ?', user, (error, results) => {
-      if (results) {
-        return res.status(201).send('Usuário registrado com sucesso');
-      } else {
-        console.error(error);
-        return res.status(500).send('Erro ao registrar usuário');
-      }
+      db.query('INSERT INTO user SET ?', user, (error, results) => {
+        if (results) {
+          return res.status(201).send('Usuário registrado com sucesso');
+        } else {
+          console.error(error);
+          return res.status(500).send('Erro ao registrar usuário');
+        }
+      });
     });
   });
 });
