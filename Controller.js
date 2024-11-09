@@ -8,6 +8,7 @@ import mysql from "mysql2";
 import jwt  from 'jsonwebtoken';
 import bcrypt from 'bcrypt'
 import AuthenticateJWT from './AuthenticateJWT.js'
+import { OAuth2Client } from 'google-auth-library';
 
 import { MercadoPagoConfig, Payment } from 'mercadopago';
 import { v4 as uuidv4 } from 'uuid';
@@ -306,6 +307,36 @@ app.post('/api/v1/SignIn', (req, res) => {
       // Usuário não encontrado
       return res.status(404).json({ success: false, message: 'Usuário não encontrado' });
     }
+  });
+});
+
+app.post('/api/v1/googleSignIn', (req, res) => {
+  const { credential } = req.body;
+
+  const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+
+  client.verifyIdToken({
+    idToken: credential,
+    audience: process.env.GOOGLE_CLIENT_ID,
+  }).then(ticket => {
+    const payload = ticket.getPayload();
+    const email = payload['email'];
+
+    db.query('SELECT * FROM user WHERE email = ?', [email], (err, result) => {
+      if (err) {
+        return res.status(500).json({ error: 'Internal Server Error' });
+      }
+
+      if (result.length > 0) {
+        const user = result[0];
+        const token = jwt.sign({ userId: user.id, userEmail: user.email }, process.env.TOKEN_SECRET_WORD_OF_USER_CLIENT, { expiresIn: '4h' });
+
+        return res.status(200).json({ success: true, token: token, user: user });
+      }
+    });
+  }).catch(error => {
+    console.error('Erro ao verificar token:', error);
+    res.status(401).json({ error: 'Token inválido ou não autorizado' });
   });
 });
 
