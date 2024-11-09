@@ -1116,7 +1116,7 @@ app.post("/api/v1/SignUpBarbearia", (req, res) => {
     return res.status(400).json({ error: 'Error in values' });
   }
   // Verifica se email contém apenas letras maiúsculas e minúsculas
-  if (!isEmailValided(email) && email.length <= 50) {
+  if (!isEmailValided(email) && email.length <= 100) {
     return res.status(400).json({ error: 'Error in values' });
   }
   // Verifica se senha contém apenas letras maiúsculas e minúsculas e alguns caracteres especiais
