@@ -293,7 +293,7 @@ app.post('/api/v1/SignIn', (req, res) => {
           );
 
           // Remover o hash da senha antes de enviar os dados do usuário
-          delete user.senha_hash;
+          delete user.senha;
 
           // Enviar o token e as informações do usuário
           return res.status(200).json({ success: true, token: token, user: user });
