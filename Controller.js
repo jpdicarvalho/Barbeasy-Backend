@@ -261,7 +261,7 @@ app.post("/api/v1/SignUp", (req, res) => {
 });
 
 //Realizando Login e Gerando Token de autenticação
-app.post('/api/v1/SignIn/', (req, res) => {
+app.post('/api/v1/SignIn', (req, res) => {
   const {email, senha} = req.body;
 
   // Buscar usuário pelo email
