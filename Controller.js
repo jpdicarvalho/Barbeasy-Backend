@@ -265,7 +265,7 @@ app.post('/api/v1/SignIn', (req, res) => {
   const {email, senha} = req.body;
 
   // Buscar usuário pelo email
-  db.query('SELECT id, name, email, celular, user_image FROM user WHERE email = ? AND senha = ?', [email, senha],
+  db.query('SELECT id, name, email, senha, celular, user_image FROM user WHERE email = ? AND senha = ?', [email, senha],
   (err, result) => {
     if(err){
       return res.status(500).json({Error: "Internal Server Error"});
@@ -273,7 +273,7 @@ app.post('/api/v1/SignIn', (req, res) => {
     if (result.length > 0) {
       const user = result[0];
       // Verificar a senha usando bcrypt
-      bcrypt.compare(senha, user.senha_hash, (err, isMatch) => {
+      bcrypt.compare(senha, user.senha, (err, isMatch) => {
         if (err) {
           return res.status(500).json({ success: false, message: 'Erro interno do servidor' });
         }
