@@ -127,7 +127,7 @@ db.connect((error) => {
 //regex to valided values of input
 const isNameValided = (input) => /^[a-zA-Z\sçéúíóáõãèòìàêôâ]+$/.test(input);
 const isOnlyNumberValided = (input) => /^[0-9]*$/.test(input);
-const isEmailValided = (input) => /^[a-z0-9.@]+$/i.test(input);
+const isEmailValided = (input) => /^[a-z0-9@._]+$/i.test(input);
 const isPasswordValided = (input) => /^[a-zA-Z0-9@.#%]+$/.test(input);
 const isSignUpBarbeariaValid = (input) => /^[a-zA-Z\sçéúíóáõãèòìàêôâ.!?+]*$/.test(input);
 
@@ -190,12 +190,8 @@ app.post("/api/v1/SignUp", (req, res) => {
     return res.status(400).json({ error: 'Error in values' });
   }
 
-  // Verifica se email é válido
-  const isValidEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-  if(isValidEmail){
-    if (!isEmailValided(email)) {
-      return res.status(400).json({ error: 'Error in values' });
-    }
+  if (!isEmailValided(email)) {
+    return res.status(400).json({ error: 'Error in values' });
   }
 
   // Verifica se senha contém apenas letras maiúsculas e minúsculas e alguns caracteres especiais
