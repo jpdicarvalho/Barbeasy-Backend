@@ -262,18 +262,24 @@ app.post("/api/v1/SignUp", (req, res) => {
 
 //Realizando Login e Gerando Token de autenticação
 app.post('/api/v1/SignIn', (req, res) => {
-  const {email, senha} = req.body;
+  const { email, senha } = req.body;
+
+  // Verifique se o email e a senha foram fornecidos
+  if (!email || !senha) {
+    return res.status(400).json({ success: false, message: 'Email e senha são obrigatórios' });
+  }
 
   // Buscar usuário pelo email
-  db.query('SELECT id, name, email, senha, celular, user_image FROM user WHERE email = ? AND senha = ?', [email, senha],
-  (err, result) => {
-    if(err){
-      return res.status(500).json({Error: "Internal Server Error"});
+  db.query('SELECT id, name, email, celular, user_image, senha_hash FROM user WHERE email = ?', [email], (err, result) => {
+    if (err) {
+      return res.status(500).json({ success: false, message: 'Erro interno do servidor' });
     }
+    
     if (result.length > 0) {
       const user = result[0];
+
       // Verificar a senha usando bcrypt
-      bcrypt.compare(senha, user.senha, (err, isMatch) => {
+      bcrypt.compare(senha, user.senha_hash, (err, isMatch) => {
         if (err) {
           return res.status(500).json({ success: false, message: 'Erro interno do servidor' });
         }
