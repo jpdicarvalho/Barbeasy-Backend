@@ -6,6 +6,7 @@ import bodyParser from "body-parser";
 import mysql from "mysql2";
 
 import jwt  from 'jsonwebtoken';
+import bcrypt from 'bcrypt'
 import AuthenticateJWT from './AuthenticateJWT.js'
 
 import { MercadoPagoConfig, Payment } from 'mercadopago';
@@ -230,11 +231,18 @@ app.post("/api/v1/SignUp", (req, res) => {
       }
     }
 
+    // Criptografar a senha antes de salvar
+    bcrypt.hash(senha, 10, (err, hash) => {
+      if (err) {
+        console.error(err);
+        return res.status(500).json({ error: 'Erro ao criptografar a senha' });
+      }
+
     // user object as status false
     const user = {
       name,
       email,
-      senha,
+      senha: hash,
       celular,
       user_image: 'default.jpg',
       isVerified: 'false'
