@@ -183,7 +183,7 @@ app.post("/api/v1/ping-db", (req, res) =>{
 
 // Cadastro de usuário com senha criptografada
 app.post("/api/v1/SignUp", (req, res) => {
-  const { name, email, senha, celular } = req.body;
+  const { name, email, senha, celular, google_id } = req.body;
 
   // Verifica se name contém apenas letras maiúsculas e minúsculas
   if (!isSignUpBarbeariaValid(name) && name.length > 30) {
@@ -229,29 +229,36 @@ app.post("/api/v1/SignUp", (req, res) => {
     }
 
     // Criptografar a senha antes de salvar
-    bcrypt.hash(senha, 10, (err, hash) => {
+    bcrypt.hash(senha, 10, (err, senha_hash) => {
       if (err) {
         console.error(err);
         return res.status(500).json({ error: 'Erro ao criptografar a senha' });
       }
-
-      // Criar objeto do usuário com senha criptografada
-      const user = {
-        name,
-        email,
-        senha: hash, // Salvar o hash no campo de senha
-        celular,
-        user_image: 'default.jpg',
-        isVerified: 'false'
-      };
-
-      db.query('INSERT INTO user SET ?', user, (error, results) => {
-        if (results) {
-          return res.status(201).send('Usuário registrado com sucesso');
-        } else {
-          console.error(error);
-          return res.status(500).send('Erro ao registrar usuário');
+      // Criptografar o google id antes de salvar
+      bcrypt.hash(google_id, 10, (err, googleID_hash) => {
+        if (err) {
+          console.error(err);
+          return res.status(500).json({ error: 'Erro ao criptografar a senha' });
         }
+        // Criar objeto do usuário com senha criptografada
+        const user = {
+          name,
+          email,
+          senha: senha_hash, // Salvar o hash no campo de senha
+          celular,
+          user_image: 'default.jpg',
+          isVerified: 'false',
+          google_id: googleID_hash
+        };
+
+        db.query('INSERT INTO user SET ?', user, (error, results) => {
+          if (results) {
+            return res.status(201).send('Usuário registrado com sucesso');
+          } else {
+            console.error(error);
+            return res.status(500).send('Erro ao registrar usuário');
+          }
+        });
       });
     });
   });
