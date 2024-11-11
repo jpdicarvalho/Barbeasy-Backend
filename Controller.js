@@ -306,9 +306,9 @@ app.post('/api/v1/SignIn', (req, res) => {
 });
 
 app.post('/api/v1/googleSignIn', (req, res) => {
-  const { credential } = req.body;
+  const { credential, type } = req.body;
   
-  function getUserInDataBase (email) {
+  function getUserClient (email) {
     db.query('SELECT id, name, email, celular, user_image FROM user WHERE email = ?', [email], (err, result) => {
       if (err) {
         return res.status(500).json({ error: 'Internal Server Error' });
@@ -326,12 +326,38 @@ app.post('/api/v1/googleSignIn', (req, res) => {
     });
   }
 
+  function getUserBarbearia (email) {
+    // Buscar usuário pelo email
+    db.query('SELECT id, name, usuario, status, user_image, banner_main, banners, rua, N, bairro, cidade FROM barbearia WHERE email = ?', [email],
+      (err, result) => {
+        if(err){
+          return res.status(500).json({err: 'internal server erro'});
+        }
+
+        if (result.length > 0) {
+          const barbearia = result[0];
+          // Criação do token
+          const token = jwt.sign({ barbeariaId: barbearia.id, barbeariaEmail: barbearia.email }, process.env.TOKEN_SECRET_WORD_OF_USER_BARBEARIA, { expiresIn: "8h" });
+          // Envie o token no corpo da resposta
+          return res.status(200).json({ Success: 'Success', token: token, barbearia: result });
+          
+        } else if (result.length === 0){
+          // Usuário não encontrado
+          return res.status(404).json({Success: 'Falied', message: 'Usuário não encontrado'});
+        }
+      });
+  }
+
     if(credential){
       axios.get(`https://www.googleapis.com/oauth2/v1/userinfo?access_token=${credential}`)
         .then(res => {
           const email = res.data.email;
           
-          getUserInDataBase(email)
+          if(type === 'client'){
+            getUserClient(email)
+          }else if(type === 'barbearia'){
+            getUserBarbearia(email)
+          }
 
         }).catch(err =>{
           console.log(err)
@@ -1203,8 +1229,9 @@ app.get('/api/v1/SignInBarbearia/:email/:senha', (req, res) => {
   db.query('SELECT id, name, usuario, status, user_image, banner_main, banners, rua, N, bairro, cidade FROM barbearia WHERE email = ? AND senha = ?', [email, senha],
   (err, result) => {
     if(err){
-      return res.send({err: err});
+      return res.status(500).json({err: 'internal server erro'});
     }
+
     if (result.length > 0) {
       const barbearia = result[0];
       // Criação do token
@@ -1212,7 +1239,7 @@ app.get('/api/v1/SignInBarbearia/:email/:senha', (req, res) => {
       // Envie o token no corpo da resposta
       return res.status(200).json({ Success: 'Success', token: token, barbearia: result });
       
-    } else {
+    } else if (result.length === 0){
       // Usuário não encontrado
       return res.status(404).json({Success: 'Falied', message: 'Usuário não encontrado'});
     }
