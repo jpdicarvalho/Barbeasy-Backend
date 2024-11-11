@@ -1264,7 +1264,7 @@ app.get('/api/v1/SignInProfessional/:email/:senha', (req, res) => {
   db.query('SELECT id, name, user_image FROM professional WHERE email = ? AND password = ?', [email, senha],
   (err, result) => {
     if(err){
-      return res.send({err: err});
+      return res.status(500).json({err: 'internal server error'});
     }
     if (result.length > 0) {
       const professional = result[0];
@@ -1273,7 +1273,7 @@ app.get('/api/v1/SignInProfessional/:email/:senha', (req, res) => {
       // Envie o token no corpo da resposta
       return res.status(200).json({Success: 'Success', token: token, professional: result });
       
-    } else {
+    } else if (result.length === 0){
       // Usuário não encontrado
       return res.status(404).json({Success: 'Falied', message: 'Usuário não encontrado'});
     }
