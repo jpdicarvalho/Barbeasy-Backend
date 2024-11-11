@@ -1239,19 +1239,22 @@ app.post('/api/v1/SignInBarbearia', (req, res) => {
 
     if (result.length > 0) {
       const barbearia = result[0];
+console.log(barbearia)
+console.log(barbearia.senha)
 
         // Verificar a senha usando bcrypt
         bcrypt.compare(senha, barbearia.senha, (err, isMatch) => {
           if (err) {
             return res.status(500).json({ success: false, message: 'Erro interno do servidor' });
           }
-          
+          console.log(isMatch)
+
           if (isMatch) {
             // Criação do token JWT
             const token = jwt.sign({ barbeariaId: barbearia.id, barbeariaEmail: barbearia.email }, process.env.TOKEN_SECRET_WORD_OF_USER_BARBEARIA, { expiresIn: "8h" });
 
             // Remover o hash da senha antes de enviar os dados do usuário
-            delete user.senha;
+            delete barbearia.senha;
 
             // Envie o token no corpo da resposta
             return res.status(200).json({ Success: 'Success', token: token, barbearia: result });
