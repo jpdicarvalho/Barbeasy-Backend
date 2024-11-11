@@ -195,7 +195,7 @@ app.post("/api/v1/SignUp", (req, res) => {
   }
 
   // Verifica se senha contém apenas letras maiúsculas e minúsculas e alguns caracteres especiais
-  if (!isPasswordValided(senha) && senha.length <= 8) {
+  if (!isPasswordValided(senha) && senha.length <= 22) {
     return res.status(400).json({ error: 'Error in values' });
   }
 
