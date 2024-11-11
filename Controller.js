@@ -177,8 +177,67 @@ app.post("/api/v1/ping-db", (req, res) =>{
     }
 });
 })
-//==============================================================
+//==================== SIGN IN WITH GOOGLE ======================
+app.post('/api/v1/googleSignIn', (req, res) => {
+  const { credential, type } = req.body;
+  
+  function getUserClient (email) {
+    db.query('SELECT id, name, email, celular, user_image FROM user WHERE email = ?', [email], (err, result) => {
+      if (err) {
+        return res.status(500).json({ error: 'Internal Server Error' });
+      }
+      if (result.length > 0) {
+        const user = result[0];
+        const token = jwt.sign({ userId: user.id, userEmail: user.email }, process.env.TOKEN_SECRET_WORD_OF_USER_CLIENT, { expiresIn: '4h' });
 
+        return res.status(200).json({ success: true, token: token, user: user });
+      }
+      if(result.length === 0){
+        // Usuário não encontrado
+        return res.status(404).json({ success: false, message: 'Usuário não encontrado' });
+      }
+    });
+  }
+
+  function getUserBarbearia (email) {
+    // Buscar usuário pelo email
+    db.query('SELECT id, name, usuario, status, user_image, banner_main, banners, rua, N, bairro, cidade FROM barbearia WHERE email = ?', [email],
+      (err, result) => {
+        if(err){
+          return res.status(500).json({err: 'internal server erro'});
+        }
+
+        if (result.length > 0) {
+          const barbearia = result[0];
+          // Criação do token
+          const token = jwt.sign({ barbeariaId: barbearia.id, barbeariaEmail: barbearia.email }, process.env.TOKEN_SECRET_WORD_OF_USER_BARBEARIA, { expiresIn: "8h" });
+          // Envie o token no corpo da resposta
+          return res.status(200).json({ Success: 'Success', token: token, barbearia: result });
+          
+        } else if (result.length === 0){
+          // Usuário não encontrado
+          return res.status(404).json({Success: 'Falied', message: 'Usuário não encontrado'});
+        }
+      });
+  }
+
+    if(credential){
+      axios.get(`https://www.googleapis.com/oauth2/v1/userinfo?access_token=${credential}`)
+        .then(res => {
+          const email = res.data.email;
+          
+          if(type === 'client'){
+            getUserClient(email)
+          }else if(type === 'barbearia'){
+            getUserBarbearia(email)
+          }
+
+        }).catch(err =>{
+          console.log(err)
+          return res.status(500).json({ error: 'Erro ao verificar token - Internal Server Error' });
+        })
+    }
+});
 //=-=-=-=-= ROTAS USER-CLIENT-BARBEARIA =-=-=-=-=
 
 // Cadastro de usuário com senha criptografada
@@ -298,72 +357,11 @@ app.post('/api/v1/SignIn', (req, res) => {
           return res.status(401).json({ success: false, message: 'Senha incorreta' });
         }
       });
-    } else {
+    } else if (result.length === 0){
       // Usuário não encontrado
-      return res.status(404).json({ success: false, message: 'Usuário não encontrado' });
+      return res.status(404).json({Success: 'Falied', message: 'Usuário não encontrado'});
     }
   });
-});
-
-app.post('/api/v1/googleSignIn', (req, res) => {
-  const { credential, type } = req.body;
-  
-  function getUserClient (email) {
-    db.query('SELECT id, name, email, celular, user_image FROM user WHERE email = ?', [email], (err, result) => {
-      if (err) {
-        return res.status(500).json({ error: 'Internal Server Error' });
-      }
-      if (result.length > 0) {
-        const user = result[0];
-        const token = jwt.sign({ userId: user.id, userEmail: user.email }, process.env.TOKEN_SECRET_WORD_OF_USER_CLIENT, { expiresIn: '4h' });
-
-        return res.status(200).json({ success: true, token: token, user: user });
-      }
-      if(result.length === 0){
-        // Usuário não encontrado
-        return res.status(404).json({ success: false, message: 'Usuário não encontrado' });
-      }
-    });
-  }
-
-  function getUserBarbearia (email) {
-    // Buscar usuário pelo email
-    db.query('SELECT id, name, usuario, status, user_image, banner_main, banners, rua, N, bairro, cidade FROM barbearia WHERE email = ?', [email],
-      (err, result) => {
-        if(err){
-          return res.status(500).json({err: 'internal server erro'});
-        }
-
-        if (result.length > 0) {
-          const barbearia = result[0];
-          // Criação do token
-          const token = jwt.sign({ barbeariaId: barbearia.id, barbeariaEmail: barbearia.email }, process.env.TOKEN_SECRET_WORD_OF_USER_BARBEARIA, { expiresIn: "8h" });
-          // Envie o token no corpo da resposta
-          return res.status(200).json({ Success: 'Success', token: token, barbearia: result });
-          
-        } else if (result.length === 0){
-          // Usuário não encontrado
-          return res.status(404).json({Success: 'Falied', message: 'Usuário não encontrado'});
-        }
-      });
-  }
-
-    if(credential){
-      axios.get(`https://www.googleapis.com/oauth2/v1/userinfo?access_token=${credential}`)
-        .then(res => {
-          const email = res.data.email;
-          
-          if(type === 'client'){
-            getUserClient(email)
-          }else if(type === 'barbearia'){
-            getUserBarbearia(email)
-          }
-
-        }).catch(err =>{
-          console.log(err)
-          return res.status(500).json({ error: 'Erro ao verificar token - Internal Server Error' });
-        })
-    }
 });
 
 //Route to get user image #VERIFIED
@@ -1180,33 +1178,41 @@ app.post("/api/v1/SignUpBarbearia", (req, res) => {
       }
     }
 
-    const barbearia = {
-      name,
-      email,
-      usuario,
-      senha,
-      status: 'Fechado',
-      user_image: 'user_image',
-      banner_main: 'banner_main',
-      banners: 'banners',
-      rua: street,
-      N: number,
-      bairro: neighborhood,
-      cidade: city,
-      amountVisibility: 'visible',
-      celular: celular,
-      isVerified: 'false'
-    };
-
-    db.query('INSERT INTO barbearia SET ?', barbearia, (error, results) => {
-      if (error) {
-        console.error(error);
-        return res.status(500).send('Erro ao registrar usuário');
-      }else{
-        if(results){
-          return res.status(201).send('Usuário registrado com sucesso');
-        }
+    // Criptografar a senha antes de salvar
+    bcrypt.hash(senha, 10, (err, senha_hash) => {
+      if (err) {
+        console.error(err);
+        return res.status(500).json({ error: 'Erro ao criptografar a senha' });
       }
+
+      const barbearia = {
+        name,
+        email,
+        usuario,
+        senha: senha_hash,
+        status: 'Fechado',
+        user_image: 'user_image',
+        banner_main: 'banner_main',
+        banners: 'banners',
+        rua: street,
+        N: number,
+        bairro: neighborhood,
+        cidade: city,
+        amountVisibility: 'visible',
+        celular: celular,
+        isVerified: 'false'
+      };
+
+      db.query('INSERT INTO barbearia SET ?', barbearia, (error, results) => {
+        if (error) {
+          console.error(error);
+          return res.status(500).send('Erro ao registrar usuário');
+        }else{
+          if(results){
+            return res.status(201).send('Usuário registrado com sucesso');
+          }
+        }
+      });
     });
   });
 });
@@ -1226,7 +1232,7 @@ app.get('/api/v1/SignInBarbearia/:email/:senha', (req, res) => {
   }
 
   // Buscar usuário pelo email
-  db.query('SELECT id, name, usuario, status, user_image, banner_main, banners, rua, N, bairro, cidade FROM barbearia WHERE email = ? AND senha = ?', [email, senha],
+  db.query('SELECT id, name, usuario, senha, status, user_image, banner_main, banners, rua, N, bairro, cidade FROM barbearia WHERE email = ? AND senha = ?', [email, senha],
   (err, result) => {
     if(err){
       return res.status(500).json({err: 'internal server erro'});
@@ -1234,11 +1240,27 @@ app.get('/api/v1/SignInBarbearia/:email/:senha', (req, res) => {
 
     if (result.length > 0) {
       const barbearia = result[0];
-      // Criação do token
-      const token = jwt.sign({ barbeariaId: barbearia.id, barbeariaEmail: barbearia.email }, process.env.TOKEN_SECRET_WORD_OF_USER_BARBEARIA, { expiresIn: "8h" });
-      // Envie o token no corpo da resposta
-      return res.status(200).json({ Success: 'Success', token: token, barbearia: result });
-      
+
+        // Verificar a senha usando bcrypt
+        bcrypt.compare(senha, barbearia.senha, (err, isMatch) => {
+          if (err) {
+            return res.status(500).json({ success: false, message: 'Erro interno do servidor' });
+          }
+          
+          if (isMatch) {
+            // Criação do token JWT
+            const token = jwt.sign({ barbeariaId: barbearia.id, barbeariaEmail: barbearia.email }, process.env.TOKEN_SECRET_WORD_OF_USER_BARBEARIA, { expiresIn: "8h" });
+
+            // Remover o hash da senha antes de enviar os dados do usuário
+            delete user.senha;
+
+            // Envie o token no corpo da resposta
+            return res.status(200).json({ Success: 'Success', token: token, barbearia: result });
+          } else {
+            // Senha incorreta
+            return res.status(401).json({ success: false, message: 'Senha incorreta' });
+          }
+        });
     } else if (result.length === 0){
       // Usuário não encontrado
       return res.status(404).json({Success: 'Falied', message: 'Usuário não encontrado'});
