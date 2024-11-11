@@ -182,12 +182,16 @@ app.post('/api/v1/googleSignIn', (req, res) => {
   const { credential, type } = req.body;
   
   function getUserClient (email) {
-    db.query('SELECT id, name, email, celular, user_image FROM user WHERE email = ?', [email], (err, result) => {
+    db.query('SELECT id, name, email, celular, user_image, isVerified FROM user WHERE email = ?', [email], (err, result) => {
       if (err) {
         return res.status(500).json({ error: 'Internal Server Error' });
       }
       if (result.length > 0) {
         const user = result[0];
+        //Verify if account has a pending activation
+        if(user.isVerified != 'true'){
+          return res.status(302).json({ message: 'Ativação de conta pendente'});
+        }
         const token = jwt.sign({ userId: user.id, userEmail: user.email }, process.env.TOKEN_SECRET_WORD_OF_USER_CLIENT, { expiresIn: '4h' });
 
         return res.status(200).json({ success: true, token: token, user: user });
@@ -201,7 +205,7 @@ app.post('/api/v1/googleSignIn', (req, res) => {
 
   function getUserBarbearia (email) {
     // Buscar usuário pelo email
-    db.query('SELECT id, name, usuario, status, user_image, banner_main, banners, rua, N, bairro, cidade FROM barbearia WHERE email = ?', [email],
+    db.query('SELECT id, name, usuario, status, user_image, banner_main, banners, rua, N, bairro, cidade, isVerified FROM barbearia WHERE email = ?', [email],
       (err, result) => {
         if(err){
           return res.status(500).json({err: 'internal server erro'});
@@ -209,6 +213,10 @@ app.post('/api/v1/googleSignIn', (req, res) => {
 
         if (result.length > 0) {
           const barbearia = result[0];
+          //Verify if account has a pending activation
+          if(barbearia.isVerified != 'true'){
+            return res.status(302).json({ message: 'Ativação de conta pendente'});
+          }
           // Criação do token
           const token = jwt.sign({ barbeariaId: barbearia.id, barbeariaEmail: barbearia.email }, process.env.TOKEN_SECRET_WORD_OF_USER_BARBEARIA, { expiresIn: "8h" });
           // Envie o token no corpo da resposta
@@ -325,13 +333,17 @@ app.post('/api/v1/SignIn', (req, res) => {
   }
 
   // Buscar usuário pelo email
-  db.query('SELECT id, name, email, celular, user_image, senha FROM user WHERE email = ?', [email], (err, result) => {
+  db.query('SELECT id, name, email, celular, user_image, senha, isVerified FROM user WHERE email = ?', [email], (err, result) => {
     if (err) {
       return res.status(500).json({ success: false, message: 'Erro interno do servidor' });
     }
     
     if (result.length > 0) {
       const user = result[0];
+      //Verify if account has a pending activation
+      if(user.isVerified != 'true'){
+        return res.status(302).json({ message: 'Ativação de conta pendente'});
+      }
 
       // Verificar a senha usando bcrypt
       bcrypt.compare(senha, user.senha, (err, isMatch) => {
@@ -1231,23 +1243,23 @@ app.post('/api/v1/SignInBarbearia', (req, res) => {
   }
 
   // Buscar usuário pelo email
-  db.query('SELECT id, name, usuario, senha, status, user_image, banner_main, banners, rua, N, bairro, cidade FROM barbearia WHERE email = ?', [email],
+  db.query('SELECT id, name, usuario, senha, status, user_image, banner_main, banners, rua, N, bairro, cidade, isVerified FROM barbearia WHERE email = ?', [email],
   (err, result) => {
     if(err){
       return res.status(500).json({err: 'internal server erro'});
     }
 
     if (result.length > 0) {
-      const barbearia = result[0];
-console.log(barbearia)
-console.log(barbearia.senha)
-
+        const barbearia = result[0];
+        //Verify if account has a pending activation
+        if(barbearia.isVerified != 'true'){
+          return res.status(302).json({ message: 'Ativação de conta pendente'});
+        }
         // Verificar a senha usando bcrypt
         bcrypt.compare(senha, barbearia.senha, (err, isMatch) => {
           if (err) {
             return res.status(500).json({ success: false, message: 'Erro interno do servidor' });
           }
-          console.log(isMatch)
 
           if (isMatch) {
             // Criação do token JWT
@@ -1291,6 +1303,7 @@ app.post('/api/v1/SignInProfessional', (req, res) => {
     }
     if (result.length > 0) {
       const professional = result[0];
+    
       // Criação do token
       const token = jwt.sign({ professionalId: professional.id, professionalEmail: professional.email }, process.env.TOKEN_SECRET_WORD_OF_USER_BARBEARIA, { expiresIn: "8h" });
       // Envie o token no corpo da resposta
