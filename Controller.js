@@ -183,7 +183,7 @@ app.post("/api/v1/ping-db", (req, res) =>{
 
 // Cadastro de usuário com senha criptografada
 app.post("/api/v1/SignUp", (req, res) => {
-  const { name, email, senha, celular, google_id } = req.body;
+  const { name, email, senha, celular } = req.body;
 
   // Verifica se name contém apenas letras maiúsculas e minúsculas
   if (!isSignUpBarbeariaValid(name) && name.length > 30) {
@@ -234,12 +234,6 @@ app.post("/api/v1/SignUp", (req, res) => {
         console.error(err);
         return res.status(500).json({ error: 'Erro ao criptografar a senha' });
       }
-      // Criptografar o google id antes de salvar
-      bcrypt.hash(google_id, 10, (err, googleID_hash) => {
-        if (err) {
-          console.error(err);
-          return res.status(500).json({ error: 'Erro ao criptografar a senha' });
-        }
         // Criar objeto do usuário com senha criptografada
         const user = {
           name,
@@ -248,7 +242,6 @@ app.post("/api/v1/SignUp", (req, res) => {
           celular,
           user_image: 'default.jpg',
           isVerified: 'false',
-          google_id: googleID_hash
         };
 
         db.query('INSERT INTO user SET ?', user, (error, results) => {
@@ -259,7 +252,6 @@ app.post("/api/v1/SignUp", (req, res) => {
             return res.status(500).send('Erro ao registrar usuário');
           }
         });
-      });
     });
   });
 });
@@ -315,21 +307,12 @@ app.post('/api/v1/SignIn', (req, res) => {
 
 app.post('/api/v1/googleSignIn', (req, res) => {
   const { credential } = req.body;
-
-  const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
-
-  client.verifyIdToken({
-    idToken: credential,
-    audience: process.env.GOOGLE_CLIENT_ID,
-  }).then(ticket => {
-    const payload = ticket.getPayload();
-    const email = payload['email'];
-
+  
+  function getUserInDataBase (email) {
     db.query('SELECT id, name, email, celular, user_image FROM user WHERE email = ?', [email], (err, result) => {
       if (err) {
         return res.status(500).json({ error: 'Internal Server Error' });
       }
-
       if (result.length > 0) {
         const user = result[0];
         const token = jwt.sign({ userId: user.id, userEmail: user.email }, process.env.TOKEN_SECRET_WORD_OF_USER_CLIENT, { expiresIn: '4h' });
@@ -341,10 +324,20 @@ app.post('/api/v1/googleSignIn', (req, res) => {
         return res.status(404).json({ success: false, message: 'Usuário não encontrado' });
       }
     });
-  }).catch(error => {
-    console.error('Erro ao verificar token:', error);
-    res.status(401).json({ error: 'Token inválido ou não autorizado' });
-  });
+  }
+
+    if(credential){
+      axios.get(`https://www.googleapis.com/oauth2/v1/userinfo?access_token=${credential}`)
+        .then(res => {
+          const email = res.data.email;
+          
+          getUserInDataBase(email)
+
+        }).catch(err =>{
+          console.log(err)
+          return res.status(500).json({ error: 'Erro ao verificar token - Internal Server Error' });
+        })
+    }
 });
 
 //Route to get user image #VERIFIED
