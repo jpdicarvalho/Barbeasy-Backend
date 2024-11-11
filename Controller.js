@@ -1136,7 +1136,7 @@ app.post("/api/v1/SignUpBarbearia", (req, res) => {
     return res.status(400).json({ error: 'Error in values' });
   }
   // Verifica se usuario contém apenas letras maiúsculas e minúsculas
-  if (!isSignUpBarbeariaValid(usuario) && usuario.length <= 30) {
+  if (!isSignUpBarbeariaValid(usuario) && usuario.length <= 20) {
     return res.status(400).json({ error: 'Error in values' });
   }
   // Verifica se email contém apenas letras maiúsculas e minúsculas
@@ -1232,7 +1232,7 @@ app.get('/api/v1/SignInBarbearia/:email/:senha', (req, res) => {
   }
 
   // Buscar usuário pelo email
-  db.query('SELECT id, name, usuario, senha, status, user_image, banner_main, banners, rua, N, bairro, cidade FROM barbearia WHERE email = ? AND senha = ?', [email, senha],
+  db.query('SELECT id, name, usuario, senha, status, user_image, banner_main, banners, rua, N, bairro, cidade FROM barbearia WHERE email = ?', [email],
   (err, result) => {
     if(err){
       return res.status(500).json({err: 'internal server erro'});
