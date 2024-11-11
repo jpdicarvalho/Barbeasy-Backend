@@ -190,7 +190,12 @@ app.post('/api/v1/googleSignIn', (req, res) => {
         const user = result[0];
         //Verify if account has a pending activation
         if(user.isVerified != 'true'){
-          return res.status(302).json({ message: 'Ativação de conta pendente'});
+          //Object with user's data
+          const userData = {
+            celular: user.celular,
+            email: user.email,
+          }
+          return res.status(302).json({ userPending: userData, message: 'Ativação de conta pendente'});
         }
         const token = jwt.sign({ userId: user.id, userEmail: user.email }, process.env.TOKEN_SECRET_WORD_OF_USER_CLIENT, { expiresIn: '4h' });
 
@@ -205,7 +210,7 @@ app.post('/api/v1/googleSignIn', (req, res) => {
 
   function getUserBarbearia (email) {
     // Buscar usuário pelo email
-    db.query('SELECT id, name, usuario, status, user_image, banner_main, banners, rua, N, bairro, cidade, isVerified FROM barbearia WHERE email = ?', [email],
+    db.query('SELECT id, name, email, usuario, status, user_image, banner_main, banners, rua, N, bairro, cidade, celular, isVerified FROM barbearia WHERE email = ?', [email],
       (err, result) => {
         if(err){
           return res.status(500).json({err: 'internal server erro'});
@@ -215,7 +220,12 @@ app.post('/api/v1/googleSignIn', (req, res) => {
           const barbearia = result[0];
           //Verify if account has a pending activation
           if(barbearia.isVerified != 'true'){
-            return res.status(302).json({ message: 'Ativação de conta pendente'});
+            //Object with user's data
+            const userData = {
+              celular: barbearia.celular,
+              email: barbearia.email,
+            }
+            return res.status(302).json({ userPending: userData, message: 'Ativação de conta pendente'});
           }
           // Criação do token
           const token = jwt.sign({ barbeariaId: barbearia.id, barbeariaEmail: barbearia.email }, process.env.TOKEN_SECRET_WORD_OF_USER_BARBEARIA, { expiresIn: "8h" });
@@ -284,8 +294,8 @@ app.post("/api/v1/SignUp", (req, res) => {
       if(existingUser.isVerified != 'true'){
         //Object with user's data
         const userData = {
-          celular: results[0].celular,
-          email: results[0].email,
+          celular: existingUser.celular,
+          email: existingUser.email,
         }
         return res.status(302).json({ userPending: userData, message: 'Ativação de conta pendente'});
       }
@@ -342,7 +352,12 @@ app.post('/api/v1/SignIn', (req, res) => {
       const user = result[0];
       //Verify if account has a pending activation
       if(user.isVerified != 'true'){
-        return res.status(302).json({ message: 'Ativação de conta pendente'});
+        //Object with user's data
+        const userData = {
+          celular: user.celular,
+          email: user.email,
+        }
+        return res.status(302).json({ userPending: userData, message: 'Ativação de conta pendente'});
       }
 
       // Verificar a senha usando bcrypt
@@ -1179,8 +1194,8 @@ app.post("/api/v1/SignUpBarbearia", (req, res) => {
       if(existingUser.isVerified != 'true'){
         //Object with user's data
         const userData = {
-          celular: results[0].celular,
-          email: results[0].email,
+          celular: existingUser.celular,
+          email: existingUser.email,
         }
         return res.status(302).json({ userPending: userData, message: 'Ativação de conta pendente'});
       }
@@ -1243,7 +1258,7 @@ app.post('/api/v1/SignInBarbearia', (req, res) => {
   }
 
   // Buscar usuário pelo email
-  db.query('SELECT id, name, usuario, senha, status, user_image, banner_main, banners, rua, N, bairro, cidade, isVerified FROM barbearia WHERE email = ?', [email],
+  db.query('SELECT id, name, email, usuario, senha, status, user_image, banner_main, banners, rua, N, bairro, cidade, celular, isVerified FROM barbearia WHERE email = ?', [email],
   (err, result) => {
     if(err){
       return res.status(500).json({err: 'internal server erro'});
@@ -1253,7 +1268,12 @@ app.post('/api/v1/SignInBarbearia', (req, res) => {
         const barbearia = result[0];
         //Verify if account has a pending activation
         if(barbearia.isVerified != 'true'){
-          return res.status(302).json({ message: 'Ativação de conta pendente'});
+          //Object with user's data
+          const userData = {
+            celular: barbearia.celular,
+            email: barbearia.email,
+          }
+          return res.status(302).json({ userPending: userData, message: 'Ativação de conta pendente'});
         }
         // Verificar a senha usando bcrypt
         bcrypt.compare(senha, barbearia.senha, (err, isMatch) => {
