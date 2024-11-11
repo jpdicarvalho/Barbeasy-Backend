@@ -1218,9 +1218,8 @@ app.post("/api/v1/SignUpBarbearia", (req, res) => {
 });
 
 //Realizando Login e Gerando Token de autenticação para a barbearia  #VERIFIED
-app.get('/api/v1/SignInBarbearia/:email/:senha', (req, res) => {
-  const email = req.params.email;
-  const senha = req.params.senha;
+app.post('/api/v1/SignInBarbearia', (req, res) => {
+  const {email, senha} = req.body;
 
   // Verifica se newEmail contém apenas letras maiúsculas e minúsculas
   if (!isEmailValided(email) && email.length <= 50) {
@@ -1269,9 +1268,8 @@ app.get('/api/v1/SignInBarbearia/:email/:senha', (req, res) => {
 });
 
 //Realizando Login e Gerando Token de autenticação para a barbearia  #VERIFIED
-app.get('/api/v1/SignInProfessional/:email/:senha', (req, res) => {
-  const email = req.params.email;
-  const senha = req.params.senha;
+app.post('/api/v1/SignInProfessional', (req, res) => {
+  const {email, senha } = req.body;
 
   // Verifica se newEmail contém apenas letras maiúsculas e minúsculas
   if (!isEmailValided(email) && email.length <= 50) {
