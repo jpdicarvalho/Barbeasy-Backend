@@ -8,7 +8,7 @@ import mysql from "mysql2";
 import jwt  from 'jsonwebtoken';
 import bcrypt from 'bcrypt'
 import AuthenticateJWT from './AuthenticateJWT.js'
-import { OAuth2Client } from 'google-auth-library';
+import AuthenticateCloudflare from './AuthenticateCloudflare.js';
 
 import { MercadoPagoConfig, Payment } from 'mercadopago';
 import { v4 as uuidv4 } from 'uuid';
@@ -334,7 +334,7 @@ app.post("/api/v1/SignUp", (req, res) => {
 });
 
 //Realizando Login e Gerando Token de autenticação
-app.post('/api/v1/SignIn', (req, res) => {
+app.post('/api/v1/SignIn', AuthenticateCloudflare, (req, res) => {
   const { email, senha } = req.body;
 
   // Verifique se o email e a senha foram fornecidos
