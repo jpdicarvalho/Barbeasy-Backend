@@ -5,27 +5,25 @@ import 'dotenv/config';
 // you store your secret key(s) safely.
 
 const AuthenticateCloudflare = (req, res, next) => {
-  //const authHeader = req.headers;
-  console.log(req.headers)
+  const token_cloudflare_from_client_server = req.headers.authorization;
 
-  /* Turnstile injects a token in "cf-turnstile-response".
-  const token = body.get("cf-turnstile-response");
-  const ip = request.headers.get("CF-Connecting-IP");
+  if(token_cloudflare_from_client_server) {
+    const token = token_cloudflare_from_client_server.split(' ')[1];
 
-  // Validate the token by calling the
-  // "/siteverify" API endpoint.
-  const values = {
-    secret: CLOUDFLARE_SECRET_KEY,
-    response: token,
-    remoteip: ip
-  }
-  const url = "https://challenges.cloudflare.com/turnstile/v0/siteverify";
-  axios.post(url, values)
-  .then(res =>{
+    // Validate the token by calling the
+    // "/siteverify" API endpoint.
+    const values = {
+        secret: CLOUDFLARE_SECRET_KEY,
+        response: token,
+    }
+    const url = "https://challenges.cloudflare.com/turnstile/v0/siteverify";
+    axios.post(url, values)
+    .then(res =>{
     console.log(res)
-  })
-  .catch(err =>{
+    })
+    .catch(err =>{
     console.log(err)
-  })*/
+    })
+  }
 }
-export default AuthenticateCloudflare;
+export default AuthenticateCloudflare;  
