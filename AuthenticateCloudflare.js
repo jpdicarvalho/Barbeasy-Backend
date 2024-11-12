@@ -19,10 +19,14 @@ const AuthenticateCloudflare = (req, res, next) => {
     const url = "https://challenges.cloudflare.com/turnstile/v0/siteverify";
     axios.post(url, values)
     .then(res =>{
-    console.log(res.data)
+        console.log(res.data)
+        if(res.data.success === true){
+            next();
+        }
     })
     .catch(err =>{
-    console.log(err)
+        console.log(err)
+        return res.status(403).json({ message: 'Cloudflare: Invalid token' });
     })
   }
 }
