@@ -9,7 +9,7 @@ const AuthenticateCloudflare = (req, res, next) => {
 
   if(token_cloudflare_from_client_server) {
     const token = token_cloudflare_from_client_server.split(' ')[1];
-console.log(token)
+
     // Validate the token by calling the
     // "/siteverify" API endpoint.
     const values = {
@@ -19,7 +19,7 @@ console.log(token)
     const url = "https://challenges.cloudflare.com/turnstile/v0/siteverify";
     axios.post(url, values)
     .then(res =>{
-    console.log(res)
+    console.log(res.data)
     })
     .catch(err =>{
     console.log(err)
