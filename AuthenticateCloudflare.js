@@ -19,17 +19,16 @@ const AuthenticateCloudflare = (req, res, next) => {
     const url = "https://challenges.cloudflare.com/turnstile/v0/siteverify";
     axios.post(url, values)
     .then(res =>{
-        console.log(res.data)
         if(res.data.success === true){
             next();
         }
         if(res.data.success === false){
-            return res.status(403).json({ message: 'Cloudflare: timeout-or-duplicate' });
+            res.status(403).json({ message: 'Cloudflare: timeout-or-duplicate' });
         }
     })
     .catch(err =>{
         console.log(err)
-        return res.status(403).json({ message: 'Cloudflare: Invalid token' });
+        return res.status(500).json({ message: 'Cloudflare: erro na requisição' });
     })
   }
 }
