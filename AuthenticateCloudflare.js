@@ -9,11 +9,11 @@ const AuthenticateCloudflare = (req, res, next) => {
 
   if(token_cloudflare_from_client_server) {
     const token = token_cloudflare_from_client_server.split(' ')[1];
-
+console.log(token)
     // Validate the token by calling the
     // "/siteverify" API endpoint.
     const values = {
-        secret: CLOUDFLARE_SECRET_KEY,
+        secret: process.env.CLOUDFLARE_SECRET_KEY,
         response: token,
     }
     const url = "https://challenges.cloudflare.com/turnstile/v0/siteverify";
