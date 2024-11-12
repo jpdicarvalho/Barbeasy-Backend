@@ -7,11 +7,7 @@ import 'dotenv/config';
 const AuthenticateCloudflare = (req, res, next) => {
   //const authHeader = req.headers;
   console.log(req.headers)
-  console.log(req)
 
-
-  const body = request.formData();
-  console.log(body)
   /* Turnstile injects a token in "cf-turnstile-response".
   const token = body.get("cf-turnstile-response");
   const ip = request.headers.get("CF-Connecting-IP");
