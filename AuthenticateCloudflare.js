@@ -23,6 +23,9 @@ const AuthenticateCloudflare = (req, res, next) => {
         if(res.data.success === true){
             next();
         }
+        if(res.data.success === false){
+            return res.status(403).json({ message: 'Cloudflare: timeout-or-duplicate' });
+        }
     })
     .catch(err =>{
         console.log(err)
