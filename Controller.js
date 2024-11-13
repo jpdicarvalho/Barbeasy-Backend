@@ -262,22 +262,47 @@ app.post('/api/v1/googleSignIn', (req, res) => {
       });
   }
 
-    if(credential){
-      axios.get(`https://www.googleapis.com/oauth2/v1/userinfo?access_token=${credential}`)
-        .then(res => {
-          const email = res.data.email;
+  function getProfessional (email) {
+    // Buscar usuário pelo email
+    db.query('SELECT id, name, user_image FROM professional WHERE email = ? AND password = ?', [email],
+      (err, result) => {
+        if(err){
+          return res.status(500).json({err: 'internal server error'});
+        }
+        if (result.length > 0) {
+          const professional = result[0];
+        
+          // Criação do token
+          const token = jwt.sign({ professionalId: professional.id, professionalEmail: professional.email }, process.env.TOKEN_SECRET_WORD_OF_USER_BARBEARIA, { expiresIn: "8h" });
+          // Envie o token no corpo da resposta
+          return res.status(200).json({Success: 'Success', token: token, professional: result });
           
-          if(type === 'client'){
-            getUserClient(email)
-          }else if(type === 'barbearia'){
-            getUserBarbearia(email)
-          }
+        } else if (result.length === 0){
+          // Usuário não encontrado
+          return res.status(404).json({Success: 'Falied', message: 'Usuário não encontrado'});
+        }
+      });
+  }
 
-        }).catch(err =>{
-          console.log(err)
-          return res.status(500).json({ error: 'Erro ao verificar token - Internal Server Error' });
-        })
-    }
+  if(credential){
+    axios.get(`https://www.googleapis.com/oauth2/v1/userinfo?access_token=${credential}`)
+      .then(res => {
+        const email = res.data.email;
+        
+        if(type === 'client'){
+          getUserClient(email)
+        }else if(type === 'barbearia'){
+          getUserBarbearia(email)
+        }else if(type === 'professional'){
+          getProfessional(email)
+        }
+
+      }).catch(err =>{
+        console.log(err)
+        return res.status(500).json({ error: 'Erro ao verificar token - Internal Server Error' });
+      })
+  }
+  
 });
 //=-=-=-=-= ROTAS USER-CLIENT-BARBEARIA =-=-=-=-=
 
@@ -730,6 +755,7 @@ app.get('/api/v1/barbeariaDetails/:barbeariaId', (req, res) =>{
   })
 
 })
+
 /*listando os Serviços cadastrados pelas barbearias*/
 app.get('/api/v1/getAllServices', AuthenticateJWT, async (req, res)=>{
   try {
