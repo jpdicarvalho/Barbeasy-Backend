@@ -175,6 +175,28 @@ app.post("/api/v1/ping-db", (req, res) =>{
     }
 });
 })
+//==================== VERIFY TOKEN FROM FRONTEND ===============
+function verifyTokenFromFrontend (token) {
+  let isTokenValid = true;
+
+  //Object to verify token from frontend
+  const values = {
+    secret: process.env.CLOUDFLARE_SECRET_KEY,
+    response: token,
+  }
+
+  const url = "https://challenges.cloudflare.com/turnstile/v0/siteverify";
+  axios.post(url, values)
+  .then(res =>{
+      if(res.data.success === false || res.data.hostname != 'barbeasy.com.br'){
+          return isTokenValid = false;
+      }
+  })
+  .catch(err =>{
+      console.log(err)
+      return isTokenValid = 'Erro na requisição';
+  })
+}
 //==================== SIGN IN WITH GOOGLE ======================
 app.post('/api/v1/googleSignIn', (req, res) => {
   const { credential, type } = req.body;
@@ -339,27 +361,15 @@ app.post('/api/v1/SignIn', (req, res) => {
   if (!email || !senha || !token_cloudflare) {
     return res.status(400).json({ success: false, message: 'Verifique os dados forncecidos para login' });
   }
-  console.log(token_cloudflare)
 
-  //Object to verify token from frontend
-  const values = {
-    secret: process.env.CLOUDFLARE_SECRET_KEY,
-    response: token_cloudflare,
+  const isTokenValid = verifyTokenFromFrontend(token_cloudflare);
+
+  if(!isTokenValid){
+    return res.status(403).json({ message: 'Cloudflare: timeout-or-duplicate' });
+  } else if('Erro na requisição'){
+    return res.status(500).json({ message: 'Cloudflare: erro na requisição' });
   }
   
-  const url = "https://challenges.cloudflare.com/turnstile/v0/siteverify";
-  axios.post(url, values)
-  .then(res =>{
-      console.log(res.data)
-      if(res.data.success === false){
-          res.status(403).json({ message: 'Cloudflare: timeout-or-duplicate' });
-      }
-  })
-  .catch(err =>{
-      console.log(err)
-      return res.status(500).json({ message: 'Cloudflare: erro na requisição' });
-  })
-
   // Buscar usuário pelo email
   db.query('SELECT id, name, email, celular, user_image, senha, isVerified FROM user WHERE email = ?', [email], (err, result) => {
     if (err) {
