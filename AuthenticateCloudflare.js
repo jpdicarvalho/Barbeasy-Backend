@@ -6,9 +6,11 @@ import 'dotenv/config';
 
 const AuthenticateCloudflare = (req, res, next) => {
   const token_cloudflare_from_client_server = req.headers.authorization;
+  console.log("Token recebido:", token_cloudflare_from_client_server);
 
   if(token_cloudflare_from_client_server) {
     const token = token_cloudflare_from_client_server.split(' ')[1];
+    console.log("Token formatado:", token);
 
     // Validate the token by calling the
     // "/siteverify" API endpoint.
