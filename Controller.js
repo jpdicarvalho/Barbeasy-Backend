@@ -176,27 +176,29 @@ app.post("/api/v1/ping-db", (req, res) =>{
 });
 })
 //==================== VERIFY TOKEN FROM FRONTEND ===============
-function verifyTokenFromFrontend (token) {
-  let isTokenValid = true;
+async function verifyTokenFromFrontend(token) {
+  try {
+    const values = {
+      secret: process.env.CLOUDFLARE_SECRET_KEY,
+      response: token,
+    };
 
-  //Object to verify token from frontend
-  const values = {
-    secret: process.env.CLOUDFLARE_SECRET_KEY,
-    response: token,
+    const url = "https://challenges.cloudflare.com/turnstile/v0/siteverify";
+    const response = await axios.post(url, values);
+
+    console.log(response.data);
+
+    // Verifica se a resposta da API foi bem-sucedida e se o hostname está correto
+    if (response.data.success === false || response.data.hostname !== 'barbeasy.com.br') {
+      return false;
+    }
+
+    return true;
+  } catch (err) {
+    console.log(err);
+    // Retorna um valor específico para indicar erro
+    return 'Erro na requisição';
   }
-
-  const url = "https://challenges.cloudflare.com/turnstile/v0/siteverify";
-  axios.post(url, values)
-  .then(res =>{
-    console.log(res.data)
-      if(res.data.success === false || res.data.hostname != 'barbeasy.com.br'){
-          return isTokenValid = false;
-      }
-  })
-  .catch(err =>{
-      console.log(err)
-      return isTokenValid = 'Erro na requisição';
-  })
 }
 //==================== SIGN IN WITH GOOGLE ======================
 app.post('/api/v1/googleSignIn', (req, res) => {
@@ -363,11 +365,12 @@ app.post('/api/v1/SignIn', (req, res) => {
     return res.status(400).json({ success: false, message: 'Verifique os dados forncecidos para login' });
   }
 
+  // Uso da função assíncrona
   const isTokenValid = verifyTokenFromFrontend(token_cloudflare);
 
-  if(!isTokenValid){
+  if (isTokenValid === false) {
     return res.status(403).json({ message: 'Cloudflare: timeout-or-duplicate' });
-  } else if('Erro na requisição'){
+  } else if (isTokenValid === 'Erro na requisição') {
     return res.status(500).json({ message: 'Cloudflare: erro na requisição' });
   }
 
