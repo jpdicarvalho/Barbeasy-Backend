@@ -283,7 +283,21 @@ app.post('/api/v1/googleSignIn', (req, res) => {
 
 // Cadastro de usuário com senha criptografada
 app.post("/api/v1/SignUp", (req, res) => {
-  const { name, email, senha, celular } = req.body;
+  const { name, email, senha, celular, token_cloudflare } = req.body;
+
+  // Verifique se o token foi fornecido
+  if (!token_cloudflare) {
+    return res.status(400).json({ success: false, message: 'Verifique os dados forncecidos para login' });
+  }
+
+  // Uso da função assíncrona
+  const isTokenValid = verifyTokenFromFrontend(token_cloudflare);
+
+  if (isTokenValid === false) {
+    return res.status(403).json({ message: 'Cloudflare: timeout-or-duplicate' });
+  } else if (isTokenValid === 'Erro na requisição') {
+    return res.status(500).json({ message: 'Cloudflare: erro na requisição' });
+  }
 
   // Verifica se name contém apenas letras maiúsculas e minúsculas
   if (!isSignUpBarbeariaValid(name) && name.length > 30) {
