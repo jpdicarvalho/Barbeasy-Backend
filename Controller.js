@@ -188,6 +188,7 @@ function verifyTokenFromFrontend (token) {
   const url = "https://challenges.cloudflare.com/turnstile/v0/siteverify";
   axios.post(url, values)
   .then(res =>{
+    console.log(res.data)
       if(res.data.success === false || res.data.hostname != 'barbeasy.com.br'){
           return isTokenValid = false;
       }
@@ -369,7 +370,7 @@ app.post('/api/v1/SignIn', (req, res) => {
   } else if('Erro na requisição'){
     return res.status(500).json({ message: 'Cloudflare: erro na requisição' });
   }
-  
+
   // Buscar usuário pelo email
   db.query('SELECT id, name, email, celular, user_image, senha, isVerified FROM user WHERE email = ?', [email], (err, result) => {
     if (err) {
