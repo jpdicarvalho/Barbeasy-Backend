@@ -264,7 +264,7 @@ app.post('/api/v1/googleSignIn', (req, res) => {
 
   function getProfessional (email) {
     // Buscar usuário pelo email
-    db.query('SELECT id, name, user_image FROM professional WHERE email = ? AND password = ?', [email],
+    db.query('SELECT id, name, user_image FROM professional WHERE email = ?', [email],
       (err, result) => {
         if(err){
           return res.status(500).json({err: 'internal server error'});
@@ -302,7 +302,7 @@ app.post('/api/v1/googleSignIn', (req, res) => {
         return res.status(500).json({ error: 'Erro ao verificar token - Internal Server Error' });
       })
   }
-  
+
 });
 //=-=-=-=-= ROTAS USER-CLIENT-BARBEARIA =-=-=-=-=
 
