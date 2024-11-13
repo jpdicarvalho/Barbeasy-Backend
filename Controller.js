@@ -8,7 +8,6 @@ import mysql from "mysql2";
 import jwt  from 'jsonwebtoken';
 import bcrypt from 'bcrypt'
 import AuthenticateJWT from './AuthenticateJWT.js'
-import AuthenticateCloudflare from './AuthenticateCloudflare.js';
 
 import { MercadoPagoConfig, Payment } from 'mercadopago';
 import { v4 as uuidv4 } from 'uuid';
@@ -23,7 +22,6 @@ import rateLimit from 'express-rate-limit';
 
 import axios from 'axios';
 
-import { Vonage } from '@vonage/server-sdk';
 
 import cron from 'node-cron'
 
@@ -334,13 +332,33 @@ app.post("/api/v1/SignUp", (req, res) => {
 });
 
 //Realizando Login e Gerando Token de autenticação
-app.post('/api/v1/SignIn', AuthenticateCloudflare, (req, res) => {
-  const { email, senha } = req.body;
+app.post('/api/v1/SignIn', (req, res) => {
+  const { email, senha, token_cloudflare } = req.body;
 
   // Verifique se o email e a senha foram fornecidos
-  if (!email || !senha) {
-    return res.status(400).json({ success: false, message: 'Email e senha são obrigatórios' });
+  if (!email || !senha || !token_cloudflare) {
+    return res.status(400).json({ success: false, message: 'Verifique os dados forncecidos para login' });
   }
+  console.log(token_cloudflare)
+
+  //Object to verify token from frontend
+  const values = {
+    secret: process.env.CLOUDFLARE_SECRET_KEY,
+    response: token_cloudflare,
+  }
+  
+  const url = "https://challenges.cloudflare.com/turnstile/v0/siteverify";
+  axios.post(url, values)
+  .then(res =>{
+      console.log(res.data)
+      if(res.data.success === false){
+          res.status(403).json({ message: 'Cloudflare: timeout-or-duplicate' });
+      }
+  })
+  .catch(err =>{
+      console.log(err)
+      return res.status(500).json({ message: 'Cloudflare: erro na requisição' });
+  })
 
   // Buscar usuário pelo email
   db.query('SELECT id, name, email, celular, user_image, senha, isVerified FROM user WHERE email = ?', [email], (err, result) => {
