@@ -1186,7 +1186,21 @@ app.post('/api/v1/notificationPayment', (req, res) => {
 //======================================= ROTAS USER-BARBEARIA ====================================
 //Cadastro de ususário Barbearia   #VERIFIED
 app.post("/api/v1/SignUpBarbearia", (req, res) => {
-  const { name, street, number, neighborhood, city, usuario, email, senha, celular } = req.body;
+  const { name, street, number, neighborhood, city, usuario, email, senha, celular, token_cloudflare } = req.body;
+
+  // Verifique se o token foi fornecido
+  if (!token_cloudflare) {
+    return res.status(400).json({ success: false, message: 'Verifique os dados forncecidos para login' });
+  }
+
+  // Uso da função assíncrona
+  const isTokenValid = verifyTokenFromFrontend(token_cloudflare);
+
+  if (isTokenValid === false) {
+    return res.status(403).json({ message: 'Cloudflare: timeout-or-duplicate' });
+  } else if (isTokenValid === 'Erro na requisição') {
+    return res.status(500).json({ message: 'Cloudflare: erro na requisição' });
+  }
 
   // Verifica se name contém apenas letras maiúsculas e minúsculas
   if (!isSignUpBarbeariaValid(name) && name.length <= 30) {
@@ -1292,7 +1306,21 @@ app.post("/api/v1/SignUpBarbearia", (req, res) => {
 
 //Realizando Login e Gerando Token de autenticação para a barbearia  #VERIFIED
 app.post('/api/v1/SignInBarbearia', (req, res) => {
-  const {email, senha} = req.body;
+  const {email, senha, token_cloudflare} = req.body;
+
+  // Verifique se o token foi fornecido
+  if (!token_cloudflare) {
+    return res.status(400).json({ success: false, message: 'Verifique os dados forncecidos para login' });
+  }
+
+  // Uso da função assíncrona
+  const isTokenValid = verifyTokenFromFrontend(token_cloudflare);
+
+  if (isTokenValid === false) {
+    return res.status(403).json({ message: 'Cloudflare: timeout-or-duplicate' });
+  } else if (isTokenValid === 'Erro na requisição') {
+    return res.status(500).json({ message: 'Cloudflare: erro na requisição' });
+  }
 
   // Verifica se newEmail contém apenas letras maiúsculas e minúsculas
   if (!isEmailValided(email) && email.length <= 50) {
