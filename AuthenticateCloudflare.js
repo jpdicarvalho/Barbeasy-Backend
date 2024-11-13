@@ -19,6 +19,7 @@ const AuthenticateCloudflare = (req, res, next) => {
     const url = "https://challenges.cloudflare.com/turnstile/v0/siteverify";
     axios.post(url, values)
     .then(res =>{
+        console.log(res.data)
         if(res.data.success === true){
             next();
         }
