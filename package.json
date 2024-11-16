@@ -36,7 +36,6 @@
     "ua-parser-js": "^1.0.38",
     "useragent": "^2.3.0",
     "uuid": "^10.0.0",
-    "whatsapp-web.js": "^1.26.0",
     "winston": "^3.13.0"
   }
 }
