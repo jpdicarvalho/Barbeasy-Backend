@@ -2128,27 +2128,42 @@ app.put('/api/v1/updateEmailBarbearia', AuthenticateJWT, async (req, res) => {
   const barbeariaId = req.body.barbeariaId;
   const confirmPassword = req.body.confirmPassword;
   const newEmail = req.body.newEmail;
+  
+  // Verifica se newEmail contém apenas letras maiúsculas e minúsculas
+  if (!isEmailValided(newEmail) && newEmail.length <= 50) {
+    return res.status(400).json({ error: 'Error in values' });
+  }
 
   try {
     const isPasswordValided = await comparePasswordBarbearia(barbeariaId, confirmPassword);
     if (!isPasswordValided) {
-      return res.status(401).json({ success: false, message: 'Senha incorreta' });
+      return res.status(401).json({ message: 'Senha incorreta' });
     }
-    // Verifica se newEmail contém apenas letras maiúsculas e minúsculas
-    if (!isEmailValided(newEmail) && newEmail.length <= 50) {
-      return res.status(400).json({ error: 'Error in values' });
-    }
-
-    const sql = "UPDATE barbearia SET email = ? WHERE id = ?";
-    db.query(sql, [newEmail, barbeariaId], (err, result) =>{
-      if(err){
-        console.error("Erro ao atualizar o email de usuário barbearia", err);
+    const sqlVerifyEmail = 'SELECT email FROM barbearia WHERE email = ?';
+    db.query(sqlVerifyEmail, [newEmail], (errEmail, resuEmail) =>{
+      if(errEmail){
+        console.error("Erro ao verificar se o email já existe.", errEmail);
         return res.status(500).json({Error: "Internal Server Error"});
       }
-      if(result.changedRows === 1){
-        return res.status(200).json({Success: "Success"});
+      //Verifica se já existe um e-mail cadastrado
+      if(resuEmail.length > 0){
+        return res.status(401).json({message: "Email existente"});
+      }
+
+      if(resuEmail.length === 0) {
+        const sql = "UPDATE barbearia SET email = ? WHERE id = ?";
+        db.query(sql, [newEmail, barbeariaId], (err, result) =>{
+          if(err){
+            console.error("Erro ao atualizar o email de usuário barbearia", err);
+            return res.status(500).json({Error: "Internal Server Error"});
+          }
+          if(result.changedRows === 1){
+            return res.status(200).json({Success: "Success"});
+          }
+        })
       }
     })
+    
   } catch (error) {
     return res.status(500).json({ error: 'Internal Server Error' });
   }
