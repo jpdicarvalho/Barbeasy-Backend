@@ -3431,21 +3431,26 @@ app.delete('/api/v1/unlinkBarbearia/:barbeariaId/:professionalId/:confirmPasswor
 })
 
 //Route to barbearia update your bookings policies
-app.put('/api/v1/updateBookingPoliceis/', AuthenticateJWT, (req, res) =>{
+app.put('/api/v1/updateBookingPoliceis', AuthenticateJWT, (req, res) =>{
   const barbeariaId = req.body.barbeariaId;
   const confirmPassword = req.body.confirmPassword;
   const bookingWithPayment = req.body.bookingWithPayment;
   const servicePercentage = req.body.servicePercentage;
 
-  const sqlVerifyPassword = 'SELECT EXISTS(SELECT 1 FROM barbearia WHERE id = ? AND senha = ?) as passwordExists';
-  db.query(sqlVerifyPassword, [barbeariaId, confirmPassword], (err, resu) =>{
+  const sqlVerifyPassword = 'SELECT senha FROM barbearia WHERE id = ?';
+  db.query(sqlVerifyPassword, [barbeariaId], async (err, resu) =>{
     if(err){
       console.error("Erro ao atualizar as políticas de agendamento", err);
       return res.status(500).json({ Error: "Internal Server Error" });
     }
-    const passwordExists = resu[0].passwordExists;
 
-    if(passwordExists){
+    // Verifica a senha
+    const isPasswordValided = await comparePassword(confirmPassword, resu[0].senha);
+    
+    if (!isPasswordValided) { // Senha incorreta
+      return res.status(401).json({ success: false, message: 'Senha incorreta' });
+    }
+
       const sqlSelectPoliceisBarbearia = 'SELECT EXISTS(SELECT 1 FROM bookingPolicies WHERE barbearia_id = ?) as policeisBarbearia';
       db.query(sqlSelectPoliceisBarbearia, [barbeariaId], (erro, resul) =>{
         if(erro){
@@ -3479,7 +3484,6 @@ app.put('/api/v1/updateBookingPoliceis/', AuthenticateJWT, (req, res) =>{
           })
         }
       })      
-    }
   })
 })
 
