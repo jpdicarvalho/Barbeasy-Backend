@@ -1906,7 +1906,7 @@ app.get('/api/v1/nameBarbearia/:barbeariaId', AuthenticateJWT, (req, res) => {
 });
 
 // Rota para obter atualizar o endereço da barbearia #VERIFIED
-app.put('/api/v1/updateAddress', AuthenticateJWT, (req, res) => {
+app.put('/api/v1/updateAddress', AuthenticateJWT, async (req, res) => {
   const barbeariaId = req.body.barbeariaId;
   const confirmPassword = req.body.confirmPassword;
   const street = req.body.street;
@@ -1914,60 +1914,67 @@ app.put('/api/v1/updateAddress', AuthenticateJWT, (req, res) => {
   const neighborhood = req.body.neighborhood;
   const city = req.body.city;
 
-  // Verifica se street contém apenas letras maiúsculas e minúsculas
-  if (!isSignUpBarbeariaValid(street) && street.length <= 30) {
-    return res.status(400).json({ error: 'Error in values' });
-  }
-  // Verifica se number contém apenas números
-  if (!isOnlyNumberValided(number) && number.length <= 5) {
-    return res.status(400).json({ error: 'Error in values' });
-  }
-  // Verifica se neighborhood contém apenas letras maiúsculas e minúsculas
-  if (!isSignUpBarbeariaValid(neighborhood) && neighborhood.length <= 30) {
-    return res.status(400).json({ error: 'Error in values' });
-  }
-  // Verifica se city contém apenas letras maiúsculas e minúsculas
-  if (!isSignUpBarbeariaValid(city) && city.length <= 30) {
-    return res.status(400).json({ error: 'Error in values' });
-  }
+  try {
+    const isPasswordValided = await comparePasswordBarbearia(barbeariaId, confirmPassword);
+    if (!isPasswordValided) {
+      return res.status(401).json({ success: false, message: 'Senha incorreta' });
+    }
+    
+    // Verifica se street contém apenas letras maiúsculas e minúsculas
+    if (!isSignUpBarbeariaValid(street) && street.length <= 30) {
+      return res.status(400).json({ error: 'Error in values' });
+    }
+    // Verifica se number contém apenas números
+    if (!isOnlyNumberValided(number) && number.length <= 5) {
+      return res.status(400).json({ error: 'Error in values' });
+    }
+    // Verifica se neighborhood contém apenas letras maiúsculas e minúsculas
+    if (!isSignUpBarbeariaValid(neighborhood) && neighborhood.length <= 30) {
+      return res.status(400).json({ error: 'Error in values' });
+    }
+    // Verifica se city contém apenas letras maiúsculas e minúsculas
+    if (!isSignUpBarbeariaValid(city) && city.length <= 30) {
+      return res.status(400).json({ error: 'Error in values' });
+    }
 
-  let query = `UPDATE barbearia SET`
-  const values = [];
+    let query = `UPDATE barbearia SET`
+    const values = [];
 
-  if(street){
-    query += ` rua = ?,`;
-    values.push(street);
-  }
-  if(number){
-    query += ` N = ?,`;
-    values.push(number);
-  }
-  if(neighborhood){
-    query += ` bairro = ?,`;
-    values.push(neighborhood);
-  }
-  if(city){
-    query += ` cidade = ?,`;
-    values.push(city);
-  }
-  // Remova a última vírgula da query
-  query = query.slice(0, -1);
+    if(street){
+      query += ` rua = ?,`;
+      values.push(street);
+    }
+    if(number){
+      query += ` N = ?,`;
+      values.push(number);
+    }
+    if(neighborhood){
+      query += ` bairro = ?,`;
+      values.push(neighborhood);
+    }
+    if(city){
+      query += ` cidade = ?,`;
+      values.push(city);
+    }
+    // Remova a última vírgula da query
+    query = query.slice(0, -1);
 
-  query += ` WHERE id = ? AND senha = ?`;
-  values.push(barbeariaId, confirmPassword)
+    query += ` WHERE id = ?`;
+    values.push(barbeariaId)
 
-  db.query(query, values, (err, result) =>{
-    if(err){
-      console.error("Erro ao atualizar o endereço da barbearia", err);
-      return res.status(500).json({Error: "Internal Server Error"});
-    } else {
+    db.query(query, values, (err, result) =>{
+      if(err){
+        console.error("Erro ao atualizar o endereço da barbearia", err);
+        return res.status(500).json({Error: "Internal Server Error"});
+      } 
       if(result.changedRows === 1) {
         return res.status(200).json({ Success: "Success" });
-      }else{
-        return res.status(200).json({ Success: "Falied" });
       }
-    }
-  });
+    });
+
+  } catch (error) {
+    return res.status(500).json({ error: 'Internal Server Error' });
+  }
 });
 
 //Rota para obter o endereço da barbearia #VERIFIED
