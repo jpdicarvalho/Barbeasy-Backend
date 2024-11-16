@@ -1665,10 +1665,15 @@ app.get('/api/v1/userImageProfessional', AuthenticateJWT, (req, res) =>{
 });
 
 // Rota para lidar com o upload de imagens de banners #VERIFIED
-app.put('/api/v1/updateBannersImages', AuthenticateJWT, upload.array('images'), (req, res) => {
+app.put('/api/v1/updateBannersImages', AuthenticateJWT, upload.array('images'), async (req, res) => {
   const barbeariaId = req.body.barbeariaId;
   const confirmPassword = req.body.confirmPassword;
 
+  try {
+    const isPasswordValided = await comparePasswordBarbearia(barbeariaId, confirmPassword);
+    if (!isPasswordValided) {
+      return res.status(401).json({ success: false, message: 'Senha incorreta' });
+    }
     //Array with allowed extensions
     const allowedExtensions = ['jpg', 'jpeg', 'png'];
 
@@ -1710,87 +1715,78 @@ app.put('/api/v1/updateBannersImages', AuthenticateJWT, upload.array('images'), 
       }
     }
 
-  const currentBannerImg = "SELECT banners, senha FROM barbearia WHERE id = ?";
-  
-  db.query(currentBannerImg, [barbeariaId], async (currentErr, currentResult) => {
-    if (currentErr) {
-      console.error('Erro ao buscar o nome das imagens banners no banco de dados:', currentErr);
-      return res.status(500).json({ error: 'Internal Server Error' });
-    }
+    const currentBannerImg = "SELECT banners FROM barbearia WHERE id = ?";
     
-    if (currentResult.length > 0) {
-      try {
-        // Verifica a senha
-        const isPasswordValided = await comparePassword(confirmPassword, currentResult[0].senha);
-        console.log(isPasswordValided);
-        
-        if (!isPasswordValided) { // Senha incorreta
-          return res.status(401).json({ success: false, message: 'Senha incorreta' });
-        }
-  
-        // Processa as imagens banners
-        const bannerImagesName = currentResult[0].banners;
-        const bannerImagesArray = bannerImagesName.split(',');
-  
-        for (const banner of bannerImagesArray) {
-          const deleteParams = {
-            Bucket: awsBucketName,
-            Key: banner
-          };
-          
-          try {
-            // Envia o comando de exclusão
-            await s3.send(new DeleteObjectCommand(deleteParams));
-          } catch (uploadBannerErr) {
-            console.error('Erro ao apagar as imagens banners no bucket aws-s3:', uploadBannerErr);
-            return res.status(500).json({ error: 'Internal Server Error' });
-          }
-        }
-  
-        // Prepara as imagens para envio ao S3
-        const bannerImages = req.files.map((file) => ({
-          originalname: file.originalname,
-          buffer: file.buffer,
-          mimetype: file.mimetype
-        }));
-  
-        for (const image of bannerImages) {
-          const params = {
-            Bucket: awsBucketName,
-            Key: image.originalname,
-            Body: image.buffer,
-            ContentType: image.mimetype
-          };
-          
-          try {
-            await s3.send(new PutObjectCommand(params));
-          } catch (err) {
-            console.error('Erro ao enviar imagem para AWS S3:', err);
-            return res.status(500).json({ error: 'Internal Server Error' });
-          }
-        }
-  
-        // Converte os nomes das imagens em uma string separada por vírgulas
-        const bannerImagesNameString = bannerImages.map(img => img.originalname).join(',');
-        const bannerMain = bannerImagesNameString.split(',')[0];
-  
-        // Atualiza o banco de dados
-        const sql = "UPDATE barbearia SET banner_main = ?, banners = ? WHERE id = ?";
-        db.query(sql, [bannerMain, bannerImagesNameString, barbeariaId], (err, result) => {
-          if (err) {
-            console.error('Erro ao atualizar o nome das imagens no banco de dados:', err);
-            return res.status(500).json({ error: 'Internal Server Error' });
-          }
-          return res.status(200).json({ Status: 'Success' });
-        });
-      } catch (error) {
-        console.error('Erro durante a verificação de senha:', error);
+    db.query(currentBannerImg, [barbeariaId], async (currentErr, currentResult) => {
+      if (currentErr) {
+        console.error('Erro ao buscar o nome das imagens banners no banco de dados:', currentErr);
         return res.status(500).json({ error: 'Internal Server Error' });
       }
-    } else {
-      return res.status(404).json({ Status: 'Failed' });
-    }
-  });  
+      
+      if (currentResult.length > 0) {
+          // Processa as imagens banners
+          const bannerImagesName = currentResult[0].banners;
+          const bannerImagesArray = bannerImagesName.split(',');
+    
+          for (const banner of bannerImagesArray) {
+            const deleteParams = {
+              Bucket: awsBucketName,
+              Key: banner
+            };
+            
+            try {
+              // Envia o comando de exclusão
+              await s3.send(new DeleteObjectCommand(deleteParams));
+            } catch (uploadBannerErr) {
+              console.error('Erro ao apagar as imagens banners no bucket aws-s3:', uploadBannerErr);
+              return res.status(500).json({ error: 'Internal Server Error' });
+            }
+          }
+    
+          // Prepara as imagens para envio ao S3
+          const bannerImages = req.files.map((file) => ({
+            originalname: file.originalname,
+            buffer: file.buffer,
+            mimetype: file.mimetype
+          }));
+    
+          for (const image of bannerImages) {
+            const params = {
+              Bucket: awsBucketName,
+              Key: image.originalname,
+              Body: image.buffer,
+              ContentType: image.mimetype
+            };
+            
+            try {
+              await s3.send(new PutObjectCommand(params));
+            } catch (err) {
+              console.error('Erro ao enviar imagem para AWS S3:', err);
+              return res.status(500).json({ error: 'Internal Server Error' });
+            }
+          }
+    
+          // Converte os nomes das imagens em uma string separada por vírgulas
+          const bannerImagesNameString = bannerImages.map(img => img.originalname).join(',');
+          const bannerMain = bannerImagesNameString.split(',')[0];
+    
+          // Atualiza o banco de dados
+          const sql = "UPDATE barbearia SET banner_main = ?, banners = ? WHERE id = ?";
+          db.query(sql, [bannerMain, bannerImagesNameString, barbeariaId], (err, result) => {
+            if (err) {
+              console.error('Erro ao atualizar o nome das imagens no banco de dados:', err);
+              return res.status(500).json({ error: 'Internal Server Error' });
+            }
+            return res.status(200).json({ Status: 'Success' });
+          });
+      } else {
+        return res.status(404).json({ Status: 'Failed' });
+      }
+    });  
+    
+  } catch (error) {
+    return res.status(500).json({ error: 'Internal Server Error' });
+  }
 });
 
 //Rota para obter as imagens para o banner #VERIFIED
