@@ -201,14 +201,31 @@ async function verifyTokenFromFrontend(token) {
   }
 }
 //==================== Compare password =========================
-async function comparePassword(passwordFromUser, passwordFromDB) {
-  try {
-    const isMatch = await bcrypt.compare(passwordFromUser, passwordFromDB);
-    return isMatch; // Retorna true ou false diretamente
-  } catch (err) {
-    console.log('Error comparing passwords:', err);
-    return false; // Retorna false em caso de erro
-  }
+async function comparePasswordBarbearia(barbeariaId, passwordFromUser) {
+  const sql = "SELECT senha FROM barbearia WHERE id = ?";
+  
+  // Retorna uma Promise que resolve o resultado da comparação de senha
+  return new Promise((resolve, reject) => {
+    db.query(sql, [barbeariaId], async (err, result) => {
+      if (err) {
+        console.error("Erro ao buscar a senha da barbearia:", err);
+        return reject(err);
+      }
+      
+      if (result.length === 0) {
+        return resolve(false); // Retorna false se não encontrar o registro
+      }
+      
+      try {
+        // Compara a senha de forma assíncrona
+        const isMatch = await bcrypt.compare(passwordFromUser, result[0].senha);
+        resolve(isMatch); // Resolve com true ou false
+      } catch (compareErr) {
+        console.error("Erro ao comparar as senhas:", compareErr);
+        resolve(false); // Retorna false em caso de erro na comparação
+      }
+    });
+  });
 }
 
 //==================== SIGN IN WITH GOOGLE ======================
@@ -1838,30 +1855,42 @@ app.get('/api/v1/statusBarbearia/:barbeariaId', AuthenticateJWT, (req, res) =>{
 });
 
 //Rota para atualizar o nome da barbearia #VERIFIED
-app.put('/api/v1/updateBarbeariaName', AuthenticateJWT, (req, res) => {
+app.put('/api/v1/updateBarbeariaName', AuthenticateJWT, async (req, res) => {
   const barbeariaId = req.body.barbeariaId;
   const newNameBarbearia = req.body.novoNome;
   const confirmPassword = req.body.confirmPassword;
 
+  try {
+    //Verificando se a senha está correta
+    const isPasswordValided = await comparePasswordBarbearia(barbeariaId, confirmPassword);
+    if (!isPasswordValided) {
+      return res.status(401).json({ success: false, message: 'Senha incorreta' });
+    }
 
-  // Verifica se name contém apenas letras maiúsculas e minúsculas
-  if (!isSignUpBarbeariaValid(newNameBarbearia) && newNameBarbearia.length <= 30) {
-    return res.status(400).json({ error: 'Error in values' });
-  }
+    // Verifica se name contém apenas letras maiúsculas e minúsculas
+    if (!isSignUpBarbeariaValid(newNameBarbearia) && newNameBarbearia.length <= 30) {
+      return res.status(400).json({ error: 'Error in values' });
+    }
 
-  const sql = "UPDATE barbearia SET name = ? WHERE id = ? AND senha = ?";
-  db.query(sql, [newNameBarbearia, barbeariaId, confirmPassword], (err, result) =>{
-    if(err){
-      console.error("Erro ao atualizar o nome da barbearia", err);
-      return res.status(500).json({Error: "Internal Server Error"});
-    }else{
+    const sql = "UPDATE barbearia SET name = ? WHERE id = ?";
+    db.query(sql, [newNameBarbearia, barbeariaId], (err, result) =>{
+      if(err){
+        console.error("Erro ao atualizar o nome da barbearia", err);
+        return res.status(500).json({Error: "Internal Server Error"});
+      }
+    
       if(result.changedRows === 1) {
         return res.status(200).json({Success: "Success"});
       }else{
         return res.status(200).json({Success: "Falied"});
       }
-    }
-  })
+      
+    })
+
+    // Prosseguir com a lógica se a senha for válida
+  } catch (error) {
+    return res.status(500).json({ error: 'Internal Server Error' });
+  }
 });
 
 //Rota para obter o nome da barbearia #VERIFIED
