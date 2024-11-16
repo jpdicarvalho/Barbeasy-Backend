@@ -1764,14 +1764,14 @@ app.put('/api/v1/updateBannersImages', AuthenticateJWT, upload.array('images'), 
             console.error('Erro ao atualizar o nome das imagens no banco de dados:', err);
             return res.status(500).json({ error: 'Internal Server Error' });
           }
-          res.status(200).json({ Status: 'Success' });
+          return res.status(200).json({ Status: 'Success' });
         });
       } catch (error) {
         console.error('Erro durante a verificação de senha:', error);
         return res.status(500).json({ error: 'Internal Server Error' });
       }
     } else {
-      res.status(200).json({ Status: 'Failed' });
+      return res.status(404).json({ Status: 'Failed' });
     }
   });  
 });
