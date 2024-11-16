@@ -1878,16 +1878,10 @@ app.put('/api/v1/updateBarbeariaName', AuthenticateJWT, async (req, res) => {
         console.error("Erro ao atualizar o nome da barbearia", err);
         return res.status(500).json({Error: "Internal Server Error"});
       }
-    
       if(result.changedRows === 1) {
         return res.status(200).json({Success: "Success"});
-      }else{
-        return res.status(200).json({Success: "Falied"});
       }
-      
     })
-
-    // Prosseguir com a lógica se a senha for válida
   } catch (error) {
     return res.status(500).json({ error: 'Internal Server Error' });
   }
