@@ -201,23 +201,14 @@ async function verifyTokenFromFrontend(token) {
   }
 }
 //==================== Compare password =========================
-function comparePassword(passwordFromUser, passwordFromDB){
-  let isPasswordValided = false;
-
-  // Verificar a senha usando bcrypt
-  bcrypt.compare(passwordFromUser, passwordFromDB, (err, isMatch) => {
-    if (err) {
-       console.log('err', err)
-       isPasswordValided = false
-    }
-    if(isMatch){
-      isPasswordValided = true
-    }else{
-      // Senha incorreta
-      isPasswordValided = false
-    }
-  });
-  return isPasswordValided;
+async function comparePassword(passwordFromUser, passwordFromDB) {
+  try {
+    const isMatch = await bcrypt.compare(passwordFromUser, passwordFromDB);
+    return isMatch; // Retorna true ou false diretamente
+  } catch (err) {
+    console.log('Error comparing passwords:', err);
+    return false; // Retorna false em caso de erro
+  }
 }
 
 //==================== SIGN IN WITH GOOGLE ======================
@@ -1710,11 +1701,14 @@ app.put('/api/v1/updateBannersImages', AuthenticateJWT, upload.array('images'), 
       return res.status(500).json({ error: 'Internal Server Error' });
     }
     if(currentResult.length > 0) {
-      const isPasswordValided = comparePassword(confirmPassword, currentResult[0].senha)
-      console.log(isPasswordValided)
-      if(!isPasswordValided){// Senha incorreta
-        return res.status(401).json({ success: false, message: 'Senha incorreta' });
-      }
+      // Uso da função
+      (async () => {
+          const isPasswordValided = await comparePassword(confirmPassword, currentResult[0].senha);
+          console.log(isPasswordValided);
+          if (!isPasswordValided) { // Senha incorreta
+            return res.status(401).json({ success: false, message: 'Senha incorreta' });
+          }
+      })();
 
       const bannerImagesName = currentResult[0].banners;
       const bannerImagesArray = bannerImagesName.split(',');
