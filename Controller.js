@@ -203,17 +203,15 @@ async function verifyTokenFromFrontend(token) {
 //==================== Compare password =========================
 function comparePassword(passwordFromUser, passwordFromDB){
   // Verificar a senha usando bcrypt
-  console.log(passwordFromUser, passwordFromDB)
   bcrypt.compare(passwordFromUser, passwordFromDB, (err, isMatch) => {
     if (err) {
-      console.log('err',passwordFromUser, passwordFromDB)
+      console.log('err', err)
       return false
     }
     if(isMatch){
-      console.log('isMatch', passwordFromUser, passwordFromDB)
+      console.log('isMatch', isMatch)
       return true
     }else{
-      console.log('dont Match',passwordFromUser, passwordFromDB)
       // Senha incorreta
       return false
     }
