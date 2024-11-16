@@ -2207,16 +2207,24 @@ app.put('/api/v1/updatePasswordBarbearia', AuthenticateJWT, async (req, res) => 
     const isPasswordValided = await comparePasswordBarbearia(barbeariaId, passwordConfirm);
     if (!isPasswordValided) {
       return res.status(401).json({ success: false, message: 'Senha incorreta' });
-    }      
-    const sql = "UPDATE barbearia SET senha = ? WHERE id = ?";
-    db.query(sql, [newPassword, barbeariaId], (erro, result) =>{
-      if(erro){
-        console.error("Erro ao atualizar a senha de usuário barbearia", erro);
-        return res.status(500).json({Error: "Internal Server Error"});
+    }
+    // Criptografar a senha antes de salvar
+    bcrypt.hash(newPassword, 10, (err, newPasswordHash) => {
+      if (err) {
+        console.error(err);
+        return res.status(500).json({ error: 'Erro ao criptografar a senha' });
       }
-      if(result){
-        return res.status(200).json({ Success: "Success"});
-      }
+
+      const sql = "UPDATE barbearia SET senha = ? WHERE id = ?";
+      db.query(sql, [newPasswordHash, barbeariaId], (erro, result) =>{
+        if(erro){
+          console.error("Erro ao atualizar a senha de usuário barbearia", erro);
+          return res.status(500).json({Error: "Internal Server Error"});
+        }
+        if(result){
+          return res.status(200).json({ Success: "Success"});
+        }
+      })
     })
   } catch (error) {
     return res.status(500).json({ error: 'Internal Server Error' });
