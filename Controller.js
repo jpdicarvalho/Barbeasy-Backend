@@ -1695,85 +1695,85 @@ app.put('/api/v1/updateBannersImages', AuthenticateJWT, upload.array('images'), 
 
   const currentBannerImg = "SELECT banners, senha FROM barbearia WHERE id = ?";
   
-  db.query(currentBannerImg, [barbeariaId], async (currentErr, currentResult) =>{
-    if(currentErr){
+  db.query(currentBannerImg, [barbeariaId], async (currentErr, currentResult) => {
+    if (currentErr) {
       console.error('Erro ao buscar o nome das imagens banners no banco de dados:', currentErr);
       return res.status(500).json({ error: 'Internal Server Error' });
     }
-    if(currentResult.length > 0) {
-      // Verifica a senha
-      const isPasswordValided = await comparePassword(confirmPassword, currentResult[0].senha);
-      console.log(isPasswordValided);
-      
-      if (!isPasswordValided) { // Senha incorreta
-        return res.status(401).json({ success: false, message: 'Senha incorreta' });
-      }
-
-      const bannerImagesName = currentResult[0].banners;
-      const bannerImagesArray = bannerImagesName.split(',');
-
-      for(let i = 0; i < bannerImagesArray.length; i++){
-        //Configurando os parâmetros para apagar a imagem salva no bucket da AWS S3
-        const deleteParams = {
-          Bucket: awsBucketName,
-          Key: bannerImagesArray[i]
+    
+    if (currentResult.length > 0) {
+      try {
+        // Verifica a senha
+        const isPasswordValided = await comparePassword(confirmPassword, currentResult[0].senha);
+        console.log(isPasswordValided);
+        
+        if (!isPasswordValided) { // Senha incorreta
+          return res.status(401).json({ success: false, message: 'Senha incorreta' });
         }
-        const deleteCommand = new DeleteObjectCommand(deleteParams)//Instânciando o comando que irá apagar a imagem
-        //Enviando o comando para apagar a imagem
-        s3.send(deleteCommand, (uploadBannerErr, uploadBannerResult) => {
-          if(uploadBannerErr){
+  
+        // Processa as imagens banners
+        const bannerImagesName = currentResult[0].banners;
+        const bannerImagesArray = bannerImagesName.split(',');
+  
+        for (const banner of bannerImagesArray) {
+          const deleteParams = {
+            Bucket: awsBucketName,
+            Key: banner
+          };
+          
+          try {
+            // Envia o comando de exclusão
+            await s3.send(new DeleteObjectCommand(deleteParams));
+          } catch (uploadBannerErr) {
             console.error('Erro ao apagar as imagens banners no bucket aws-s3:', uploadBannerErr);
             return res.status(500).json({ error: 'Internal Server Error' });
-          }else{
-            //obtendo o nome e o buffer para salvar no BD e na AWS-S3, respectivamente, das imagens enviadas
-            const bannerImages = req.files.map((file) => {
-              return {
-                originalname: file.originalname,
-                buffer: file.buffer,
-              };
-            });
-            //Enviando imagem por imagem para o bucket aws-s3
-            for (let i = 0; i < bannerImages.length; i++) {
-              const params = {
-                Bucket: awsBucketName,
-                Key: bannerImages[i].originalname,
-                Body: bannerImages[i].buffer,
-                ContentType: bannerImages[i].mimetype,
-              }
-              // Cria um comando PutObject para enviar o arquivo para o AWS S3
-              const command = new PutObjectCommand(params)
-              // Envia o comando para o Amazon S3 usando a instância do serviço S3
-              s3.send(command)
-            }
-            //Array com os nomes das imagens enviadas
-            const bannerImagesName = [];
-            //Salvando os nomes das imagens no array acima
-            for (let i = 0; i < bannerImages.length; i++) {
-              bannerImagesName.push(bannerImages[i].originalname);
-            }
-            //Obtém o nome da primeira imagem para defini-lá como principal
-            const bannerMain = bannerImagesName[0];
-
-            // Converte o array de nomes em uma string separada por vírgulas
-            const bannerImagesNameString = bannerImagesName.join(','); 
-
-            //Atualizando o nome das imagens banner no BD MySQL
-            const sql = "UPDATE barbearia SET banner_main = ?, banners = ? WHERE id = ?";
-            db.query(sql, [bannerMain, bannerImagesNameString, barbeariaId], (err, result) => {
-              if (err) {
-                console.error('Erro ao atualizar o nome das imagens no banco de dados:', err);
-                return res.status(500).json({ error: 'Internal Server Error' });
-              }
-            });
           }
-          // Retorna um JSON indicando sucesso após a atualização do banco de dados
+        }
+  
+        // Prepara as imagens para envio ao S3
+        const bannerImages = req.files.map((file) => ({
+          originalname: file.originalname,
+          buffer: file.buffer,
+          mimetype: file.mimetype
+        }));
+  
+        for (const image of bannerImages) {
+          const params = {
+            Bucket: awsBucketName,
+            Key: image.originalname,
+            Body: image.buffer,
+            ContentType: image.mimetype
+          };
+          
+          try {
+            await s3.send(new PutObjectCommand(params));
+          } catch (err) {
+            console.error('Erro ao enviar imagem para AWS S3:', err);
+            return res.status(500).json({ error: 'Internal Server Error' });
+          }
+        }
+  
+        // Converte os nomes das imagens em uma string separada por vírgulas
+        const bannerImagesNameString = bannerImages.map(img => img.originalname).join(',');
+        const bannerMain = bannerImagesNameString.split(',')[0];
+  
+        // Atualiza o banco de dados
+        const sql = "UPDATE barbearia SET banner_main = ?, banners = ? WHERE id = ?";
+        db.query(sql, [bannerMain, bannerImagesNameString, barbeariaId], (err, result) => {
+          if (err) {
+            console.error('Erro ao atualizar o nome das imagens no banco de dados:', err);
+            return res.status(500).json({ error: 'Internal Server Error' });
+          }
           res.status(200).json({ Status: 'Success' });
-        })
+        });
+      } catch (error) {
+        console.error('Erro durante a verificação de senha:', error);
+        return res.status(500).json({ error: 'Internal Server Error' });
       }
-    }else{
-      res.status(200).json({ Status: 'Falied' });
+    } else {
+      res.status(200).json({ Status: 'Failed' });
     }
-  })
+  });  
 });
 
 //Rota para obter as imagens para o banner #VERIFIED
