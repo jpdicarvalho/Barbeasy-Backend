@@ -2173,42 +2173,39 @@ app.get('/api/v1/emailBarbearia/:barbeariaId', AuthenticateJWT, (req, res) => {
 });
 
 //Rota para atualizar a senha de usuário da barbearia
-app.put('/api/v1/updatePasswordBarbearia', AuthenticateJWT, (req, res) => {
+app.put('/api/v1/updatePasswordBarbearia', AuthenticateJWT, async (req, res) => {
   const barbeariaId = req.body.barbeariaId;
   const passwordConfirm = req.body.passwordConfirm;
   const newPassword = req.body.newPassword;
 
   // Verifica se senha contém apenas letras maiúsculas e minúsculas e alguns caracteres especiais
-  if (!isPasswordValided(passwordConfirm) && passwordConfirm.length <= 8) {
+  if (!isPasswordValided(passwordConfirm) && passwordConfirm.length <= 22) {
     return res.status(400).json({ error: 'Error in values' });
   }
 
   // Verifica se senha contém apenas letras maiúsculas e minúsculas e alguns caracteres especiais
-  if (!isPasswordValided(newPassword) && newPassword.length <= 8) {
+  if (!isPasswordValided(newPassword) && newPassword.length <= 22) {
     return res.status(400).json({ error: 'Error in values' });
   }
   
-  const sql = "SELECT senha FROM barbearia WHERE id = ? AND senha = ?";
-  db.query(sql, [barbeariaId, passwordConfirm], (err, resul) => {
-    if(err) {
-      console.error("Erro ao comparar senha de usuário da barbearia", err);
-      return res.status(500).json({Error: "Internal Server Error"});
-    }
-    if(resul.length > 0) {
-      const sql = "UPDATE barbearia SET senha = ? WHERE id = ?";
-      db.query(sql, [newPassword, barbeariaId], (erro, result) =>{
-        if(erro){
-          console.error("Erro ao atualizar a senha de usuário barbearia", erro);
-          return res.status(500).json({Error: "Internal Server Error"});
-        }
-        if(result){
-          return res.status(200).json({ Success: "Success"});
-        }
-      })
-    }else{
-      return res.status(404).json({ Success: "Falied"});
-    }
-  })
+  try {
+    const isPasswordValided = await comparePasswordBarbearia(barbeariaId, passwordConfirm);
+    if (!isPasswordValided) {
+      return res.status(401).json({ success: false, message: 'Senha incorreta' });
+    }      
+    const sql = "UPDATE barbearia SET senha = ? WHERE id = ?";
+    db.query(sql, [newPassword, barbeariaId], (erro, result) =>{
+      if(erro){
+        console.error("Erro ao atualizar a senha de usuário barbearia", erro);
+        return res.status(500).json({Error: "Internal Server Error"});
+      }
+      if(result){
+        return res.status(200).json({ Success: "Success"});
+      }
+    })
+  } catch (error) {
+    return res.status(500).json({ error: 'Internal Server Error' });
+  }
 });
 
 //Rota para atualizar a senha de usuário da barbearia
