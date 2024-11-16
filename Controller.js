@@ -200,6 +200,22 @@ async function verifyTokenFromFrontend(token) {
     return 'Erro na requisição';
   }
 }
+//==================== Compare password =========================
+function comparePassword(passwordFromUser, passwordFromDB){
+  // Verificar a senha usando bcrypt
+  bcrypt.compare(passwordFromUser, passwordFromDB, (err, isMatch) => {
+    if (err) {
+      return res.status(500).json({ success: false, message: 'Erro interno do servidor' });
+    }
+    if(isMatch){
+      return true
+    }else{
+      // Senha incorreta
+      return false
+    }
+  });
+}
+
 //==================== SIGN IN WITH GOOGLE ======================
 app.post('/api/v1/googleSignIn', (req, res) => {
   const { credential, type } = req.body;
@@ -1375,6 +1391,7 @@ app.post('/api/v1/SignInBarbearia', (req, res) => {
           }
           return res.status(302).json({ userPending: userData, message: 'Ativação de conta pendente'});
         }
+
         // Verificar a senha usando bcrypt
         bcrypt.compare(senha, barbearia.senha, (err, isMatch) => {
           if (err) {
@@ -1681,14 +1698,20 @@ app.put('/api/v1/updateBannersImages', AuthenticateJWT, upload.array('images'), 
       }
     }
 
-  const currentBannerImg = "SELECT banners FROM barbearia WHERE id = ? AND senha = ?";
+  const currentBannerImg = "SELECT banners, senha FROM barbearia WHERE id = ?";
   
-  db.query(currentBannerImg, [barbeariaId, confirmPassword], (currentErr, currentResult) =>{
+  db.query(currentBannerImg, [barbeariaId], (currentErr, currentResult) =>{
     if(currentErr){
       console.error('Erro ao buscar o nome das imagens banners no banco de dados:', currentErr);
       return res.status(500).json({ error: 'Internal Server Error' });
     }
     if(currentResult.length > 0) {
+      const isPasswordValided = comparePassword(confirmPassword, currentResult[0].senha)
+      console.log(isPasswordValided)
+      if(!isPasswordValided){// Senha incorreta
+        return res.status(401).json({ success: false, message: 'Senha incorreta' });
+      }
+
       const bannerImagesName = currentResult[0].banners;
       const bannerImagesArray = bannerImagesName.split(',');
 
@@ -1738,8 +1761,8 @@ app.put('/api/v1/updateBannersImages', AuthenticateJWT, upload.array('images'), 
             const bannerImagesNameString = bannerImagesName.join(','); 
 
             //Atualizando o nome das imagens banner no BD MySQL
-            const sql = "UPDATE barbearia SET banner_main = ?, banners = ? WHERE id = ? AND senha = ?";
-            db.query(sql, [bannerMain, bannerImagesNameString, barbeariaId, confirmPassword], (err, result) => {
+            const sql = "UPDATE barbearia SET banner_main = ?, banners = ? WHERE id = ?";
+            db.query(sql, [bannerMain, bannerImagesNameString, barbeariaId], (err, result) => {
               if (err) {
                 console.error('Erro ao atualizar o nome das imagens no banco de dados:', err);
                 return res.status(500).json({ error: 'Internal Server Error' });
