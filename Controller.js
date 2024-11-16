@@ -1695,20 +1695,19 @@ app.put('/api/v1/updateBannersImages', AuthenticateJWT, upload.array('images'), 
 
   const currentBannerImg = "SELECT banners, senha FROM barbearia WHERE id = ?";
   
-  db.query(currentBannerImg, [barbeariaId], (currentErr, currentResult) =>{
+  db.query(currentBannerImg, [barbeariaId], async (currentErr, currentResult) =>{
     if(currentErr){
       console.error('Erro ao buscar o nome das imagens banners no banco de dados:', currentErr);
       return res.status(500).json({ error: 'Internal Server Error' });
     }
     if(currentResult.length > 0) {
-      // Uso da função
-      (async () => {
-          const isPasswordValided = await comparePassword(confirmPassword, currentResult[0].senha);
-          console.log(isPasswordValided);
-          if (!isPasswordValided) { // Senha incorreta
-            return res.status(401).json({ success: false, message: 'Senha incorreta' });
-          }
-      })();
+      // Verifica a senha
+      const isPasswordValided = await comparePassword(confirmPassword, currentResult[0].senha);
+      console.log(isPasswordValided);
+      
+      if (!isPasswordValided) { // Senha incorreta
+        return res.status(401).json({ success: false, message: 'Senha incorreta' });
+      }
 
       const bannerImagesName = currentResult[0].banners;
       const bannerImagesArray = bannerImagesName.split(',');
