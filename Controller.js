@@ -207,14 +207,14 @@ function comparePassword(passwordFromUser, passwordFromDB){
   // Verificar a senha usando bcrypt
   bcrypt.compare(passwordFromUser, passwordFromDB, (err, isMatch) => {
     if (err) {
-      console.log('err', err)
-       return isPasswordValided = false
+       console.log('err', err)
+       isPasswordValided = false
     }
     if(isMatch){
-      return isPasswordValided = true
+      isPasswordValided = true
     }else{
       // Senha incorreta
-      return isPasswordValided = false
+      isPasswordValided = false
     }
   });
   return isPasswordValided;
