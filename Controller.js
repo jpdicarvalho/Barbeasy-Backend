@@ -1995,30 +1995,36 @@ app.get('/api/v1/address/:barbeariaId', AuthenticateJWT, (req, res) => {
 });
 
 //Route to update user name barbearia #VERIFIED
-app.put('/api/v1/updateUserNameBarbearia', AuthenticateJWT, (req, res) => {
+app.put('/api/v1/updateUserNameBarbearia', AuthenticateJWT, async (req, res) => {
   const barbeariaId = req.body.barbeariaId;
   const newUserName = req.body.newUserName;
   const confirmPassword = req.body.confirmPassword;
 
-
-  // Verifica se usuario contém apenas letras maiúsculas e minúsculas
-  if (!isSignUpBarbeariaValid(newUserName) && newUserName.length <= 30) {
-    return res.status(400).json({ error: 'Error in values' });
-  }
-
-  const sql = "UPDATE barbearia SET usuario = ? WHERE id = ? AND senha = ?";
-  db.query(sql, [newUserName, barbeariaId, confirmPassword], (err, result) =>{
-    if(err){
-      console.error("Erro ao atualizar o nome de usuário da barbearia", err);
-      return res.status(500).json({ Error: "Internal Server Error" });
-    } else {
-      if(result.changedRows === 1) {
-        return res.status(200).json({ Success: "Success" });
-      }else{
-        return res.status(200).json({ Success: "Falied" });
-      }
+  try {
+    const isPasswordValided = await comparePasswordBarbearia(barbeariaId, confirmPassword);
+    if (!isPasswordValided) {
+      return res.status(401).json({ success: false, message: 'Senha incorreta' });
     }
-  })
+    // Verifica se usuario contém apenas letras maiúsculas e minúsculas
+    if (!isSignUpBarbeariaValid(newUserName) && newUserName.length <= 30) {
+      return res.status(400).json({ error: 'Error in values' });
+    }
+
+    const sql = "UPDATE barbearia SET usuario = ? WHERE id = ?";
+    db.query(sql, [newUserName, barbeariaId], (err, result) =>{
+      if(err){
+        console.error("Erro ao atualizar o nome de usuário da barbearia", err);
+        return res.status(500).json({ Error: "Internal Server Error" });
+      } else {
+        if(result.changedRows === 1) {
+          return res.status(200).json({ Success: "Success" });
+        }
+      }
+    })
+
+  } catch (error) {
+    return res.status(500).json({ error: 'Internal Server Error' });
+  }
 });
 
 //Rota para obter o nome de usuário da barbearia #VERIFIED
