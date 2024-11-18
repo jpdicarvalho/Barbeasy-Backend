@@ -3064,53 +3064,46 @@ app.get('/api/v1/bookingsTimes/:barbeariaId/:professionalId/:selectedDate', (req
 });
 
 //Route to save days-off
-app.put('/api/v1/updateDayOff/:barbeariaId/:professionalId', AuthenticateJWT, (req, res) => {
+app.put('/api/v1/updateDayOff/:barbeariaId/:professionalId', AuthenticateJWT, async (req, res) => {
   const barbeariaId = req.params.barbeariaId;
   const professionalId = req.params.professionalId;
   const selectedDay = req.body.selectedDay;
   const timesLockedByProfessional = req.body.timesLocked;
   const confirmPassword = req.body.confirmPassword;
 
-  //Sql to verify if password of barbearia is validated. The 'select usuario' don't matter, its there because is necessary select something
-  const sqlVerifyPassword="SELECT usuario FROM barbearia WHERE id = ? AND senha = ?";
-  db.query(sqlVerifyPassword, [barbeariaId, confirmPassword], (erroVerifySenha, resultVerifySenha) =>{
-    if(erroVerifySenha){//If the password is wrong
+  const isPasswordValided = await comparePasswordBarbearia(barbeariaId, confirmPassword);
+  if (!isPasswordValided) {
+    return res.status(401).json({ success: false, message: 'Senha incorreta' });
+  }
+    
+  const sql="SELECT * FROM days_off WHERE barbearia_id = ? AND professional_id = ? AND day = ?";
+  db.query(sql, [barbeariaId, professionalId, selectedDay], (err, resu) =>{
+    if(err){
       console.error("Erro ao obter folgas do professional", err);
-      return res.status(404).json({ Error: "password is not validated" });
+      return res.status(500).json({ Error: "Internal Server Error" });
     }
-    if(resultVerifySenha.length > 0){//If the password is validated
-      const sql="SELECT * FROM days_off WHERE barbearia_id = ? AND professional_id = ? AND day = ?";
-      db.query(sql, [barbeariaId, professionalId, selectedDay], (err, resu) =>{
-        if(err){
-          console.error("Erro ao obter folgas do professional", err);
+    if(resu.length > 0){
+      const sqlUpdate="UPDATE days_off SET times = ? WHERE barbearia_id = ? AND professional_id = ? AND day = ?";
+        db.query(sqlUpdate, [timesLockedByProfessional, barbeariaId, professionalId, selectedDay], (erro, resul) =>{
+          if(erro){
+            console.error("Erro ao atualizar folgas do professional", err);
+            return res.status(500).json({ Error: "Internal Server Error" });
+          }else{
+            return res.status(200).json({ Success: "Success", resul});//Enviando o array com os horários
+          }
+        })
+    }else{
+      const sqlInsert="INSERT INTO days_off SET barbearia_id = ?, professional_id = ?, day = ?, times = ?";
+      db.query(sqlInsert, [barbeariaId, professionalId, selectedDay, timesLockedByProfessional], (error, result) =>{
+        if(error){
+          console.error("Erro ao salvar folga do professional", error);
           return res.status(500).json({ Error: "Internal Server Error" });
-        }
-        if(resu.length > 0){
-          const sqlUpdate="UPDATE days_off SET times = ? WHERE barbearia_id = ? AND professional_id = ? AND day = ?";
-            db.query(sqlUpdate, [timesLockedByProfessional, barbeariaId, professionalId, selectedDay], (erro, resul) =>{
-              if(erro){
-                console.error("Erro ao atualizar folgas do professional", err);
-                return res.status(500).json({ Error: "Internal Server Error" });
-              }else{
-                return res.status(200).json({ Success: "Success", resul});//Enviando o array com os horários
-              }
-            })
         }else{
-          const sqlInsert="INSERT INTO days_off SET barbearia_id = ?, professional_id = ?, day = ?, times = ?";
-          db.query(sqlInsert, [barbeariaId, professionalId, selectedDay, timesLockedByProfessional], (error, result) =>{
-            if(error){
-              console.error("Erro ao salvar folga do professional", error);
-              return res.status(500).json({ Error: "Internal Server Error" });
-            }else{
-              if(result){
-                return res.status(200).json({ Success: "Success", result});//Enviando o array com os horários
-              }
-            }
-          })
+          if(result){
+            return res.status(200).json({ Success: "Success", result});//Enviando o array com os horários
+          }
         }
       })
-    }else{
-      return res.status(200).json({ Success: "Falied"});//Enviando o array com os horários
     }
   })
 });
@@ -3158,7 +3151,6 @@ app.get('/api/v1/bookings/:barbeariaId/:selectedDate', AuthenticateJWT, (req, re
         }
       })
 })
-
 
 //Route to get all service by month and calucule total amount
 app.get('/api/v1/getAmountOfMonth/:barbeariaId/:monthAndYear', AuthenticateJWT, (req, res) =>{
