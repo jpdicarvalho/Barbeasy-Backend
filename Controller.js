@@ -183,10 +183,7 @@ async function verifyTokenFromFrontend(token) {
       response: token,
     };
 
-    const url = "https://challenges.cloudflare.com/turnstile/v0/siteverify";
-    const response = await axios.post(url, values);
-
-    console.log(response.data);
+    const response = await axios.post(process.env.CLOUDFLARE_URL_VERIFICATION, values);
 
     // Verifica se a resposta da API foi bem-sucedida e se o hostname está correto
     if (response.data.success === false || response.data.hostname !== 'barbeasy.com.br') {
@@ -195,7 +192,7 @@ async function verifyTokenFromFrontend(token) {
 
     return true;
   } catch (err) {
-    console.log(err);
+    console.log('Error on verification token form cloudflare', err);
     // Retorna um valor específico para indicar erro
     return 'Erro na requisição';
   }
@@ -1669,52 +1666,53 @@ app.put('/api/v1/updateBannersImages', AuthenticateJWT, upload.array('images'), 
   const barbeariaId = req.body.barbeariaId;
   const confirmPassword = req.body.confirmPassword;
 
+  //Array with allowed extensions
+  const allowedExtensions = ['jpg', 'jpeg', 'png'];
+
+  //array with names images
+  const imagesBanners = req.files.map((file) => {
+    return {
+      originalname: file.originalname
+    };
+  });
+
+  //check if the image array has up to 5 files
+  if(imagesBanners.length > 5){
+      console.error('Error to update image: is to long')
+      return res.status(400).json({ error: 'size are not allowed'});
+  }
+
+  // Itera sobre os arquivos enviados
+  for (let i = 0; i < imagesBanners.length; i++) {
+    const file = imagesBanners[i].originalname;
+    
+    const nameImgaSubstring = file.substring(0, 34)
+    const formatNameBanner = `barbeariaId_${barbeariaId < 100 ? `0${barbeariaId}`:barbeariaId}_banner_${i+1}_${currentDateTime.getFullYear()}${(currentDateTime.getMonth() + 1).toString().padStart(2, '0')}${currentDateTime.getDate().toString().padStart(2, '0')}_`;
+    console.log(nameImgaSubstring)
+    console.log(formatNameBanner)
+
+    //verify if pre-fix name is valided
+    if(nameImgaSubstring != formatNameBanner){
+      console.error('Error to update image: names is different')
+      return res.status(400).json({ error: 'name are not allowed'});
+    }
+
+    // Obtém a extensão do arquivo original
+    const fileExtension = file ? file.split('.').pop() : '';
+
+    // Verifica se a extensão é permitida
+    if (!allowedExtensions.includes(fileExtension)) {
+      console.error('Error to update image: extensio is different')
+      return res.status(400).json({ error: 'extensions are not allowed'});
+    }
+  }
+  
   try {
     const isPasswordValided = await comparePasswordBarbearia(barbeariaId, confirmPassword);
     if (!isPasswordValided) {
       return res.status(401).json({ success: false, message: 'Senha incorreta' });
     }
-    //Array with allowed extensions
-    const allowedExtensions = ['jpg', 'jpeg', 'png'];
-
-    //array with names images
-    const imagesBanners = req.files.map((file) => {
-      return {
-        originalname: file.originalname
-      };
-    });
-
-    //check if the image array has up to 5 files
-    if(imagesBanners.length > 5){
-        console.error('Error to update image: is to long')
-        return res.status(400).json({ error: 'size are not allowed'});
-    }
-
-    // Itera sobre os arquivos enviados
-    for (let i = 0; i < imagesBanners.length; i++) {
-      const file = imagesBanners[i].originalname;
-      
-      const nameImgaSubstring = file.substring(0, 34)
-      const formatNameBanner = `barbeariaId_${barbeariaId < 100 ? `0${barbeariaId}`:barbeariaId}_banner_${i+1}_${currentDateTime.getFullYear()}${(currentDateTime.getMonth() + 1).toString().padStart(2, '0')}${currentDateTime.getDate().toString().padStart(2, '0')}_`;
-      console.log(nameImgaSubstring)
-      console.log(formatNameBanner)
-
-      //verify if pre-fix name is valided
-      if(nameImgaSubstring != formatNameBanner){
-        console.error('Error to update image: names is different')
-        return res.status(400).json({ error: 'name are not allowed'});
-      }
-
-      // Obtém a extensão do arquivo original
-      const fileExtension = file ? file.split('.').pop() : '';
-
-      // Verifica se a extensão é permitida
-      if (!allowedExtensions.includes(fileExtension)) {
-        console.error('Error to update image: extensio is different')
-        return res.status(400).json({ error: 'extensions are not allowed'});
-      }
-    }
-
+    
     const currentBannerImg = "SELECT banners FROM barbearia WHERE id = ?";
     
     db.query(currentBannerImg, [barbeariaId], async (currentErr, currentResult) => {
