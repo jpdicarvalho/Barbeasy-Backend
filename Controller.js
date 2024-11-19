@@ -225,6 +225,32 @@ async function comparePasswordBarbearia(barbeariaId, passwordFromUser) {
   });
 }
 
+async function comparePasswordUserClient(userId, passwordFromUser) {
+  const sql = "SELECT senha FROM user WHERE id = ?";
+  
+  // Retorna uma Promise que resolve o resultado da comparação de senha
+  return new Promise((resolve, reject) => {
+    db.query(sql, [userId], async (err, result) => {
+      if (err) {
+        console.error("Erro ao buscar a senha do cliente:", err);
+        return reject(err);
+      }
+      
+      if (result.length === 0) {
+        return resolve(false); // Retorna false se não encontrar o registro
+      }
+      
+      try {
+        // Compara a senha de forma assíncrona
+        const isMatch = await bcrypt.compare(passwordFromUser, result[0].senha);
+        resolve(isMatch); // Resolve com true ou false
+      } catch (compareErr) {
+        console.error("Erro ao comparar as senhas:", compareErr);
+        resolve(false); // Retorna false em caso de erro na comparação
+      }
+    });
+  });
+}
 //==================== SIGN IN WITH GOOGLE ======================
 app.post('/api/v1/googleSignIn', (req, res) => {
   const { credential, type } = req.body;
@@ -506,7 +532,7 @@ app.get('/api/v1/userImage', AuthenticateJWT, (req, res) =>{
 });
 
 //update user image on AWS S3  #VERIFIED
-app.put('/api/v1/updateUserImage', AuthenticateJWT, upload.single('image'), (req, res) => {
+app.put('/api/v1/updateUserImage', AuthenticateJWT, upload.single('image'), async (req, res) => {
   const userId = req.body.userId;
   const newImageUser = req.file.originalname;
   const password = req.body.password;
@@ -534,56 +560,66 @@ app.put('/api/v1/updateUserImage', AuthenticateJWT, upload.single('image'), (req
     return res.status(400).json({ error: 'name are not allowed'});
   }
 
-  //Buscando imagem atual salva no BD MySQL
-  const currentImg = "SELECT user_image FROM user WHERE id = ? AND senha = ?";
-  db.query(currentImg, [userId, password], (err, result) => {
-    if(err){
-      console.error('Error on Update Image:', err);
-      return res.status(500).json({ error: 'Current Image - Internal Server Error' });
+  try {
+    const isPasswordValided = await comparePasswordUserClient(userId, password);
+    if (!isPasswordValided) {
+      return res.status(401).json({ success: false, message: 'Senha incorreta' });
     }
-    //Verificando se há imagem salva
-    if(result.length > 0){
-      const currentImageName = result[0].user_image; //Nome da imagem salva no BD MySQL
 
-      //Configurando os parâmetros para apagar a imagem salva no bucket da AWS S3
-      const params = {
-        Bucket: awsBucketName,
-        Key: currentImageName
+    //Buscando imagem atual salva no BD MySQL
+    const currentImg = "SELECT user_image FROM user WHERE id = ?";
+    db.query(currentImg, [userId], (err, result) => {
+      if(err){
+        console.error('Error on Update Image:', err);
+        return res.status(500).json({ error: 'Current Image - Internal Server Error' });
       }
-      const command = new DeleteObjectCommand(params)//Instânciando o comando que irá apagar a imagem
+      //Verificando se há imagem salva
+      if(result.length > 0){
+        const currentImageName = result[0].user_image; //Nome da imagem salva no BD MySQL
 
-      //Enviando o comando para apagar a imagem
-      s3.send(command, (sendErr, sendResult) =>{
-        if(sendErr){
-          console.error('Send Error:', sendErr);
-          return res.status(500).json({ error: 'Send Update Image - Internal Server Error' });
+        //Configurando os parâmetros para apagar a imagem salva no bucket da AWS S3
+        const params = {
+          Bucket: awsBucketName,
+          Key: currentImageName
         }
-        if(sendResult){
-          //Atualizando a coluna 'user_image' com a nova imagem do usuário
-          const sql = "UPDATE user SET user_image = ? WHERE id = ? AND senha = ?";
-          db.query(sql, [newImageUser, userId, password], (updateErr, updateResult) => {
-            if (updateErr) {
-              //Mensagem de erro caso não seja possuível realizar a atualização da imagem no Banco de Dados
-              console.error('Error on Update Image:', updateErr);
-              return res.status(500).json({ error: 'Update Image - Internal Server Error' });
-            }
-            if(updateResult){
-                // Cria os parâmetros para enviar a imagem para o bucket da AWS S3
-                const updateParams = {
-                Bucket: awsBucketName,
-                Key: newImageUser,
-                Body: req.file.buffer,
-                ContentType: req.file.mimetype,
+        const command = new DeleteObjectCommand(params)//Instânciando o comando que irá apagar a imagem
+
+        //Enviando o comando para apagar a imagem
+        s3.send(command, (sendErr, sendResult) =>{
+          if(sendErr){
+            console.error('Send Error:', sendErr);
+            return res.status(500).json({ error: 'Send Update Image - Internal Server Error' });
+          }
+          if(sendResult){
+            //Atualizando a coluna 'user_image' com a nova imagem do usuário
+            const sql = "UPDATE user SET user_image = ? WHERE id = ?";
+            db.query(sql, [newImageUser, userId, password], (updateErr, updateResult) => {
+              if (updateErr) {
+                //Mensagem de erro caso não seja possuível realizar a atualização da imagem no Banco de Dados
+                console.error('Error on Update Image:', updateErr);
+                return res.status(500).json({ error: 'Update Image - Internal Server Error' });
               }
-              const updateCommand = new PutObjectCommand(updateParams)// Instânciando o comando que irá salvar a imagem
-              s3.send(updateCommand)// Envia o comando para o Amazon S3 usando a instância do serviço S3
-              return res.status(200).json({ Status: "Success" });
-            }
-          });
-        }
-      })
-    }
-  });
+              if(updateResult){
+                  // Cria os parâmetros para enviar a imagem para o bucket da AWS S3
+                  const updateParams = {
+                  Bucket: awsBucketName,
+                  Key: newImageUser,
+                  Body: req.file.buffer,
+                  ContentType: req.file.mimetype,
+                }
+                const updateCommand = new PutObjectCommand(updateParams)// Instânciando o comando que irá salvar a imagem
+                s3.send(updateCommand)// Envia o comando para o Amazon S3 usando a instância do serviço S3
+                return res.status(200).json({ Status: "Success" });
+              }
+            });
+          }
+        })
+      }
+    });
+  } catch (error) {
+    return res.status(500).json({ error: 'Internal Server Error' });
+  }
+  
 });
 
 //Route to get user data #VERIFIED
