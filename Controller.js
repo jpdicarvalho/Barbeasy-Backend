@@ -556,7 +556,7 @@ app.put('/api/v1/updateUserImage', AuthenticateJWT, upload.single('image'), asyn
   const formatNameImage = `userClient_${userId}_${formattedDateTime}_`;
 
   console.log(nameImgaSubstring)
-  console.log(formatNameImage)
+  console.log(formatNameImage.substring(0, 24))
 
   //verify if pre-fix name is valided
   if(nameImgaSubstring != formatNameImage.substring(0, 24)){
