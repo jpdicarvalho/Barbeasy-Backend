@@ -644,7 +644,7 @@ app.get('/api/v1/getUserData/:userId', AuthenticateJWT, (req, res) => {
 })
 
 // Route to update information of professional #VERIFIED
-app.put('/api/v1/updateUserData', AuthenticateJWT, (req, res) => {
+app.put('/api/v1/updateUserData', AuthenticateJWT, async (req, res) => {
   const userId = req.body.userId;
   const confirmPassword = req.body.confirmPassword;
   const newName = req.body.newName;
@@ -652,8 +652,13 @@ app.put('/api/v1/updateUserData', AuthenticateJWT, (req, res) => {
   const newPhoneNumber = req.body.newPhoneNumber;
 
   
-  if (!isPasswordValided(confirmPassword) && confirmPassword.length < 8) {
+  if (!isPasswordValided(confirmPassword) && confirmPassword.length <= 22) {
     return res.status(400).json({ error: 'Error in values' });
+  }
+
+  const isPasswordCorrect = await comparePasswordUserClient(userId, confirmPassword);
+  if (!isPasswordCorrect) {
+    return res.status(401).json({ success: false, message: 'Senha incorreta' });
   }
 
   let query = `UPDATE user SET`
@@ -687,8 +692,8 @@ app.put('/api/v1/updateUserData', AuthenticateJWT, (req, res) => {
   // Remova a última vírgula da query
   query = query.slice(0, -1);
 
-  query += ` WHERE id = ? AND senha = ?`;
-  values.push(userId, confirmPassword)
+  query += ` WHERE id = ?`;
+  values.push(userId)
 
   db.query(query, values, (err, result) =>{
     if(err){
@@ -698,7 +703,7 @@ app.put('/api/v1/updateUserData', AuthenticateJWT, (req, res) => {
       if(result.changedRows === 1) {
         return res.status(200).json({ Success: "Success" });
       }else{
-        return res.status(200).json({ Success: "Falied" });
+        return res.status(404).json({ Success: "Falied" });
       }
     }
   });
