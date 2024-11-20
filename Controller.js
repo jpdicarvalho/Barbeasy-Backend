@@ -536,6 +536,7 @@ app.put('/api/v1/updateUserImage', AuthenticateJWT, upload.single('image'), asyn
   const userId = req.body.userId;
   const newImageUser = req.file.originalname;
   const password = req.body.password;
+  const formattedDateTime = req.body.formattedDateTime;
 
 
   const allowedExtensions = ['jpg', 'jpeg', 'png'];
@@ -552,7 +553,7 @@ app.put('/api/v1/updateUserImage', AuthenticateJWT, upload.single('image'), asyn
 
   //formating the name of image sent
   const nameImgaSubstring = newImageUser.substring(0, 24)
-  const formatNameImage = `userClient_${userId}_${currentDateTime.getFullYear()}${(currentDateTime.getMonth() + 1).toString().padStart(2, '0')}${currentDateTime.getDate().toString().padStart(2, '0')}_`;
+  const formatNameImage = `userClient_${userId}_${formattedDateTime}_`;
 
   console.log(nameImgaSubstring)
   console.log(formatNameImage)
