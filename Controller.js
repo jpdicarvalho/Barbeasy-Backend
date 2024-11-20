@@ -720,8 +720,8 @@ app.put('/api/v1/updateUserPassword', AuthenticateJWT, async (req, res) => {
     return res.status(400).json({ error: 'Error in values' });
   }
   
-  const isPasswordValided = await comparePasswordUserClient(userId, passwordConfirm);
-  if (!isPasswordValided) {
+  const isPasswordCorrect = await comparePasswordUserClient(userId, passwordConfirm);
+  if (!isPasswordCorrect) {
     return res.status(401).json({ success: false, message: 'Senha incorreta' });
   }
 
