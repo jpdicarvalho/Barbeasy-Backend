@@ -1962,7 +1962,7 @@ app.put('/api/v1/updateWhatsAppBarbearia', AuthenticateJWT, async (req, res) => 
 
     //Verifica se o número de celular é minimamente válido
     if (!isOnlyNumberValided(newWhatsApp) && newWhatsApp.length > 11 || newWhatsApp.length < 10 ) {
-      return res.status(400).json({ message: 'Error in values' });
+      return res.status(400).json({ message: 'WhatsApp inválido. Verifique o WhatsApp informado e tente novamente.' });
     }
 
     const sqlVerifyWhatsApp = "SELECT celular FROM barbearia WHERE celular = ?";
@@ -1972,7 +1972,7 @@ app.put('/api/v1/updateWhatsAppBarbearia', AuthenticateJWT, async (req, res) => 
         return res.status(500).json({Error: "Internal Server Error"});
       }
       if(result.length > 0){
-        return res.status(400).json({message: "Já existe uma WhatsApp cadastrado."});
+        return res.status(400).json({message: "Já existe uma barbearia com esse WhatsApp cadastrado."});
       }
       if(result.length === 0){
         const sql = "UPDATE barbearia SET celular = ? WHERE id = ?";
