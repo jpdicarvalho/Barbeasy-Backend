@@ -559,7 +559,7 @@ app.put('/api/v1/updateUserImage', AuthenticateJWT, upload.single('image'), asyn
   console.log(formatNameImage)
 
   //verify if pre-fix name is valided
-  if(nameImgaSubstring != formatNameImage){
+  if(nameImgaSubstring != formatNameImage.substring(0, 24)){
     console.error('Error to update image')
     return res.status(400).json({ error: 'name are not allowed'});
   }
