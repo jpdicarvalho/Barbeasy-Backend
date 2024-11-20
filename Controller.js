@@ -700,7 +700,7 @@ app.put('/api/v1/updateUserData', AuthenticateJWT, async (req, res) => {
       console.error("Erro ao atualizar informações do profissional", err);
       return res.status(500).json({Error: "Internal Server Error"});
     } else {
-      if(result.changedRows === 1) {
+      if(result.affectedRows === 1) {
         return res.status(200).json({ Success: "Success" });
       }else{
         return res.status(404).json({ Success: "Falied" });
