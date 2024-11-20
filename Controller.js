@@ -1939,11 +1939,27 @@ app.get('/api/v1/nameBarbearia/:barbeariaId', AuthenticateJWT, (req, res) => {
     if(err) {
       console.error("Erro ao buscar o nome da barbearia", err);
       return res.status(500).json({Error: "Internal Server Error"});
-    }else{
-      if(result.length > 0) {
-        const nomeBarbearia = result[0].name;
-        return res.status(200).json({ NomeBarbearia: nomeBarbearia});
-      }
+    }
+    if(result.length > 0) {
+      const nomeBarbearia = result[0].name;
+      return res.status(200).json({ NomeBarbearia: nomeBarbearia});
+    }
+  })
+});
+
+//Rota para obter o nome da barbearia #VERIFIED
+app.get('/api/v1/whatsAppBarbearia/:barbeariaId', AuthenticateJWT, (req, res) => {
+  const barbeariaId = req.params.barbeariaId;
+
+  const sql = "SELECT celular FROM barbearia WHERE id = ?";
+  db.query(sql, [barbeariaId], (err, result) => {
+    if(err) {
+      console.error("Erro ao buscar o whatsApp da barbearia", err);
+      return res.status(500).json({Error: "Internal Server Error"});
+    }
+    if(result.length > 0) {
+      const whatsAppBarbearia = result[0].celular;
+      return res.status(200).json({ WhatsApp: whatsAppBarbearia});
     }
   })
 });
