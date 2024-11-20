@@ -1947,6 +1947,39 @@ app.get('/api/v1/nameBarbearia/:barbeariaId', AuthenticateJWT, (req, res) => {
   })
 });
 
+//Rota para atualizar o nome da barbearia #VERIFIED
+app.put('/api/v1/updateWhatsAppBarbearia', AuthenticateJWT, async (req, res) => {
+  const barbeariaId = req.body.barbeariaId;
+  const newWhatsApp = req.body.newWhatsApp;
+  const confirmPassword = req.body.confirmPassword;
+
+  try {
+    //Verificando se a senha está correta
+    const isPasswordValided = await comparePasswordBarbearia(barbeariaId, confirmPassword);
+    if (!isPasswordValided) {
+      return res.status(401).json({ success: false, message: 'Senha incorreta' });
+    }
+
+    //Verifica se o número de celular é minimamente válido
+    if (!isOnlyNumberValided(newWhatsApp) && newWhatsApp.length > 11 || newWhatsApp.length < 10 ) {
+      return res.status(400).json({ error: 'Error in values' });
+    }
+
+    const sql = "UPDATE barbearia SET celular = ? WHERE id = ?";
+    db.query(sql, [newWhatsApp, barbeariaId], (err, result) =>{
+      if(err){
+        console.error("Erro ao atualizar o WhatsApp da barbearia", err);
+        return res.status(500).json({Error: "Internal Server Error"});
+      }
+      if(result.changedRows === 1) {
+        return res.status(200).json({Success: "Success"});
+      }
+    })
+  } catch (error) {
+    return res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
 //Rota para obter o nome da barbearia #VERIFIED
 app.get('/api/v1/whatsAppBarbearia/:barbeariaId', AuthenticateJWT, (req, res) => {
   const barbeariaId = req.params.barbeariaId;
