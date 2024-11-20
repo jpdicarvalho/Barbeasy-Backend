@@ -1736,7 +1736,7 @@ app.put('/api/v1/updateBannersImages', AuthenticateJWT, upload.array('images'), 
     const file = imagesBanners[i].originalname;
     
     const nameImgaSubstring = file.substring(0, 34)
-    const formatNameBanner = `barbeariaId_${barbeariaId < 100 ? `0${barbeariaId}`:barbeariaId}_banner_${formattedDateTime}_`;
+    const formatNameBanner = `barbeariaId_${barbeariaId < 100 ? `0${barbeariaId}`:barbeariaId}_banner_${i+1}_${formattedDateTime}_`;
     console.log(nameImgaSubstring)
     console.log(formatNameBanner.substring(0, 34))
 
