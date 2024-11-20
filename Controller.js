@@ -1738,10 +1738,10 @@ app.put('/api/v1/updateBannersImages', AuthenticateJWT, upload.array('images'), 
     const nameImgaSubstring = file.substring(0, 34)
     const formatNameBanner = `barbeariaId_${barbeariaId < 100 ? `0${barbeariaId}`:barbeariaId}_banner_${formattedDateTime}_`;
     console.log(nameImgaSubstring)
-    console.log(formatNameBanner)
+    console.log(formatNameBanner.substring(0, 34))
 
     //verify if pre-fix name is valided
-    if(nameImgaSubstring != formatNameBanner){
+    if(nameImgaSubstring != formatNameBanner.substring(0, 34)){
       console.error('Error to update image: names is different')
       return res.status(400).json({ error: 'name are not allowed'});
     }
