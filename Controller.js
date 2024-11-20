@@ -1962,17 +1962,29 @@ app.put('/api/v1/updateWhatsAppBarbearia', AuthenticateJWT, async (req, res) => 
 
     //Verifica se o número de celular é minimamente válido
     if (!isOnlyNumberValided(newWhatsApp) && newWhatsApp.length > 11 || newWhatsApp.length < 10 ) {
-      return res.status(400).json({ error: 'Error in values' });
+      return res.status(400).json({ message: 'Error in values' });
     }
 
-    const sql = "UPDATE barbearia SET celular = ? WHERE id = ?";
-    db.query(sql, [newWhatsApp, barbeariaId], (err, result) =>{
-      if(err){
-        console.error("Erro ao atualizar o WhatsApp da barbearia", err);
+    const sqlVerifyWhatsApp = "SELECT celular FROM barbearia WHERE celular = ?";
+    db.query(sqlVerifyWhatsApp, [newWhatsApp], (erro, result) =>{
+      if(erro){
+        console.error("Erro ao verificar se o WhatsApp já existe", erro);
         return res.status(500).json({Error: "Internal Server Error"});
       }
-      if(result.changedRows === 1) {
-        return res.status(200).json({Success: "Success"});
+      if(result.length > 0){
+        return res.status(400).json({message: "Já existe uma WhatsApp cadastrado."});
+      }
+      if(result.length === 0){
+        const sql = "UPDATE barbearia SET celular = ? WHERE id = ?";
+        db.query(sql, [newWhatsApp, barbeariaId], (err, result) =>{
+          if(err){
+            console.error("Erro ao atualizar o WhatsApp da barbearia", err);
+            return res.status(500).json({Error: "Internal Server Error"});
+          }
+          if(result.changedRows === 1) {
+            return res.status(200).json({Success: "Success"});
+          }
+        })
       }
     })
   } catch (error) {
