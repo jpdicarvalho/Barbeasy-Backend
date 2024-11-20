@@ -1580,6 +1580,7 @@ app.get('/api/v1/amountVibility/:barbeariaId', AuthenticateJWT, (req, res) =>{
     }
   })
 })
+
 //Route to update amount visibility to professional
 app.put('/api/v1/updateAmountVisibilityProfessional', AuthenticateJWT, (req, res) =>{
   const professionalId = req.body.professionalId;
@@ -1712,6 +1713,7 @@ app.get('/api/v1/userImageProfessional', AuthenticateJWT, (req, res) =>{
 app.put('/api/v1/updateBannersImages', AuthenticateJWT, upload.array('images'), async (req, res) => {
   const barbeariaId = req.body.barbeariaId;
   const confirmPassword = req.body.confirmPassword;
+  const formattedDateTime = req.body.formattedDateTime;
 
   //Array with allowed extensions
   const allowedExtensions = ['jpg', 'jpeg', 'png'];
@@ -1734,7 +1736,7 @@ app.put('/api/v1/updateBannersImages', AuthenticateJWT, upload.array('images'), 
     const file = imagesBanners[i].originalname;
     
     const nameImgaSubstring = file.substring(0, 34)
-    const formatNameBanner = `barbeariaId_${barbeariaId < 100 ? `0${barbeariaId}`:barbeariaId}_banner_${i+1}_${currentDateTime.getFullYear()}${(currentDateTime.getMonth() + 1).toString().padStart(2, '0')}${currentDateTime.getDate().toString().padStart(2, '0')}_`;
+    const formatNameBanner = `barbeariaId_${barbeariaId < 100 ? `0${barbeariaId}`:barbeariaId}_banner_${formattedDateTime}_`;
     console.log(nameImgaSubstring)
     console.log(formatNameBanner)
 
