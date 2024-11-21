@@ -643,82 +643,82 @@ app.get('/api/v1/getUserData/:userId', AuthenticateJWT, (req, res) => {
   })
 })
 
-// Route to update information of professional #VERIFIED
+// Route to update information of client #VERIFIED
 app.put('/api/v1/updateUserData', AuthenticateJWT, async (req, res) => {
-  const userId = req.body.userId;
-  const confirmPassword = req.body.confirmPassword;
-  const newName = req.body.newName;
-  const newEmail = req.body.newEmail;
-  const newPhoneNumber = req.body.newPhoneNumber;
+  const { userId, confirmPassword, newName, newEmail, newPhoneNumber } = req.body;
 
-  
-  if (!isPasswordValided(confirmPassword) && confirmPassword.length <= 22) {
-    return res.status(400).json({ error: 'Error in values' });
-  }
-
-  const isPasswordCorrect = await comparePasswordUserClient(userId, confirmPassword);
-  if (!isPasswordCorrect) {
-    return res.status(401).json({ success: false, message: 'Senha incorreta' });
-  }
-
-  let query = `UPDATE user SET`
-  const values = [];
-
-  if(newName){
-    if (!isSignUpBarbeariaValid(newName) && newName.length > 30) {
+  try {
+    // Validação da senha
+    if (!isPasswordValided(confirmPassword) || confirmPassword.length > 22) {
       return res.status(400).json({ error: 'Error in values' });
     }
-    query += ` name = ?,`;
-    values.push(newName);
-  }
-  if(newEmail){
-    if (!isEmailValided(newEmail)) {
-      return res.status(400).json({ error: 'Error in values' });
+
+    const isPasswordCorrect = await comparePasswordUserClient(userId, confirmPassword);
+    if (!isPasswordCorrect) {
+      return res.status(401).json({ success: false, message: 'Senha incorreta' });
     }
-    const isValidEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(newEmail);
-    if(isValidEmail){
-      query += ` email = ?,`;
+
+    // Construção dinâmica da query
+    let query = `UPDATE user SET `;
+    const values = [];
+
+    // Atualização do nome
+    if (newName) {
+      if (!isSignUpBarbeariaValid(newName) || newName.length > 30) {
+        return res.status(400).json({ error: 'Error in values' });
+      }
+      query += `name = ?, `;
+      values.push(newName);
+    }
+
+    // Atualização do email
+    if (newEmail) {
+      if (!isEmailValided(newEmail) || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(newEmail)) {
+        return res.status(400).json({ error: 'Error in values' });
+      }
+      query += `email = ?, `;
       values.push(newEmail);
     }
-  }
-  if(newPhoneNumber){
-    if (!isOnlyNumberValided(newPhoneNumber) && newPhoneNumber.length > 11 || newPhoneNumber.length < 10) {
-      return res.status(400).json({ message: 'Número de WhatsApp inválido. Verifique o número informato e tente novamente.' });
+
+    // Atualização do número de telefone
+    if (newPhoneNumber) {
+      if (!isOnlyNumberValided(newPhoneNumber) || newPhoneNumber.length > 11 || newPhoneNumber.length < 10) {
+        return res.status(400).json({ message: 'Número de WhatsApp inválido. Verifique o número informado e tente novamente.' });
+      }
+
+      // Verificação de duplicidade
+      const [existingPhone] = await db.promise().query(
+        'SELECT celular FROM user WHERE celular = ?',
+        [newPhoneNumber]
+      );
+
+      if (existingPhone.length > 0) {
+        return res.status(400).json({ message: 'Já existe um usuário com esse WhatsApp cadastrado.' });
+      }
+
+      query += `celular = ?, `;
+      values.push(newPhoneNumber);
     }
 
-    const sql="SELECT celular FROM user WHERE id = ?"
-    db.query(sql, [newPhoneNumber], (erro, resul) =>{
-      if(erro){
-        console.error("Erro ao verificar se já existe um whatsApp cadastrado", erro);
-        return res.status(500).json({Error: "Internal Server Error"});
-      }
-      if(resul.length > 0){
-        return res.status(400).json({message: "Já existe um usuário com esse WhatsApp cadastrado."});
-      }
-    })
-    query += ` celular = ?,`;
-    values.push(newPhoneNumber);
-  }
-  
-  // Remova a última vírgula da query
-  query = query.slice(0, -1);
+    // Finalização da query
+    query = query.slice(0, -2); // Remove a última vírgula
+    query += ` WHERE id = ?`;
+    values.push(userId);
 
-  query += ` WHERE id = ?`;
-  values.push(userId)
+    // Execução da query final
+    const [result] = await db.promise().query(query, values);
 
-  db.query(query, values, (err, result) =>{
-    if(err){
-      console.error("Erro ao atualizar informações do cliente", err);
-      return res.status(500).json({Error: "Internal Server Error"});
+    if (result.affectedRows === 1) {
+      return res.status(200).json({ success: 'Success' });
     } else {
-      if(result.affectedRows === 1) {
-        return res.status(200).json({ Success: "Success" });
-      }else{
-        return res.status(404).json({ Success: "Falied" });
-      }
+      return res.status(404).json({ success: 'Failed' });
     }
-  });
+  } catch (err) {
+    console.error('Erro ao atualizar informações do cliente', err);
+    return res.status(500).json({ error: 'Internal Server Error' });
+  }
 });
+
 
 //Rota para atualizar a senha de usuário da barbearia
 app.put('/api/v1/updateUserPassword', AuthenticateJWT, async (req, res) => {
