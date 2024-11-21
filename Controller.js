@@ -683,9 +683,9 @@ app.put('/api/v1/updateUserData', AuthenticateJWT, async (req, res) => {
   }
   if(newPhoneNumber){
     if (!isOnlyNumberValided(newPhoneNumber) && newPhoneNumber.length > 11 || newPhoneNumber.length < 10) {
-      return res.status(400).json({ error: 'Error in values' });
+      return res.status(400).json({ message: 'Número de WhatsApp inválido. Verifique o número informato e tente novamente.' });
     }
-    
+
     const sql="SELECT celular FROM user WHERE id = ?"
     db.query(sql, [newPhoneNumber], (erro, resul) =>{
       if(erro){
@@ -695,11 +695,9 @@ app.put('/api/v1/updateUserData', AuthenticateJWT, async (req, res) => {
       if(resul.length > 0){
         return res.status(400).json({message: "Já existe um usuário com esse WhatsApp cadastrado."});
       }
-      if(resul.length === 0){
-        query += ` celular = ?,`;
-        values.push(newPhoneNumber);
-      }
     })
+    query += ` celular = ?,`;
+    values.push(newPhoneNumber);
   }
   
   // Remova a última vírgula da query
