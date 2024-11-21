@@ -685,8 +685,21 @@ app.put('/api/v1/updateUserData', AuthenticateJWT, async (req, res) => {
     if (!isOnlyNumberValided(newPhoneNumber) && newPhoneNumber.length > 11 || newPhoneNumber.length < 10) {
       return res.status(400).json({ error: 'Error in values' });
     }
-    query += ` celular = ?,`;
-    values.push(newPhoneNumber);
+    
+    const sql="SELECT celular FROM user WHERE id = ?"
+    db.query(sql, [newPhoneNumber], (erro, resul) =>{
+      if(erro){
+        console.error("Erro ao verificar se já existe um whatsApp cadastrado", erro);
+        return res.status(500).json({Error: "Internal Server Error"});
+      }
+      if(resul.length > 0){
+        return res.status(400).json({message: "Já existe um usuário com esse WhatsApp cadastrado."});
+      }
+      if(resul.length === 0){
+        query += ` celular = ?,`;
+        values.push(newPhoneNumber);
+      }
+    })
   }
   
   // Remova a última vírgula da query
@@ -697,7 +710,7 @@ app.put('/api/v1/updateUserData', AuthenticateJWT, async (req, res) => {
 
   db.query(query, values, (err, result) =>{
     if(err){
-      console.error("Erro ao atualizar informações do profissional", err);
+      console.error("Erro ao atualizar informações do cliente", err);
       return res.status(500).json({Error: "Internal Server Error"});
     } else {
       if(result.affectedRows === 1) {
