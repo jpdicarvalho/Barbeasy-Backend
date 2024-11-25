@@ -3651,7 +3651,7 @@ app.put('/api/v1/updateBookingPoliceis', AuthenticateJWT, (req, res) =>{
   })
 })
 
-app.get('/api/v1/bookingPoliceis/:barbeariaId', AuthenticateJWT, (req, res) =>{
+app.get('/api/v1/bookingPoliceis/:barbeariaId', (req, res) =>{
   const barbeariaId = req.params.barbeariaId;
 
   const sql = 'SELECT booking_with_payment, service_percentage FROM bookingPolicies WHERE barbearia_id = ?';
