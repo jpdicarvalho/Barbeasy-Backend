@@ -1419,32 +1419,33 @@ app.post('/api/v1/SignInBarbearia', (req, res) => {
 
   // Verifique se o token foi fornecido
   if (!token_cloudflare) {
-    return res.status(400).json({ success: false, message: 'Verifique os dados forncecidos para login' });
+    return res.status(400).json({ success: false, message: 'Confirme que você é um humano. Faça a autenticação da CloudFlare.' });
   }
 
   // Uso da função assíncrona
   const isTokenValid = verifyTokenFromFrontend(token_cloudflare);
 
   if (isTokenValid === false) {
-    return res.status(403).json({ message: 'Cloudflare: timeout-or-duplicate' });
+    return res.status(403).json({ message: 'Falha na verificação de autenticação humana. Tente novamente mais tarde.' });
   } else if (isTokenValid === 'Erro na requisição') {
-    return res.status(500).json({ message: 'Cloudflare: erro na requisição' });
+    return res.status(500).json({ message: 'Erro de comunicação com a CloudFlare. Tente novamente mais tarde' });
   }
 
   // Verifica se newEmail contém apenas letras maiúsculas e minúsculas
-  if (!isEmailValided(email) && email.length <= 50) {
-    return res.status(400).json({ error: 'Error in values' });
+  if (!isEmailValided(email) || email.length >= 50) {
+    return res.status(400).json({ message: 'Verifique os valores informatos e tente novamente.' });
   }
   // Verifica se newSenha contém apenas letras maiúsculas, minúsculas e @#%$ como caracteres especiais
-  if (!isPasswordValided(senha) && senha.length <= 8) {
-    return res.status(400).json({ error: 'Error in values' });
+  if (!isPasswordValided(senha) || senha.length >= 22) {
+    return res.status(400).json({ message: 'Verifique os valores informatos e tente novamente.' });
   }
 
   // Buscar usuário pelo email
   db.query('SELECT id, name, email, usuario, senha, status, user_image, banner_main, banners, rua, N, bairro, cidade, celular, isVerified FROM barbearia WHERE email = ?', [email],
   (err, result) => {
     if(err){
-      return res.status(500).json({err: 'internal server erro'});
+      console.error(err)
+      return res.status(500).json({ message: 'Erro ao criar conta. Tente novamente mais tarde.'});
     }
 
     if (result.length > 0) {
@@ -1462,7 +1463,8 @@ app.post('/api/v1/SignInBarbearia', (req, res) => {
         // Verificar a senha usando bcrypt
         bcrypt.compare(senha, barbearia.senha, (err, isMatch) => {
           if (err) {
-            return res.status(500).json({ success: false, message: 'Erro interno do servidor' });
+            console.error(err)
+            return res.status(500).json({ success: false, message: 'Erro ao criar conta. Tente novamente mais tarde.' });
           }
 
           if (isMatch) {
@@ -1476,7 +1478,7 @@ app.post('/api/v1/SignInBarbearia', (req, res) => {
             return res.status(200).json({ Success: 'Success', token: token, barbearia: result });
           } else {
             // Senha incorreta
-            return res.status(401).json({ success: false, message: 'Senha incorreta' });
+            return res.status(401).json({ success: false, message: 'E-mail ou senha incorreta.' });
           }
         });
     } else if (result.length === 0){
