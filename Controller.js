@@ -1494,32 +1494,33 @@ app.post('/api/v1/SignInProfessional', (req, res) => {
 
   // Verifique se o token foi fornecido
   if (!token_cloudflare) {
-    return res.status(400).json({ success: false, message: 'Verifique os dados forncecidos para login' });
+    return res.status(400).json({ success: false, message: 'Confirme que você é um humano. Faça a autenticação da CloudFlare.' });
   }
 
   // Uso da função assíncrona
   const isTokenValid = verifyTokenFromFrontend(token_cloudflare);
 
   if (isTokenValid === false) {
-    return res.status(403).json({ message: 'Cloudflare: timeout-or-duplicate' });
+    return res.status(403).json({ message: 'Falha na verificação de autenticação humana. Tente novamente mais tarde.' });
   } else if (isTokenValid === 'Erro na requisição') {
-    return res.status(500).json({ message: 'Cloudflare: erro na requisição' });
+    return res.status(500).json({ message: 'Erro de comunicação com a CloudFlare. Tente novamente mais tarde' });
   }
 
   // Verifica se newEmail contém apenas letras maiúsculas e minúsculas
-  if (!isEmailValided(email) && email.length <= 50) {
-    return res.status(400).json({ error: 'Error in values' });
+  if (!isEmailValided(email) || email.length >= 50) {
+    return res.status(400).json({ message: 'Verifique os valores informatos e tente novamente.' });
   }
   // Verifica se newSenha contém apenas letras maiúsculas, minúsculas e @#%$ como caracteres especiais
-  if (!isPasswordValided(senha) && senha.length <= 8) {
-    return res.status(400).json({ error: 'Error in values' });
+  if (!isPasswordValided(senha) || senha.length >= 8) {
+    return res.status(400).json({ message: 'Verifique os valores informatos e tente novamente.' });
   }
 
   // Buscar usuário pelo email
   db.query('SELECT id, name, user_image FROM professional WHERE email = ? AND password = ?', [email, senha],
   (err, result) => {
     if(err){
-      return res.status(500).json({err: 'internal server error'});
+      console.error(err)
+      return res.status(500).json({ message: 'Erro ao criar conta. Tente novamente mais tarde.'});
     }
     if (result.length > 0) {
       const professional = result[0];
