@@ -1312,40 +1312,40 @@ app.post("/api/v1/SignUpBarbearia", (req, res) => {
   }
 
   // Verifica se name contém apenas letras maiúsculas e minúsculas
-  if (!isSignUpBarbeariaValid(name) && name.length <= 30) {
-    return res.status(400).json({ error: 'Error in values' });
+  if (!isSignUpBarbeariaValid(name) || name.length <= 30) {
+    return res.status(400).json({ message: 'Error in values' });
   }
   // Verifica se street contém apenas letras maiúsculas e minúsculas
-  if (!isSignUpBarbeariaValid(street) && street.length <= 30) {
-    return res.status(400).json({ error: 'Error in values' });
+  if (!isSignUpBarbeariaValid(street) || street.length <= 30) {
+    return res.status(400).json({ message: 'Verifique os valores informatos e tente novamente.' });
   }
   // Verifica se number contém apenas números
-  if (!isOnlyNumberValided(number) && number.length <= 5) {
-    return res.status(400).json({ error: 'Error in values' });
+  if (!isOnlyNumberValided(number) || number.length <= 5) {
+    return res.status(400).json({ message: 'Verifique os valores informatos e tente novamente.' });
   }
   // Verifica se neighborhood contém apenas letras maiúsculas e minúsculas
-  if (!isSignUpBarbeariaValid(neighborhood) && neighborhood.length <= 30) {
-    return res.status(400).json({ error: 'Error in values' });
+  if (!isSignUpBarbeariaValid(neighborhood) || neighborhood.length <= 30) {
+    return res.status(400).json({ message: 'Verifique os valores informatos e tente novamente.' });
   }
   // Verifica se city contém apenas letras maiúsculas e minúsculas
-  if (!isSignUpBarbeariaValid(city) && city.length <= 30) {
-    return res.status(400).json({ error: 'Error in values' });
+  if (!isSignUpBarbeariaValid(city) || city.length <= 30) {
+    return res.status(400).json({ message: 'Verifique os valores informatos e tente novamente.' });
   }
   // Verifica se usuario contém apenas letras maiúsculas e minúsculas
   if (!isSignUpBarbeariaValid(usuario) || usuario.length >= 20) {
-    return res.status(400).json({ error: 'Error in values' });
+    return res.status(400).json({ message: 'Verifique os valores informatos e tente novamente.' });
   }
   // Verifica se email contém apenas letras maiúsculas e minúsculas
-  if (!isEmailValided(email) && email.length <= 100) {
-    return res.status(400).json({ error: 'Error in values' });
+  if (!isEmailValided(email) || email.length <= 100) {
+    return res.status(400).json({ message: 'Verifique os valores informatos e tente novamente.' });
   }
   // Verifica se senha contém apenas letras maiúsculas e minúsculas e alguns caracteres especiais
-  if (!isPasswordValided(senha) && senha.length <= 22) {
-    return res.status(400).json({ error: 'Error in values' });
+  if (!isPasswordValided(senha) || senha.length <= 22) {
+    return res.status(400).json({ message: 'Verifique os valores informatos e tente novamente.' });
   }
   //Verifica se o número de celular é minimamente válido
-  if (!isOnlyNumberValided(celular) && celular.length > 11 || celular.length < 10 ) {
-    return res.status(400).json({ error: 'Error in values' });
+  if (!isOnlyNumberValided(celular) || celular.length > 11 || celular.length < 10 ) {
+    return res.status(400).json({ message: 'Verifique os valores informatos e tente novamente.' });
   }
   // Verificação se o e-mail já está cadastrado
   db.query('SELECT email, rua, N, bairro, cidade, celular, isVerified FROM barbearia WHERE email = ? OR celular = ? OR (rua = ? AND N = ? AND bairro = ? AND cidade = ?)',
@@ -1370,7 +1370,7 @@ app.post("/api/v1/SignUpBarbearia", (req, res) => {
       }
       //Verify if has a email OR phone registered
       if (existingUser.isVerified === 'true') {
-        return res.status(400).send('E-mail ou celular já cadastrado');
+        return res.status(400).json({ message: 'E-mail ou celular já cadastrado'});
       }
     }
 
