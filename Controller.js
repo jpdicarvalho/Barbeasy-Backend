@@ -1299,7 +1299,7 @@ app.post("/api/v1/SignUpBarbearia", (req, res) => {
 
   // Verifique se o token foi fornecido
   if (!token_cloudflare) {
-    return res.status(400).json({ success: false, message: 'Verifique os dados forncecidos para login' });
+    return res.status(400).json({ success: false, message: 'Confirme que você é um humano. Faça a autenticação da CloudFlare.' });
   }
 
   // Uso da função assíncrona
@@ -1312,23 +1312,23 @@ app.post("/api/v1/SignUpBarbearia", (req, res) => {
   }
 
   // Verifica se name contém apenas letras maiúsculas e minúsculas
-  if (!isSignUpBarbeariaValid(name) || name.length <= 30) {
-    return res.status(400).json({ message: 'Error in values' });
+  if (!isSignUpBarbeariaValid(name) || name.length >= 30) {
+    return res.status(400).json({ message: 'Verifique os valores informatos e tente novamente.' });
   }
   // Verifica se street contém apenas letras maiúsculas e minúsculas
-  if (!isSignUpBarbeariaValid(street) || street.length <= 30) {
+  if (!isSignUpBarbeariaValid(street) || street.length >= 30) {
     return res.status(400).json({ message: 'Verifique os valores informatos e tente novamente.' });
   }
   // Verifica se number contém apenas números
-  if (!isOnlyNumberValided(number) || number.length <= 5) {
+  if (!isOnlyNumberValided(number) || number.length >= 5) {
     return res.status(400).json({ message: 'Verifique os valores informatos e tente novamente.' });
   }
   // Verifica se neighborhood contém apenas letras maiúsculas e minúsculas
-  if (!isSignUpBarbeariaValid(neighborhood) || neighborhood.length <= 30) {
+  if (!isSignUpBarbeariaValid(neighborhood) || neighborhood.length >= 30) {
     return res.status(400).json({ message: 'Verifique os valores informatos e tente novamente.' });
   }
   // Verifica se city contém apenas letras maiúsculas e minúsculas
-  if (!isSignUpBarbeariaValid(city) || city.length <= 30) {
+  if (!isSignUpBarbeariaValid(city) || city.length >= 30) {
     return res.status(400).json({ message: 'Verifique os valores informatos e tente novamente.' });
   }
   // Verifica se usuario contém apenas letras maiúsculas e minúsculas
@@ -1336,11 +1336,11 @@ app.post("/api/v1/SignUpBarbearia", (req, res) => {
     return res.status(400).json({ message: 'Verifique os valores informatos e tente novamente.' });
   }
   // Verifica se email contém apenas letras maiúsculas e minúsculas
-  if (!isEmailValided(email) || email.length <= 100) {
+  if (!isEmailValided(email) || email.length >= 100) {
     return res.status(400).json({ message: 'Verifique os valores informatos e tente novamente.' });
   }
   // Verifica se senha contém apenas letras maiúsculas e minúsculas e alguns caracteres especiais
-  if (!isPasswordValided(senha) || senha.length <= 22) {
+  if (!isPasswordValided(senha) || senha.length >= 22) {
     return res.status(400).json({ message: 'Verifique os valores informatos e tente novamente.' });
   }
   //Verifica se o número de celular é minimamente válido
