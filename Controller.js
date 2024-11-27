@@ -1306,9 +1306,9 @@ app.post("/api/v1/SignUpBarbearia", (req, res) => {
   const isTokenValid = verifyTokenFromFrontend(token_cloudflare);
 
   if (isTokenValid === false) {
-    return res.status(403).json({ message: 'Cloudflare: timeout-or-duplicate' });
+    return res.status(403).json({ message: 'Falha na verificação de autenticação humana. Tente novamente mais tarde.' });
   } else if (isTokenValid === 'Erro na requisição') {
-    return res.status(500).json({ message: 'Cloudflare: erro na requisição' });
+    return res.status(500).json({ message: 'Erro de comunicação com a CloudFlare. Tente novamente mais tarde' });
   }
 
   // Verifica se name contém apenas letras maiúsculas e minúsculas
@@ -1353,7 +1353,7 @@ app.post("/api/v1/SignUpBarbearia", (req, res) => {
     (error, results) => {
     if (error) {
       console.error(error);
-      return res.status(500).send('Erro ao verificar o e-mail');
+      return res.status(500).json({message: 'Erro ao criar conta. Tente novamente mais tarde.'});
     }
 
     // Se já houver resultados, significa que o e-mail já está cadastrado
@@ -1378,7 +1378,7 @@ app.post("/api/v1/SignUpBarbearia", (req, res) => {
     bcrypt.hash(senha, 10, (err, senha_hash) => {
       if (err) {
         console.error(err);
-        return res.status(500).json({ error: 'Erro ao criptografar a senha' });
+        return res.status(500).json({message: 'Erro ao criar conta. Tente novamente mais tarde.'});
       }
 
       const barbearia = {
@@ -1402,10 +1402,10 @@ app.post("/api/v1/SignUpBarbearia", (req, res) => {
       db.query('INSERT INTO barbearia SET ?', barbearia, (error, results) => {
         if (error) {
           console.error(error);
-          return res.status(500).send('Erro ao registrar usuário');
+          return res.status(500).json({message: 'Erro ao criar conta. Tente novamente mais tarde.'});
         }else{
           if(results){
-            return res.status(201).send('Usuário registrado com sucesso');
+            return res.status(201).json({ message: 'Usuário registrado com sucesso.'});
           }
         }
       });
@@ -1445,7 +1445,7 @@ app.post('/api/v1/SignInBarbearia', (req, res) => {
   (err, result) => {
     if(err){
       console.error(err)
-      return res.status(500).json({ message: 'Erro ao criar conta. Tente novamente mais tarde.'});
+      return res.status(500).json({ message: 'Erro ao fazer login. Tente novamente mais tarde.'});
     }
 
     if (result.length > 0) {
@@ -1464,7 +1464,7 @@ app.post('/api/v1/SignInBarbearia', (req, res) => {
         bcrypt.compare(senha, barbearia.senha, (err, isMatch) => {
           if (err) {
             console.error(err)
-            return res.status(500).json({ success: false, message: 'Erro ao criar conta. Tente novamente mais tarde.' });
+            return res.status(500).json({ success: false, message: 'Erro ao fazer login. Tente novamente mais tarde.' });
           }
 
           if (isMatch) {
