@@ -657,12 +657,12 @@ app.get('/api/v1/getUserData/:userId', AuthenticateJWT, (req, res) => {
 app.put('/api/v1/updateUserData', AuthenticateJWT, async (req, res) => {
   const { userId, confirmPassword, newName, newEmail, newPhoneNumber } = req.body;
 
+  // Validação da senha
+  if (!isPasswordValided(confirmPassword) || confirmPassword.length > 22) {
+    return res.status(400).json({ error: 'Error in values' });
+  }
+  
   try {
-    // Validação da senha
-    if (!isPasswordValided(confirmPassword) || confirmPassword.length > 22) {
-      return res.status(400).json({ error: 'Error in values' });
-    }
-
     const isPasswordCorrect = await comparePasswordUserClient(userId, confirmPassword);
     if (!isPasswordCorrect) {
       return res.status(401).json({ success: false, message: 'Senha incorreta' });
