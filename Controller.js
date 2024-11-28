@@ -153,7 +153,7 @@ const s3 = new S3Client({
 
 //==================== cron.schedule ===========================
 // Agendamento de requisição a cada 3 horas
-cron.schedule("0 */4 * * *", () => {
+cron.schedule("0 */5 * * *", () => {
       //send request to route '/api/v1/ping-db'
       axios.post("https://barbeasy.up.railway.app/api/v1/ping-db")
       .then(res =>{
@@ -363,7 +363,7 @@ app.post("/api/v1/SignUp", (req, res) => {
 
   // Verifique se o token foi fornecido
   if (!token_cloudflare) {
-    return res.status(400).json({ success: false, message: 'Verifique os dados forncecidos para login' });
+    return res.status(400).json({ success: false, message: 'Confirme que você é um humano. Faça a autenticação da CloudFlare.' });
   }
 
   // Uso da função assíncrona
