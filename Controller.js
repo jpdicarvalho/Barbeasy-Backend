@@ -376,16 +376,16 @@ app.post("/api/v1/SignUp", (req, res) => {
   }
 
   // Verifica se name contém apenas letras maiúsculas e minúsculas
-  if (!isSignUpBarbeariaValid(name) || name.length >= 30) {
+  if (!isSignUpBarbeariaValid(name) || name.length > 30) {
     return res.status(400).json({ message: 'Verifique os valores informatos e tente novamente.' });
   }
 
-  if (!isEmailValided(email) || email.length >= 100) {
+  if (!isEmailValided(email) || email.length > 100) {
     return res.status(400).json({ message: 'Verifique os valores informatos e tente novamente.' });
   }
 
   // Verifica se senha contém apenas letras maiúsculas e minúsculas e alguns caracteres especiais
-  if (!isPasswordValided(senha) || senha.length >= 22) {
+  if (!isPasswordValided(senha) || senha.length > 22) {
     return res.status(400).json({ message: 'Verifique os valores informatos e tente novamente.' });
   }
 
@@ -465,12 +465,12 @@ app.post('/api/v1/SignIn', (req, res) => {
     return res.status(500).json({ message: 'Erro de comunicação com a CloudFlare. Tente novamente mais tarde.' });
   }
 
-  if (!isEmailValided(email) || email.length >= 100) {
+  if (!isEmailValided(email) || email.length > 100) {
     return res.status(400).json({ message: 'Verifique os valores informatos e tente novamente.' });
   }
 
   // Verifica se senha contém apenas letras maiúsculas e minúsculas e alguns caracteres especiais
-  if (!isPasswordValided(senha) || senha.length >= 22) {
+  if (!isPasswordValided(senha) || senha.length > 22) {
     return res.status(400).json({ message: 'Verifique os valores informatos e tente novamente.' });
   }
 
@@ -737,12 +737,12 @@ app.put('/api/v1/updateUserPassword', AuthenticateJWT, async (req, res) => {
   const newPassword = req.body.newPassword;
 
   // Verifica se senha contém apenas letras maiúsculas e minúsculas e alguns caracteres especiais
-  if (!isPasswordValided(passwordConfirm) && passwordConfirm.length <= 22) {
+  if (!isPasswordValided(passwordConfirm) || passwordConfirm.length <= 22) {
     return res.status(400).json({ error: 'Error in values' });
   }
 
   // Verifica se senha contém apenas letras maiúsculas e minúsculas e alguns caracteres especiais
-  if (!isPasswordValided(newPassword) && newPassword.length <= 22) {
+  if (!isPasswordValided(newPassword) || newPassword.length <= 22) {
     return res.status(400).json({ error: 'Error in values' });
   }
   
@@ -867,7 +867,7 @@ app.post("/api/v1/saveAvaliation", AuthenticateJWT, (req, res) => {
   const barbeariaId = req.body.barbeariaId
   const averageAvaliatio = req.body.avaliation; //this for the first avaliation
 
-  if (!isSignUpBarbeariaValid(comment) && comment.length > 200) {
+  if (!isSignUpBarbeariaValid(comment) || comment.length > 200) {
     return res.status(400).json({ error: 'Error in values' });
   }
 
@@ -1322,35 +1322,35 @@ app.post("/api/v1/SignUpBarbearia", (req, res) => {
   }
 
   // Verifica se name contém apenas letras maiúsculas e minúsculas
-  if (!isSignUpBarbeariaValid(name) || name.length >= 30) {
+  if (!isSignUpBarbeariaValid(name) || name.length > 30) {
     return res.status(400).json({ message: 'Verifique os valores informatos e tente novamente.' });
   }
   // Verifica se street contém apenas letras maiúsculas e minúsculas
-  if (!isSignUpBarbeariaValid(street) || street.length >= 30) {
+  if (!isSignUpBarbeariaValid(street) || street.length > 30) {
     return res.status(400).json({ message: 'Verifique os valores informatos e tente novamente.' });
   }
   // Verifica se number contém apenas números
-  if (!isOnlyNumberValided(number) || number.length >= 5) {
+  if (!isOnlyNumberValided(number) || number.length > 5) {
     return res.status(400).json({ message: 'Verifique os valores informatos e tente novamente.' });
   }
   // Verifica se neighborhood contém apenas letras maiúsculas e minúsculas
-  if (!isSignUpBarbeariaValid(neighborhood) || neighborhood.length >= 30) {
+  if (!isSignUpBarbeariaValid(neighborhood) || neighborhood.length > 30) {
     return res.status(400).json({ message: 'Verifique os valores informatos e tente novamente.' });
   }
   // Verifica se city contém apenas letras maiúsculas e minúsculas
-  if (!isSignUpBarbeariaValid(city) || city.length >= 30) {
+  if (!isSignUpBarbeariaValid(city) || city.length > 30) {
     return res.status(400).json({ message: 'Verifique os valores informatos e tente novamente.' });
   }
   // Verifica se usuario contém apenas letras maiúsculas e minúsculas
-  if (!isSignUpBarbeariaValid(usuario) || usuario.length >= 20) {
+  if (!isSignUpBarbeariaValid(usuario) || usuario.length > 20) {
     return res.status(400).json({ message: 'Verifique os valores informatos e tente novamente.' });
   }
   // Verifica se email contém apenas letras maiúsculas e minúsculas
-  if (!isEmailValided(email) || email.length >= 100) {
+  if (!isEmailValided(email) || email.length > 100) {
     return res.status(400).json({ message: 'Verifique os valores informatos e tente novamente.' });
   }
   // Verifica se senha contém apenas letras maiúsculas e minúsculas e alguns caracteres especiais
-  if (!isPasswordValided(senha) || senha.length >= 22) {
+  if (!isPasswordValided(senha) || senha.length > 22) {
     return res.status(400).json({ message: 'Verifique os valores informatos e tente novamente.' });
   }
   //Verifica se o número de celular é minimamente válido
@@ -1442,11 +1442,11 @@ app.post('/api/v1/SignInBarbearia', (req, res) => {
   }
 
   // Verifica se newEmail contém apenas letras maiúsculas e minúsculas
-  if (!isEmailValided(email) || email.length >= 50) {
+  if (!isEmailValided(email) || email.length > 100) {
     return res.status(400).json({ message: 'Verifique os valores informatos e tente novamente.' });
   }
   // Verifica se newSenha contém apenas letras maiúsculas, minúsculas e @#%$ como caracteres especiais
-  if (!isPasswordValided(senha) || senha.length >= 22) {
+  if (!isPasswordValided(senha) || senha.length > 22) {
     return res.status(400).json({ message: 'Verifique os valores informatos e tente novamente.' });
   }
 
@@ -1517,11 +1517,11 @@ app.post('/api/v1/SignInProfessional', (req, res) => {
   }
 
   // Verifica se newEmail contém apenas letras maiúsculas e minúsculas
-  if (!isEmailValided(email) || email.length >= 50) {
+  if (!isEmailValided(email) || email.length > 50) {
     return res.status(400).json({ message: 'Verifique os valores informatos e tente novamente.' });
   }
   // Verifica se newSenha contém apenas letras maiúsculas, minúsculas e @#%$ como caracteres especiais
-  if (!isPasswordValided(senha) || senha.length >= 8) {
+  if (!isPasswordValided(senha) || senha.length > 8) {
     return res.status(400).json({ message: 'Verifique os valores informatos e tente novamente.' });
   }
 
@@ -1935,7 +1935,7 @@ app.put('/api/v1/updateBarbeariaName', AuthenticateJWT, async (req, res) => {
     }
 
     // Verifica se name contém apenas letras maiúsculas e minúsculas
-    if (!isSignUpBarbeariaValid(newNameBarbearia) && newNameBarbearia.length <= 30) {
+    if (!isSignUpBarbeariaValid(newNameBarbearia) || newNameBarbearia.length > 30) {
       return res.status(400).json({ error: 'Error in values' });
     }
 
@@ -1985,7 +1985,7 @@ app.put('/api/v1/updateWhatsAppBarbearia', AuthenticateJWT, async (req, res) => 
     }
 
     //Verifica se o número de celular é minimamente válido
-    if (!isOnlyNumberValided(newWhatsApp) && newWhatsApp.length > 11 || newWhatsApp.length < 10 ) {
+    if (!isOnlyNumberValided(newWhatsApp) || newWhatsApp.length > 11 || newWhatsApp.length < 10 ) {
       return res.status(400).json({ message: 'WhatsApp inválido. Verifique o WhatsApp informado e tente novamente.' });
     }
 
@@ -2049,19 +2049,19 @@ app.put('/api/v1/updateAddress', AuthenticateJWT, async (req, res) => {
     }
     
     // Verifica se street contém apenas letras maiúsculas e minúsculas
-    if (!isSignUpBarbeariaValid(street) && street.length <= 30) {
+    if (!isSignUpBarbeariaValid(street) || street.length > 30) {
       return res.status(400).json({ error: 'Error in values' });
     }
     // Verifica se number contém apenas números
-    if (!isOnlyNumberValided(number) && number.length <= 5) {
+    if (!isOnlyNumberValided(number) || number.length > 5) {
       return res.status(400).json({ error: 'Error in values' });
     }
     // Verifica se neighborhood contém apenas letras maiúsculas e minúsculas
-    if (!isSignUpBarbeariaValid(neighborhood) && neighborhood.length <= 30) {
+    if (!isSignUpBarbeariaValid(neighborhood) || neighborhood.length > 30) {
       return res.status(400).json({ error: 'Error in values' });
     }
     // Verifica se city contém apenas letras maiúsculas e minúsculas
-    if (!isSignUpBarbeariaValid(city) && city.length <= 30) {
+    if (!isSignUpBarbeariaValid(city) || city.length > 30) {
       return res.status(400).json({ error: 'Error in values' });
     }
 
@@ -2134,7 +2134,7 @@ app.put('/api/v1/updateUserNameBarbearia', AuthenticateJWT, async (req, res) => 
       return res.status(401).json({ success: false, message: 'Senha incorreta' });
     }
     // Verifica se usuario contém apenas letras maiúsculas e minúsculas
-    if (!isSignUpBarbeariaValid(newUserName) && newUserName.length <= 30) {
+    if (!isSignUpBarbeariaValid(newUserName) || newUserName.length > 30) {
       return res.status(400).json({ error: 'Error in values' });
     }
 
@@ -2182,7 +2182,7 @@ app.put('/api/v1/updateDataProfessional', AuthenticateJWT, (req, res) => {
   const newPhoneNumber = req.body.newPhoneNumber;
 
   
-  if (!isPasswordValided(confirmPassword) && confirmPassword.length <= 8) {
+  if (!isPasswordValided(confirmPassword) || confirmPassword.length > 8) {
     return res.status(400).json({ error: 'Error in values' });
   }
 
@@ -2190,7 +2190,7 @@ app.put('/api/v1/updateDataProfessional', AuthenticateJWT, (req, res) => {
   const values = [];
 
   if(newName){
-    if (!isSignUpBarbeariaValid(newName) && newName.length <= 30) {
+    if (!isSignUpBarbeariaValid(newName) || newName.length > 30) {
       return res.status(400).json({ error: 'Error in values' });
     }
     query += ` name = ?,`;
@@ -2207,7 +2207,7 @@ app.put('/api/v1/updateDataProfessional', AuthenticateJWT, (req, res) => {
     }
   }
   if(newPhoneNumber){
-    if (!isOnlyNumberValided(newPhoneNumber) && newPhoneNumber.length > 11 || newPhoneNumber.length < 10) {
+    if (!isOnlyNumberValided(newPhoneNumber) || newPhoneNumber.length > 11 || newPhoneNumber.length < 10) {
       return res.status(400).json({ error: 'Error in values' });
     }
     query += ` cell_phone = ?,`;
@@ -2258,7 +2258,7 @@ app.put('/api/v1/updateEmailBarbearia', AuthenticateJWT, async (req, res) => {
   const newEmail = req.body.newEmail;
   
   // Verifica se newEmail contém apenas letras maiúsculas e minúsculas
-  if (!isEmailValided(newEmail) && newEmail.length <= 50) {
+  if (!isEmailValided(newEmail) || newEmail.length > 100) {
     return res.status(400).json({ error: 'Error in values' });
   }
 
@@ -2322,12 +2322,12 @@ app.put('/api/v1/updatePasswordBarbearia', AuthenticateJWT, async (req, res) => 
   const newPassword = req.body.newPassword;
 
   // Verifica se senha contém apenas letras maiúsculas e minúsculas e alguns caracteres especiais
-  if (!isPasswordValided(passwordConfirm) && passwordConfirm.length <= 22) {
+  if (!isPasswordValided(passwordConfirm) || passwordConfirm.length > 22) {
     return res.status(400).json({ error: 'Error in values' });
   }
 
   // Verifica se senha contém apenas letras maiúsculas e minúsculas e alguns caracteres especiais
-  if (!isPasswordValided(newPassword) && newPassword.length <= 22) {
+  if (!isPasswordValided(newPassword) || newPassword.length > 22) {
     return res.status(400).json({ error: 'Error in values' });
   }
   
@@ -2366,12 +2366,12 @@ app.put('/api/v1/updatePasswordProfessional', AuthenticateJWT, (req, res) => {
   const newPassword = req.body.newPassword;
 
   // Verifica se senha contém apenas letras maiúsculas e minúsculas e alguns caracteres especiais
-  if (!isPasswordValided(passwordConfirm) && passwordConfirm.length <= 8) {
+  if (!isPasswordValided(passwordConfirm) || passwordConfirm.length > 8) {
     return res.status(400).json({ error: 'Error in values' });
   }
 
   // Verifica se senha contém apenas letras maiúsculas e minúsculas e alguns caracteres especiais
-  if (!isPasswordValided(newPassword) && newPassword.length <= 8) {
+  if (!isPasswordValided(newPassword) || newPassword.length > 8) {
     return res.status(400).json({ error: 'Error in values' });
   }
   
@@ -2692,7 +2692,7 @@ app.put('/api/v1/updateService/:barbeariaId/:professionalId', AuthenticateJWT, (
   // Verifique se os campos estão preenchidos e adicione à query
   if (editedServiceName) {
       // Verifica se number contém apenas números
-      if (!isSignUpBarbeariaValid(editedServiceName) && editedServiceName.length > 150) {
+      if (!isSignUpBarbeariaValid(editedServiceName) || editedServiceName.length > 150) {
         return res.status(400).json({ error: 'Error in values' });
       }
       query += ` name = ?,`;
@@ -2700,7 +2700,7 @@ app.put('/api/v1/updateService/:barbeariaId/:professionalId', AuthenticateJWT, (
   }
   if (editedServicePrice) {
       // Verifica se number contém apenas números
-      if (!isOnlyNumberValided(editedServicePrice) && editedServicePrice.length > 10) {
+      if (!isOnlyNumberValided(editedServicePrice) || editedServicePrice.length > 10) {
         return res.status(400).json({ error: 'Error in values' });
       }
       query += ` preco = ?,`;
@@ -2708,7 +2708,7 @@ app.put('/api/v1/updateService/:barbeariaId/:professionalId', AuthenticateJWT, (
   }
   if (editedCommissionFee) {
       // Verifica se number contém apenas números
-      if (!isOnlyNumberValided(editedCommissionFee) && editedCommissionFee.length > 10) {
+      if (!isOnlyNumberValided(editedCommissionFee) || editedCommissionFee.length > 10) {
         return res.status(400).json({ error: 'Error in values' });
       }
       query += ` commission_fee = ?,`;
@@ -2716,7 +2716,7 @@ app.put('/api/v1/updateService/:barbeariaId/:professionalId', AuthenticateJWT, (
   }
   if (editedDuration) {
       // Verifica se a str de duração do serviço contém letras e números apenaas
-      if (!isEmailValided(editedDuration) && editedDuration.length > 5) {
+      if (!isEmailValided(editedDuration) || editedDuration.length > 5) {
         return res.status(400).json({ error: 'Error in values' });
       }
       query += ` duracao = ?,`;
@@ -2843,22 +2843,22 @@ app.post('/api/v1/createProfessional', AuthenticateJWT, (req, res) => {
   const amountVisibility = 'vibible'
 
   // Verifica se newNameProfessional contém apenas letras maiúsculas e minúsculas
-  if (!isNameValided(newNameProfessional) && newNameProfessional.length > 30) {
+  if (!isNameValided(newNameProfessional) || newNameProfessional.length > 30) {
     return res.status(400).json({ error: 'Error in values' });
   }
 
   // Verifica se newPhoneProfessional contém apenas letras maiúsculas e minúsculas
-  if (!isOnlyNumberValided(newPhoneProfessional) && newPhoneProfessional.length > 11 || newPhoneProfessional.length < 10 ) {
+  if (!isOnlyNumberValided(newPhoneProfessional) || newPhoneProfessional.length > 11 || newPhoneProfessional.length < 10 ) {
     return res.status(400).json({ error: 'Error in values' });
   }
 
   // Verifica se newEmailProfessional contém apenas letras maiúsculas e minúsculas
-  if (!isEmailValided(newEmailProfessional) && newEmailProfessional.length > 50) {
+  if (!isEmailValided(newEmailProfessional) || newEmailProfessional.length > 50) {
     return res.status(400).json({ error: 'Error in values' });
   }
 
   // Verifica se newPasswordProfessional contém apenas letras maiúsculas e minúsculas
-  if (!isPasswordValided(newPasswordProfessional) && newPasswordProfessional.length > 8) {
+  if (!isPasswordValided(newPasswordProfessional) || newPasswordProfessional.length > 8) {
     return res.status(400).json({ error: 'Error in values' });
   }
 
@@ -3515,19 +3515,19 @@ app.post('/api/v1/addService/:barbeariaId/:professionalId', AuthenticateJWT, (re
   const duracao = req.body.newDuration;
 
   // Verifica se number contém apenas números
-  if (!isSignUpBarbeariaValid(name) && name.length > 150) {
+  if (!isSignUpBarbeariaValid(name) || name.length > 150) {
     return res.status(400).json({ error: 'Error in values' });
   }
   // Verifica se number contém apenas números
-  if (!isOnlyNumberValided(preco) && preco.length > 10) {
+  if (!isOnlyNumberValided(preco) || preco.length > 10) {
     return res.status(400).json({ error: 'Error in values' });
   }
   // Verifica se number contém apenas números
-  if (!isOnlyNumberValided(commission_fee) && commission_fee.length > 10) {
+  if (!isOnlyNumberValided(commission_fee) || commission_fee.length > 10) {
     return res.status(400).json({ error: 'Error in values' });
   }
   // Verifica se a str de duração do serviço contém letras e números apenaas
-  if (!isEmailValided(duracao) && duracao.length > 5) {
+  if (!isEmailValided(duracao) || duracao.length > 5) {
     return res.status(400).json({ error: 'Error in values' });
   }
 
