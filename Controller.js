@@ -661,7 +661,7 @@ app.put('/api/v1/updateUserData', AuthenticateJWT, async (req, res) => {
   if (!isPasswordValided(confirmPassword) || confirmPassword.length > 22) {
     return res.status(400).json({ error: 'Error in values' });
   }
-  
+
   try {
     const isPasswordCorrect = await comparePasswordUserClient(userId, confirmPassword);
     if (!isPasswordCorrect) {
@@ -737,35 +737,35 @@ app.put('/api/v1/updateUserPassword', AuthenticateJWT, async (req, res) => {
   const newPassword = req.body.newPassword;
 
   // Verifica se senha contém apenas letras maiúsculas e minúsculas e alguns caracteres especiais
-  if (!isPasswordValided(passwordConfirm) || passwordConfirm.length <= 22) {
-    return res.status(400).json({ error: 'Error in values' });
+  if (!isPasswordValided(passwordConfirm) || passwordConfirm.length > 22) {
+    return res.status(400).json({ message: 'Formato de senha incorreto. Verifique a senha informada e tente novamente.' });
   }
 
   // Verifica se senha contém apenas letras maiúsculas e minúsculas e alguns caracteres especiais
-  if (!isPasswordValided(newPassword) || newPassword.length <= 22) {
-    return res.status(400).json({ error: 'Error in values' });
+  if (!isPasswordValided(newPassword) || newPassword.length > 22) {
+    return res.status(400).json({ message: 'Formato de senha incorreto. Verifique a senha informada e tente novamente.' });
   }
   
   const isPasswordCorrect = await comparePasswordUserClient(userId, passwordConfirm);
   if (!isPasswordCorrect) {
-    return res.status(401).json({ success: false, message: 'Senha incorreta' });
+    return res.status(401).json({ message: 'Verifique a senha informada e tente novamente.' });
   }
 
   // Criptografar a senha antes de salvar
   bcrypt.hash(newPassword, 10, (err, newPassword_hash) => {
     if (err) {
       console.error(err);
-      return res.status(500).json({ error: 'Erro ao criptografar a senha do cliente' });
+      return res.status(500).json({ message: 'Erro ao alterar senha, tente novamente mais tarde.' });
     }
 
     const sql = "UPDATE user SET senha = ? WHERE id = ?";
     db.query(sql, [newPassword_hash, userId], (err, result) =>{
       if(err){
         console.error("Erro ao atualizar a senha de usuário", err);
-        return res.status(500).json({Error: "Internal Server Error"});
+        return res.status(500).json({ message: 'Erro ao alterar senha, tente novamente mais tarde.'});
       }
       if(result.affectedRows === 1){
-        return res.status(201).json({ Success: "Success"});
+        return res.status(201).json({ Success: true});
       }
     })
   })
