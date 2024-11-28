@@ -370,35 +370,35 @@ app.post("/api/v1/SignUp", (req, res) => {
   const isTokenValid = verifyTokenFromFrontend(token_cloudflare);
 
   if (isTokenValid === false) {
-    return res.status(403).json({ message: 'Cloudflare: timeout-or-duplicate' });
+    return res.status(403).json({ message: 'Falha na verificação de autenticação humana. Tente novamente mais tarde.' });
   } else if (isTokenValid === 'Erro na requisição') {
-    return res.status(500).json({ message: 'Cloudflare: erro na requisição' });
+    return res.status(500).json({ message: 'Erro de comunicação com a CloudFlare. Tente novamente mais tarde.' });
   }
 
   // Verifica se name contém apenas letras maiúsculas e minúsculas
-  if (!isSignUpBarbeariaValid(name) && name.length > 30) {
-    return res.status(400).json({ error: 'Error in values' });
+  if (!isSignUpBarbeariaValid(name) || name.length >= 30) {
+    return res.status(400).json({ message: 'Verifique os valores informatos e tente novamente.' });
   }
 
-  if (!isEmailValided(email)) {
-    return res.status(400).json({ error: 'Error in values' });
+  if (!isEmailValided(email) || email.length >= 100) {
+    return res.status(400).json({ message: 'Verifique os valores informatos e tente novamente.' });
   }
 
   // Verifica se senha contém apenas letras maiúsculas e minúsculas e alguns caracteres especiais
-  if (!isPasswordValided(senha) && senha.length <= 22) {
-    return res.status(400).json({ error: 'Error in values' });
+  if (!isPasswordValided(senha) || senha.length >= 22) {
+    return res.status(400).json({ message: 'Verifique os valores informatos e tente novamente.' });
   }
 
   //Verifica se o número de celular é minimamente válido
-  if (!isOnlyNumberValided(celular) && celular.length > 11 || celular.length < 10 ) {
-    return res.status(400).json({ error: 'Error in values' });
+  if (!isOnlyNumberValided(celular) || celular.length > 11 || celular.length < 10 ) {
+    return res.status(400).json({ message: 'Verifique os valores informatos e tente novamente.' });
   }
 
   // Verificação se o e-mail ou o número de celular já estão cadastrado
   db.query('SELECT email, celular, isVerified FROM user WHERE email = ? OR celular = ?', [email, celular], (error, results) => {
     if (error) {
       console.error(error);
-      return res.status(500).send('Erro ao verificar o e-mail ou o número de celular');
+      return res.status(500).json({ message: 'Erro ao criar conta. Tente novamente mais tarde.' });
     }
     //Verify is has reuslts
     if (results.length > 0) {
@@ -414,7 +414,7 @@ app.post("/api/v1/SignUp", (req, res) => {
       }
       //Verify if has a email OR phone registered
       if (existingUser.isVerified === 'true') {
-        return res.status(400).send('E-mail ou celular já cadastrado');
+        return res.status(400).json({ message: 'E-mail ou celular já cadastrado.' });
       }
     }
 
@@ -422,7 +422,7 @@ app.post("/api/v1/SignUp", (req, res) => {
     bcrypt.hash(senha, 10, (err, senha_hash) => {
       if (err) {
         console.error(err);
-        return res.status(500).json({ error: 'Erro ao criptografar a senha' });
+        return res.status(500).json({ message: 'Erro ao criar conta. Tente novamente mais tarde.' });
       }
         // Criar objeto do usuário com senha criptografada
         const user = {
@@ -436,10 +436,11 @@ app.post("/api/v1/SignUp", (req, res) => {
 
         db.query('INSERT INTO user SET ?', user, (error, results) => {
           if (results) {
-            return res.status(201).send('Usuário registrado com sucesso');
-          } else {
+            return res.status(201).json({ message: 'Usuário registrado com sucesso.'});
+          }
+          if(error) {
             console.error(error);
-            return res.status(500).send('Erro ao registrar usuário');
+            return res.status(500).json({ message: 'Erro ao criar conta. Tente novamente mais tarde.' });
           }
         });
     });
@@ -450,24 +451,33 @@ app.post("/api/v1/SignUp", (req, res) => {
 app.post('/api/v1/SignIn', (req, res) => {
   const { email, senha, token_cloudflare } = req.body;
 
-  // Verifique se o email e a senha foram fornecidos
-  if (!email || !senha || !token_cloudflare) {
-    return res.status(400).json({ success: false, message: 'Verifique os dados forncecidos para login' });
+  // Verifique se o token foi fornecido
+  if (!token_cloudflare) {
+    return res.status(400).json({ success: false, message: 'Confirme que você é um humano. Faça a autenticação da CloudFlare.' });
   }
 
   // Uso da função assíncrona
   const isTokenValid = verifyTokenFromFrontend(token_cloudflare);
 
   if (isTokenValid === false) {
-    return res.status(403).json({ message: 'Cloudflare: timeout-or-duplicate' });
+    return res.status(403).json({ message: 'Falha na verificação de autenticação humana. Tente novamente mais tarde.' });
   } else if (isTokenValid === 'Erro na requisição') {
-    return res.status(500).json({ message: 'Cloudflare: erro na requisição' });
+    return res.status(500).json({ message: 'Erro de comunicação com a CloudFlare. Tente novamente mais tarde.' });
+  }
+
+  if (!isEmailValided(email) || email.length >= 100) {
+    return res.status(400).json({ message: 'Verifique os valores informatos e tente novamente.' });
+  }
+
+  // Verifica se senha contém apenas letras maiúsculas e minúsculas e alguns caracteres especiais
+  if (!isPasswordValided(senha) || senha.length >= 22) {
+    return res.status(400).json({ message: 'Verifique os valores informatos e tente novamente.' });
   }
 
   // Buscar usuário pelo email
   db.query('SELECT id, name, email, celular, user_image, senha, isVerified FROM user WHERE email = ?', [email], (err, result) => {
     if (err) {
-      return res.status(500).json({ success: false, message: 'Erro interno do servidor' });
+      return res.status(500).json({ message: 'Erro ao criar conta. Tente novamente mais tarde.' });
     }
     
     if (result.length > 0) {
@@ -485,7 +495,7 @@ app.post('/api/v1/SignIn', (req, res) => {
       // Verificar a senha usando bcrypt
       bcrypt.compare(senha, user.senha, (err, isMatch) => {
         if (err) {
-          return res.status(500).json({ success: false, message: 'Erro interno do servidor' });
+          return res.status(500).json({ message: 'Erro ao criar conta. Tente novamente mais tarde.' });
         }
         
         if (isMatch) {
@@ -500,15 +510,15 @@ app.post('/api/v1/SignIn', (req, res) => {
           delete user.senha;
 
           // Enviar o token e as informações do usuário
-          return res.status(200).json({ success: true, token: token, user: user });
+          return res.status(200).json({ token: token, user: user });
         } else {
           // Senha incorreta
-          return res.status(401).json({ success: false, message: 'Senha incorreta' });
+          return res.status(401).json({ message: 'E-mail ou senha incorreta.' });
         }
       });
     } else if (result.length === 0){
       // Usuário não encontrado
-      return res.status(404).json({Success: 'Falied', message: 'Usuário não encontrado'});
+      return res.status(404).json({ message: 'Usuário não encontrado.'});
     }
   });
 });
@@ -1370,7 +1380,7 @@ app.post("/api/v1/SignUpBarbearia", (req, res) => {
       }
       //Verify if has a email OR phone registered
       if (existingUser.isVerified === 'true') {
-        return res.status(400).json({ message: 'E-mail ou celular já cadastrado'});
+        return res.status(400).json({ message: 'E-mail ou celular já cadastrado.'});
       }
     }
 
