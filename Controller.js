@@ -3614,56 +3614,48 @@ app.put('/api/v1/updateBookingPoliceis', AuthenticateJWT, (req, res) =>{
   const bookingWithPayment = req.body.bookingWithPayment;
   const servicePercentage = req.body.servicePercentage;
 
-  const sqlVerifyPassword = 'SELECT senha FROM barbearia WHERE id = ?';
+  // Verifica se a senha é compatível 
+  const isPasswordValided = comparePasswordBarbearia(barbeariaId, confirmPassword);
 
-  db.query(sqlVerifyPassword, [barbeariaId], async (err, resu) =>{
-    if(err){
-      console.error("Erro ao atualizar as políticas de agendamento", err);
-      return res.status(500).json({ Error: "Internal Server Error" });
-    }
-console.log(resu[0].senha)
-    // Verifica a senha
-    const isPasswordValided = await comparePasswordBarbearia(confirmPassword, resu[0].senha);
-console.log(isPasswordValided)
+  if (!isPasswordValided) { // Senha incorreta
+    return res.status(401).json({ message: 'Verifique a senha informada e tente novamente.' });
+  }
 
-    if (!isPasswordValided) { // Senha incorreta
-      return res.status(401).json({ message: 'Verifique a senha informada e tente novamente.' });
+  const sqlSelectPoliceisBarbearia = 'SELECT EXISTS(SELECT 1 FROM bookingPolicies WHERE barbearia_id = ?) as policeisBarbearia';
+  db.query(sqlSelectPoliceisBarbearia, [barbeariaId], (erro, resul) =>{
+    if(erro){
+      console.error("Erro ao verificar as políticas de agendamento.", erro);
+      return res.status(500).json({ message: "Erro ao verificar as políticas de agendamento." });
     }
 
-      const sqlSelectPoliceisBarbearia = 'SELECT EXISTS(SELECT 1 FROM bookingPolicies WHERE barbearia_id = ?) as policeisBarbearia';
-      db.query(sqlSelectPoliceisBarbearia, [barbeariaId], (erro, resul) =>{
-        if(erro){
-          console.error("Erro ao verificar as políticas de agendamento.", erro);
-          return res.status(500).json({ message: "Erro ao verificar as políticas de agendamento." });
+    const policeisBarbearia = resul[0].policeisBarbearia;
+
+    if(policeisBarbearia){
+      //Atualiza as políticas de agendamento
+      const sqlUpdateBookingPoliceis = 'UPDATE bookingPolicies SET booking_with_payment = ?, service_percentage = ? WHERE barbearia_id = ?';
+      db.query(sqlUpdateBookingPoliceis, [bookingWithPayment, servicePercentage, barbeariaId], (error, result) =>{
+        if(error){
+          console.error("Erro ao atualizar as políticas de agendamento", error);
+          return res.status(500).json({ message: "Erro ao atualizar as políticas de agendamento." });
         }
-
-        const policeisBarbearia = resul[0].policeisBarbearia;
-
-        if(policeisBarbearia){
-          const sqlUpdateBookingPoliceis = 'UPDATE bookingPolicies SET booking_with_payment = ?, service_percentage = ? WHERE barbearia_id = ?';
-          db.query(sqlUpdateBookingPoliceis, [bookingWithPayment, servicePercentage, barbeariaId], (error, result) =>{
-            if(error){
-              console.error("Erro ao atualizar as políticas de agendamento", error);
-              return res.status(500).json({ message: "Erro ao atualizar as políticas de agendamento." });
-            }
-            if(result){
-              return res.status(200).json({ message: "Política de agendamento atualizada com sucesso."});
-            }
-          })
-
-        }else{
-          const sqlCreatePoliceisBarbearia = 'INSERT INTO bookingPolicies (barbearia_id, booking_with_payment, service_percentage) VALUES (?,?,?)';
-          db.query(sqlCreatePoliceisBarbearia, [barbeariaId, bookingWithPayment, servicePercentage], (errInCreation, resultCreation) =>{
-            if(errInCreation){
-              console.error("Erro ao criar as políticas de agendamento", errInCreation);
-              return res.status(500).json({ message: "Erro ao criar as políticas de agendamento." });
-            }
-            if(resultCreation){
-              return res.status(200).json({ message: "Política de agendamento criada com sucesso."});
-            }
-          })
+        if(result){
+          return res.status(200).json({ message: "Política de agendamento atualizada com sucesso."});
         }
-      })      
+      })
+
+    }else{
+      //Cria as políticas de agendamento
+      const sqlCreatePoliceisBarbearia = 'INSERT INTO bookingPolicies (barbearia_id, booking_with_payment, service_percentage) VALUES (?,?,?)';
+      db.query(sqlCreatePoliceisBarbearia, [barbeariaId, bookingWithPayment, servicePercentage], (errInCreation, resultCreation) =>{
+        if(errInCreation){
+          console.error("Erro ao criar as políticas de agendamento", errInCreation);
+          return res.status(500).json({ message: "Erro ao criar as políticas de agendamento." });
+        }
+        if(resultCreation){
+          return res.status(200).json({ message: "Política de agendamento criada com sucesso."});
+        }
+      })
+    }
   })
 })
 
