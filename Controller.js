@@ -3613,7 +3613,7 @@ app.put('/api/v1/updateBookingPoliceis', AuthenticateJWT, (req, res) =>{
   const confirmPassword = req.body.confirmPassword;
   const bookingWithPayment = req.body.bookingWithPayment;
   const servicePercentage = req.body.servicePercentage;
-
+console.log('rota acessada...')
   const sqlVerifyPassword = 'SELECT senha FROM barbearia WHERE id = ?';
   db.query(sqlVerifyPassword, [barbeariaId], async (err, resu) =>{
     if(err){
