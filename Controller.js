@@ -3613,7 +3613,7 @@ app.put('/api/v1/updateBookingPoliceis', AuthenticateJWT, (req, res) =>{
   const confirmPassword = req.body.confirmPassword;
   const bookingWithPayment = req.body.bookingWithPayment;
   const servicePercentage = req.body.servicePercentage;
-console.log('rota acessada...')
+
   const sqlVerifyPassword = 'SELECT senha FROM barbearia WHERE id = ?';
   db.query(sqlVerifyPassword, [barbeariaId], async (err, resu) =>{
     if(err){
@@ -3622,7 +3622,7 @@ console.log('rota acessada...')
     }
 
     // Verifica a senha
-    const isPasswordValided = await comparePassword(confirmPassword, resu[0].senha);
+    const isPasswordValided = await comparePasswordBarbearia(confirmPassword, resu[0].senha);
     
     if (!isPasswordValided) { // Senha incorreta
       return res.status(401).json({ success: false, message: 'Senha incorreta' });
