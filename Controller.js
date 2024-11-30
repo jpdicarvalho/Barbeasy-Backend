@@ -3421,6 +3421,7 @@ app.delete('/api/v1/unlinkProfessional/:barbeariaId/:professionalId/:confirmPass
   const password = req.params.confirmPassword;
   
   const isPasswordValided = await comparePasswordBarbearia(barbeariaId, password);
+  
   if (!isPasswordValided) {
     return res.status(401).json({ success: false, message: 'Senha incorreta' });
   }
@@ -3616,7 +3617,7 @@ app.put('/api/v1/updateBookingPoliceis', AuthenticateJWT, async (req, res) =>{
 
   // Verifica se a senha é compatível 
   const isPasswordValided = await comparePasswordBarbearia(barbeariaId, confirmPassword);
-console.log(isPasswordValided)
+
   if (!isPasswordValided) { // Senha incorreta
     return res.status(401).json({ message: 'Verifique a senha informada e tente novamente.' });
   }
