@@ -3616,7 +3616,7 @@ app.put('/api/v1/updateBookingPoliceis', AuthenticateJWT, (req, res) =>{
 
   // Verifica se a senha é compatível 
   const isPasswordValided = comparePasswordBarbearia(barbeariaId, confirmPassword);
-
+console.log(isPasswordValided)
   if (!isPasswordValided) { // Senha incorreta
     return res.status(401).json({ message: 'Verifique a senha informada e tente novamente.' });
   }
