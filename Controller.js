@@ -3608,14 +3608,14 @@ app.delete('/api/v1/unlinkBarbearia/:barbeariaId/:professionalId/:confirmPasswor
 })
 
 //Route to barbearia update your bookings policies
-app.put('/api/v1/updateBookingPoliceis', AuthenticateJWT, (req, res) =>{
+app.put('/api/v1/updateBookingPoliceis', AuthenticateJWT, async (req, res) =>{
   const barbeariaId = req.body.barbeariaId;
   const confirmPassword = req.body.confirmPassword;
   const bookingWithPayment = req.body.bookingWithPayment;
   const servicePercentage = req.body.servicePercentage;
 
   // Verifica se a senha é compatível 
-  const isPasswordValided = comparePasswordBarbearia(barbeariaId, confirmPassword);
+  const isPasswordValided = await comparePasswordBarbearia(barbeariaId, confirmPassword);
 console.log(isPasswordValided)
   if (!isPasswordValided) { // Senha incorreta
     return res.status(401).json({ message: 'Verifique a senha informada e tente novamente.' });
