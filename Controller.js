@@ -3509,7 +3509,6 @@ app.get('/api/v1/professionalBookings/:professionalId/:selectedDate', Authentica
 app.post('/api/v1/addService/:barbeariaId/:professionalId', AuthenticateJWT, (req, res) => {
   const barbearia_id = req.params.barbeariaId;
   const professional_id = req.params.professionalId;
-
   const name = req.body.newNameService; 
   const preco = req.body.newPriceService;
   const commission_fee = req.body.newCommissionFee;
@@ -3517,19 +3516,19 @@ app.post('/api/v1/addService/:barbeariaId/:professionalId', AuthenticateJWT, (re
 
   // Verifica se number contém apenas números
   if (!isSignUpBarbeariaValid(name) || name.length > 150) {
-    return res.status(400).json({ error: 'Error in values' });
+    return res.status(400).json({ message: 'Verifique os valores informatos e tente novamente.1' });
   }
   // Verifica se number contém apenas números
   if (!isOnlyNumberValided(preco) || preco.length > 10) {
-    return res.status(400).json({ error: 'Error in values' });
+    return res.status(400).json({ message: 'Verifique os valores informatos e tente novamente.2' });
   }
   // Verifica se number contém apenas números
   if (!isOnlyNumberValided(commission_fee) || commission_fee.length > 10) {
-    return res.status(400).json({ error: 'Error in values' });
+    return res.status(400).json({ message: 'Verifique os valores informatos e tente novamente.3' });
   }
   // Verifica se a str de duração do serviço contém letras e números apenaas
   if (!isEmailValided(duracao) || duracao.length > 5) {
-    return res.status(400).json({ error: 'Error in values' });
+    return res.status(400).json({ message: 'Verifique os valores informatos e tente novamente.4' });
   }
 
   const service = {
