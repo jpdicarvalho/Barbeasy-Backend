@@ -126,9 +126,9 @@ db.connect((error) => {
 const isNameValided = (input) => /^[a-zA-Z\sçéúíóáõãèòìàêôâ]+$/.test(input);
 const isOnlyNumberValided = (input) => /^[0-9]*$/.test(input);
 const isEmailValided = (input) => /^[a-z0-9@._]+$/i.test(input);
-const isPasswordValided = (input) => /^[a-zA-Z0-9@.#%$,]+$/.test(input);
+const isPasswordValided = (input) => /^[a-zA-Z0-9@.#%]+$/.test(input);
 const isSignUpBarbeariaValid = (input) => /^[a-zA-Z\sçéúíóáõãèòìàêôâ.!?+]*$/.test(input);
-
+const isCurrencyValid = (input) => /^R\$\s?\d+(,\d{2})?$/.test(input);
 //=======================================================================
 /* Inicializando o Swagger
 app.use('/api-docs', serveSwaggerUI, setupSwaggerUI);*/
@@ -3513,18 +3513,19 @@ app.post('/api/v1/addService/:barbeariaId/:professionalId', AuthenticateJWT, (re
   const preco = req.body.newPriceService;
   const commission_fee = req.body.newCommissionFee;
   const duracao = req.body.newDuration;
-  console.log(!isPasswordValided(preco))
+  console.log(!isCurrencyValid(preco))
+  console.log(isCurrencyValid(preco))
 
   // Verifica se number contém apenas números
   if (!isSignUpBarbeariaValid(name) || name.length > 150) {
     return res.status(400).json({ message: 'Verifique os valores informatos e tente novamente.1' });
   }
   // Verifica se number contém apenas números
-  if (preco.length > 10) {
+  if (!isCurrencyValid(preco) || preco.length > 10) {
     return res.status(400).json({ message: 'Verifique os valores informatos e tente novamente.2' });
   }
   // Verifica se number contém apenas números
-  if (!isPasswordValided(commission_fee) || commission_fee.length > 10) {
+  if (!isCurrencyValid(commission_fee) || commission_fee.length > 10) {
     return res.status(400).json({ message: 'Verifique os valores informatos e tente novamente.3' });
   }
   // Verifica se a str de duração do serviço contém letras e números apenaas
