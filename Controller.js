@@ -126,7 +126,7 @@ db.connect((error) => {
 const isNameValided = (input) => /^[a-zA-Z\sçéúíóáõãèòìàêôâ]+$/.test(input);
 const isOnlyNumberValided = (input) => /^[0-9]*$/.test(input);
 const isEmailValided = (input) => /^[a-z0-9@._]+$/i.test(input);
-const isPasswordValided = (input) => /^[a-zA-Z0-9@.#%]+$/.test(input);
+const isPasswordValided = (input) => /^[a-zA-Z0-9@.#%$]+$/.test(input);
 const isSignUpBarbeariaValid = (input) => /^[a-zA-Z\sçéúíóáõãèòìàêôâ.!?+]*$/.test(input);
 
 //=======================================================================
@@ -3519,11 +3519,11 @@ app.post('/api/v1/addService/:barbeariaId/:professionalId', AuthenticateJWT, (re
     return res.status(400).json({ message: 'Verifique os valores informatos e tente novamente.1' });
   }
   // Verifica se number contém apenas números
-  if (!isOnlyNumberValided(preco) || preco.length > 10) {
+  if (!isPasswordValided(preco) || preco.length > 10) {
     return res.status(400).json({ message: 'Verifique os valores informatos e tente novamente.2' });
   }
   // Verifica se number contém apenas números
-  if (!isOnlyNumberValided(commission_fee) || commission_fee.length > 10) {
+  if (!isPasswordValided(commission_fee) || commission_fee.length > 10) {
     return res.status(400).json({ message: 'Verifique os valores informatos e tente novamente.3' });
   }
   // Verifica se a str de duração do serviço contém letras e números apenaas
@@ -3546,7 +3546,7 @@ app.post('/api/v1/addService/:barbeariaId/:professionalId', AuthenticateJWT, (re
       return res.status(500).json({ Error: "Internal Server Error" });
     }else{
       if(result){
-        return res.status(201).json({ Success: "Success" });
+        return res.status(201).json({ message: "Serviço adicionado com sucesso." });
       }
     }
   })
