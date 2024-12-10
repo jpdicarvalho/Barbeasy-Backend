@@ -2693,23 +2693,23 @@ app.put('/api/v1/updateService/:barbeariaId/:professionalId', AuthenticateJWT, (
   if (editedServiceName) {
       // Verifica se number contém apenas números
       if (!isSignUpBarbeariaValid(editedServiceName) || editedServiceName.length > 150) {
-        return res.status(400).json({ error: 'Error in values' });
+        return res.status(400).json({ message: 'Verifique os valores informatos e tente novamente.' });
       }
       query += ` name = ?,`;
       values.push(editedServiceName);
   }
   if (editedServicePrice) {
       // Verifica se number contém apenas números
-      if (!isOnlyNumberValided(editedServicePrice) || editedServicePrice.length > 10) {
-        return res.status(400).json({ error: 'Error in values' });
+      if (!isCurrencyValid(editedServicePrice) || editedServicePrice.length > 10) {
+        return res.status(400).json({ message: 'Verifique os valores informatos e tente novamente.' });
       }
       query += ` preco = ?,`;
       values.push(editedServicePrice);
   }
   if (editedCommissionFee) {
       // Verifica se number contém apenas números
-      if (!isOnlyNumberValided(editedCommissionFee) || editedCommissionFee.length > 10) {
-        return res.status(400).json({ error: 'Error in values' });
+      if (!isCurrencyValid(editedCommissionFee) || editedCommissionFee.length > 10) {
+        return res.status(400).json({ message: 'Verifique os valores informatos e tente novamente.' });
       }
       query += ` commission_fee = ?,`;
       values.push(editedCommissionFee);
@@ -2717,7 +2717,7 @@ app.put('/api/v1/updateService/:barbeariaId/:professionalId', AuthenticateJWT, (
   if (editedDuration) {
       // Verifica se a str de duração do serviço contém letras e números apenaas
       if (!isEmailValided(editedDuration) || editedDuration.length > 5) {
-        return res.status(400).json({ error: 'Error in values' });
+        return res.status(400).json({ message: 'Verifique os valores informatos e tente novamente.' });
       }
       query += ` duracao = ?,`;
       values.push(editedDuration);
@@ -2734,9 +2734,9 @@ app.put('/api/v1/updateService/:barbeariaId/:professionalId', AuthenticateJWT, (
   db.query(query, values, (err, result) => {
     if (err) {
       console.error("Erro ao atualizar informações do serviço:", err);
-      res.status(500).json({ Success: "Error", Message: "Erro ao atualizar informações do serviço" });
+      res.status(500).json({ message: "Erro ao atualizar informações do serviço." });
     } if(result) {
-      res.status(200).json({ Success: "Success"});
+      res.status(200).json({ message: "Serviço alterado com sucesso."});
     }
   });
 });
@@ -3513,24 +3513,22 @@ app.post('/api/v1/addService/:barbeariaId/:professionalId', AuthenticateJWT, (re
   const preco = req.body.newPriceService;
   const commission_fee = req.body.newCommissionFee;
   const duracao = req.body.newDuration;
-  console.log(!isCurrencyValid(preco))
-  console.log(isCurrencyValid(preco))
 
   // Verifica se number contém apenas números
   if (!isSignUpBarbeariaValid(name) || name.length > 150) {
-    return res.status(400).json({ message: 'Verifique os valores informatos e tente novamente.1' });
+    return res.status(400).json({ message: 'Verifique os valores informatos e tente novamente.' });
   }
   // Verifica se number contém apenas números
   if (!isCurrencyValid(preco) || preco.length > 10) {
-    return res.status(400).json({ message: 'Verifique os valores informatos e tente novamente.2' });
+    return res.status(400).json({ message: 'Verifique os valores informatos e tente novamente.' });
   }
   // Verifica se number contém apenas números
   if (!isCurrencyValid(commission_fee) || commission_fee.length > 10) {
-    return res.status(400).json({ message: 'Verifique os valores informatos e tente novamente.3' });
+    return res.status(400).json({ message: 'Verifique os valores informatos e tente novamente.' });
   }
   // Verifica se a str de duração do serviço contém letras e números apenaas
   if (!isEmailValided(duracao) || duracao.length > 5) {
-    return res.status(400).json({ message: 'Verifique os valores informatos e tente novamente.4' });
+    return res.status(400).json({ message: 'Verifique os valores informatos e tente novamente.' });
   }
 
   const service = {
