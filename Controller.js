@@ -3513,13 +3513,14 @@ app.post('/api/v1/addService/:barbeariaId/:professionalId', AuthenticateJWT, (re
   const preco = req.body.newPriceService;
   const commission_fee = req.body.newCommissionFee;
   const duracao = req.body.newDuration;
+  console.log(!isPasswordValided(preco))
 
   // Verifica se number contém apenas números
   if (!isSignUpBarbeariaValid(name) || name.length > 150) {
     return res.status(400).json({ message: 'Verifique os valores informatos e tente novamente.1' });
   }
   // Verifica se number contém apenas números
-  if (!isPasswordValided(preco) || preco.length > 10) {
+  if (preco.length > 10) {
     return res.status(400).json({ message: 'Verifique os valores informatos e tente novamente.2' });
   }
   // Verifica se number contém apenas números
