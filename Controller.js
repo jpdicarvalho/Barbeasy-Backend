@@ -126,7 +126,7 @@ db.connect((error) => {
 const isNameValided = (input) => /^[a-zA-Z\sçéúíóáõãèòìàêôâ]+$/.test(input);
 const isOnlyNumberValided = (input) => /^[0-9]*$/.test(input);
 const isEmailValided = (input) => /^[a-z0-9@._]+$/i.test(input);
-const isPasswordValided = (input) => /^[a-zA-Z0-9@.#%$]+$/.test(input);
+const isPasswordValided = (input) => /^[a-zA-Z0-9@.#%$,]+$/.test(input);
 const isSignUpBarbeariaValid = (input) => /^[a-zA-Z\sçéúíóáõãèòìàêôâ.!?+]*$/.test(input);
 
 //=======================================================================
