@@ -817,7 +817,7 @@ app.get('/api/v1/getAllBarbearias', AuthenticateJWT, async (req, res) => {
       const barbeariaIds = barbearias.map(b => b.barbearia_id);
       const servicesSql = `
           SELECT 
-              name
+              name, barbearia_id
           FROM 
               servico
           WHERE 
