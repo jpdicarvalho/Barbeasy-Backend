@@ -3136,6 +3136,7 @@ app.post('/api/v1/createBookingWithoutPayment/', AuthenticateJWT, (req, res) => 
           }
         })
   }
+
   console.log(values[5])
   const sqlSelect="SELECT booking_time FROM bookings WHERE booking_date = ?";
   db.query(sqlSelect, [values[5]], (err, result) =>{
@@ -3147,7 +3148,10 @@ app.post('/api/v1/createBookingWithoutPayment/', AuthenticateJWT, (req, res) => 
       const timeSelected = values[6].split(',');//Novos horários selecionados pelo usuário
       const timesFound = result[0].booking_time.split(',');//horários já agendados pleo usuário
       const timesMach = timeSelected.filter(item => timesFound.includes(item));//Verificar se há compatibilidade entre os horários
-console.log(timeSelected, timesFound, timesMach)
+      
+console.log('timeSelected', timeSelected)
+console.log('timesFound', timesFound)
+console.log('timesFound', timesFound)
 
         if(timesMach.length > 0){
           return res.status(401).json({ message: '', timesMach: timesMach });
