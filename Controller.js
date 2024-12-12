@@ -3129,14 +3129,14 @@ app.post('/api/v1/createBookingWithoutPayment/', AuthenticateJWT, (req, res) => 
         db.query(sqlInsert, [...values, formatDate, token, selectedDayFormated], (erro, results) => {
           if(erro){
             console.error('Erro ao realizar agendamento:', erro);
-            return res.status(500).json({ Error: ' Internal Server Error' });
+            return res.status(500).json({ message: 'Houve um erro ao criar seu agendamento. Tente novamente mais tarde.' });
           }
           if(results){
-            return res.status(200).json({ Success: "Success"});
+            return res.status(200).json({ message: "Agendamento realizado com sucesso!"});
           }
         })
   }
-  
+  console.log(values[5])
   const sqlSelect="SELECT booking_time FROM bookings WHERE booking_date = ?";
   db.query(sqlSelect, [values[5]], (err, result) =>{
     if(err){
