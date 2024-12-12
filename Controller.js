@@ -774,18 +774,26 @@ app.put('/api/v1/updateUserPassword', AuthenticateJWT, async (req, res) => {
 //Route to get all barbearias
 app.get('/api/v1/getAllBarbearias', AuthenticateJWT, async (req, res) => {
   try {
-    const sql=`SELECT barbearia.id AS barbearia_id,
-                      barbearia.name AS nameBarbearia,
-                      barbearia.status AS statusBarbearia,
-                      barbearia.banner_main AS bannerBarbearia,
-                      barbearia.rua AS ruaBarbearia,
-                      barbearia.N AS NruaBarbearia,
-                      barbearia.bairro AS bairroBarbearia,
-                      barbearia.cidade AS cidadeBarbearia,
-                      averageAvaliations.totalAvaliations AS totalAvaliationsBarbearia,
-                      averageAvaliations.average AS averageAvaliationsBarbearia
-                  FROM barbearia
-                  LEFT JOIN averageAvaliations ON averageAvaliations.barbearia_id = barbearia.id`;
+    const sql=`SELECT 
+                    b.id AS barbearia_id,
+                    b.name AS nameBarbearia,
+                    b.status AS statusBarbearia,
+                    b.banner_main AS bannerBarbearia,
+                    b.rua AS ruaBarbearia,
+                    b.N AS NruaBarbearia,
+                    b.bairro AS bairroBarbearia,
+                    b.cidade AS cidadeBarbearia,
+                    a.totalAvaliations AS totalAvaliationsBarbearia,
+                    a.average AS averageAvaliationsBarbearia
+                FROM 
+                    barbearia b
+                LEFT JOIN 
+                    averageAvaliations a ON a.barbearia_id = b.id
+                WHERE 
+                    a.average IS NOT NULL
+                ORDER BY 
+                    a.average DESC, a.totalAvaliations DESC
+                LIMIT 2;`;
     db.query(sql, (err, resul) => {
       if (err){
         console.error("Erro ao buscar barbearias:", err);
@@ -3137,7 +3145,6 @@ app.post('/api/v1/createBookingWithoutPayment/', AuthenticateJWT, (req, res) => 
         })
   }
 
-  console.log(values[5])
   const sqlSelect="SELECT booking_time FROM bookings WHERE booking_date = ?";
   db.query(sqlSelect, [values[5]], (err, result) =>{
     if(err){
@@ -3145,13 +3152,9 @@ app.post('/api/v1/createBookingWithoutPayment/', AuthenticateJWT, (req, res) => 
       return res.status(500).json({ message: 'Erro ao verificar disponibilidade de horários.' });
     }
     if(result.length > 0){
-      const timeSelected = values[6].split(',');//Novos horários selecionados pelo usuário
-      const timesFound = result[0].booking_time.split(',');//horários já agendados pleo usuário
-      const timesMach = timeSelected.filter(item => timesFound.includes(item));//Verificar se há compatibilidade entre os horários
-      
-console.log('timeSelected', timeSelected)
-console.log('timesFound', timesFound)
-console.log('timesFound', timesFound)
+        const timeSelected = values[6].split(',');//Novos horários selecionados pelo usuário
+        const timesFound = result[0].booking_time.split(',');//horários já agendados pleo usuário
+        const timesMach = timeSelected.filter(item => timesFound.includes(item));//Verificar se há compatibilidade entre os horários
 
         if(timesMach.length > 0){
           return res.status(401).json({ message: '', timesMach: timesMach });
