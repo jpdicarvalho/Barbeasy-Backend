@@ -771,76 +771,82 @@ app.put('/api/v1/updateUserPassword', AuthenticateJWT, async (req, res) => {
   })
 });
 
-//Route to get all barbearias
+// Route to get all barbearias
 app.get('/api/v1/getAllBarbearias', AuthenticateJWT, async (req, res) => {
+  try {
+      // Query to get barbearias and their aggregated data
+      const barbeariasSql = `
+          SELECT 
+              b.id AS barbearia_id,
+              b.name AS nameBarbearia,
+              b.status AS statusBarbearia,
+              b.banner_main AS bannerBarbearia,
+              b.rua AS ruaBarbearia,
+              b.N AS NruaBarbearia,
+              b.bairro AS bairroBarbearia,
+              b.cidade AS cidadeBarbearia,
+              MAX(a.totalAvaliations) AS totalAvaliationsBarbearia,
+              MAX(a.average) AS averageAvaliationsBarbearia
+          FROM 
+              barbearia b
+          INNER JOIN 
+              servico s ON s.barbearia_id = b.id
+          LEFT JOIN 
+              averageAvaliations a ON a.barbearia_id = b.id
+          WHERE 
+              a.average IS NOT NULL -- Optional: ignore barbearias without evaluations
+          GROUP BY 
+              b.id, b.name, b.status, b.banner_main, b.rua, b.N, b.bairro, b.cidade
+          ORDER BY 
+              MAX(a.average) DESC, MAX(a.totalAvaliations) DESC
+          LIMIT 15`;
 
-  const combineData = (barbearias, servicos) => {
-    return barbearias.map(barbearia => {
-      // Filtra os serviços que pertencem à barbearia atual
-      const servicosDaBarbearia = servicos.filter(servico => servico.barbearia_id === barbearia.barbearia_id);
-      // Adiciona os serviços ao objeto da barbearia
-      return { ...barbearia, servicos: servicosDaBarbearia };
-    });
-  };
+      // Execute query to get barbearias
+      const barbearias = await new Promise((resolve, reject) => {
+          db.query(barbeariasSql, (err, results) => {
+              if (err) return reject(err);
+              resolve(results);
+          });
+      });
 
-  function getBarbeariasService (barbeariaID) {
-    let barbeariaWithService = [];
-      const sql = "SELECT name, barbearia_id FROM servico WHERE barbearia_id = ?";
-      //for(let i = 0; i < barbearias.length; i++){
+      if (!barbearias.length) {
+          return res.status(404).json({ success: false, message: "No barbearias found." });
+      }
 
-     // }
-      db.query(sql, (erro, result) => {
-        if(erro) {
-          console.error("Erro ao buscar nome dos serviços da barbearia", erro);
-          return res.status(500).json({Error: "Erro ao buscar nome dos serviços da barbearia"});
-        }
-        if(result.length > 0){
-          
-          //barbeariasComServicos = combineData(resul, result);
-          return barbeariasComServicos;
-        }
-      })
+      // Query to get services for the fetched barbearias
+      const barbeariaIds = barbearias.map(b => b.barbearia_id);
+      const servicesSql = `
+          SELECT 
+              name, barbearia_id
+          FROM 
+              servico
+          WHERE 
+              barbearia_id IN (?)`;
+
+      const services = await new Promise((resolve, reject) => {
+          db.query(servicesSql, [barbeariaIds], (err, results) => {
+              if (err) return reject(err);
+              resolve(results);
+          });
+      });
+
+      // Combine barbearias and their services
+      const combineData = (barbearias, services) => {
+          return barbearias.map(barbearia => {
+              const servicosDaBarbearia = services.filter(service => service.barbearia_id === barbearia.barbearia_id);
+              return { ...barbearia, servicos: servicosDaBarbearia };
+          });
+      };
+
+      const barbeariasWithServices = combineData(barbearias, services);
+
+      return res.status(200).json({ success: true, barbearias: barbeariasWithServices });
+  } catch (error) {
+      console.error("Error fetching barbearias:", error);
+      return res.status(500).json({ success: false, message: "Internal server error." });
   }
-  //Query to obtain the 15 best barbearias with registered service
-  const sql=`SELECT 
-                  b.id AS barbearia_id,
-                  b.name AS nameBarbearia,
-                  b.status AS statusBarbearia,
-                  b.banner_main AS bannerBarbearia,
-                  b.rua AS ruaBarbearia,
-                  b.N AS NruaBarbearia,
-                  b.bairro AS bairroBarbearia,
-                  b.cidade AS cidadeBarbearia,
-                  MAX(a.totalAvaliations) AS totalAvaliationsBarbearia,
-                  MAX(a.average) AS averageAvaliationsBarbearia
-              FROM 
-                  barbearia b
-              INNER JOIN 
-                  servico s ON s.barbearia_id = b.id
-              LEFT JOIN 
-                  averageAvaliations a ON a.barbearia_id = b.id
-              WHERE 
-                  a.average IS NOT NULL -- Opcional: ignora barbearias sem avaliação
-              GROUP BY 
-                  b.id, b.name, b.status, b.banner_main, b.rua, b.N, b.bairro, b.cidade -- Todas as colunas não agregadas
-              ORDER BY 
-                  MAX(a.average) DESC, MAX(a.totalAvaliations) DESC
-              LIMIT 15`;
-
-    db.query(sql, (err, resul) => {
-      if (err){
-        console.error("Erro ao buscar barbearias:", err);
-        return res.status(500).json({ Success: "Error", Message: "Erro ao buscar barbearias." });
-      }
-      if(resul.length > 0){
-          const barbearias = resul[0];
-          console.log(barbearias)
-          //return res.status(200).json({barbearias: barbeariasComServicos});
-      }
-      
-    });
-
 });
+
 
 //Route to get a specific barbearia
 app.get('/api/v1/barbeariaDetails/:barbeariaId', (req, res) =>{
