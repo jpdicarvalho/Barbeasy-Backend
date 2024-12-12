@@ -3118,6 +3118,7 @@ app.post('/api/v1/createBookingWithoutPayment/', AuthenticateJWT, (req, res) => 
     req.body.selectedDay,
     req.body.timeSelected,
   ];
+
   const formatDate = req.body.formattedDate;
   const selectedDayFormated = req.body.selectedDayFormated;
   
@@ -3139,19 +3140,20 @@ app.post('/api/v1/createBookingWithoutPayment/', AuthenticateJWT, (req, res) => 
   const sqlSelect="SELECT booking_time FROM bookings WHERE booking_date = ?";
   db.query(sqlSelect, [values[5]], (err, result) =>{
     if(err){
-      console.error('Erro ao verificar agendamentos do usuário:', err);
-      return res.status(500).json({ Error: 'Erro ao verificar agendamentos do usuário.' });
+      console.error('Erro ao verificar disponibilidade de horários.', err);
+      return res.status(500).json({ message: 'Erro ao verificar disponibilidade de horários.' });
     }
     if(result.length > 0){
-        const timeSelected = values[6].split(',');//Novos horários selecionados pelo usuário
-        const timesFound = result[0].booking_time.split(',');//horários já agendados pleo usuário
-        const timesMach = timeSelected.filter(item => timesFound.includes(item));//Verificar se há compatibilidade entre os horários
-        
+      const timeSelected = values[6].split(',');//Novos horários selecionados pelo usuário
+      const timesFound = result[0].booking_time.split(',');//horários já agendados pleo usuário
+      const timesMach = timeSelected.filter(item => timesFound.includes(item));//Verificar se há compatibilidade entre os horários
+console.log(timeSelected, timesFound, timesMach)
+
         if(timesMach.length > 0){
-          return res.status(401).json({ Unauthorized: 'timesMach', timesMach: timesMach });
+          return res.status(401).json({ message: '', timesMach: timesMach });
         }
 
-      return createBooking()
+        return createBooking()
     }
 
     if(result.length === 0){
