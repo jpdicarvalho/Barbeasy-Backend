@@ -799,7 +799,8 @@ app.get('/api/v1/getAllBarbearias', AuthenticateJWT, async (req, res) => {
               b.id, b.name, b.status, b.banner_main, b.rua, b.N, b.bairro, b.cidade
           ORDER BY 
               MAX(a.average) DESC, MAX(a.totalAvaliations) DESC
-          LIMIT 15`;
+          LIMIT 15
+      `;
 
       // Execute query to get barbearias
       const barbearias = await new Promise((resolve, reject) => {
@@ -821,7 +822,8 @@ app.get('/api/v1/getAllBarbearias', AuthenticateJWT, async (req, res) => {
           FROM 
               servico
           WHERE 
-              barbearia_id IN (?)`;
+              barbearia_id IN (?);
+      `;
 
       const services = await new Promise((resolve, reject) => {
           db.query(servicesSql, [barbeariaIds], (err, results) => {
@@ -833,7 +835,9 @@ app.get('/api/v1/getAllBarbearias', AuthenticateJWT, async (req, res) => {
       // Combine barbearias and their services
       const combineData = (barbearias, services) => {
           return barbearias.map(barbearia => {
-              const servicosDaBarbearia = services.filter(service => service.barbearia_id === barbearia.barbearia_id);
+              const servicosDaBarbearia = services
+                  .filter(service => service.barbearia_id === barbearia.barbearia_id)
+                  .map(service => ({ name: service.name }));
               return { ...barbearia, servicos: servicosDaBarbearia };
           });
       };
@@ -846,7 +850,6 @@ app.get('/api/v1/getAllBarbearias', AuthenticateJWT, async (req, res) => {
       return res.status(500).json({ success: false, message: "Internal server error." });
   }
 });
-
 
 //Route to get a specific barbearia
 app.get('/api/v1/barbeariaDetails/:barbeariaId', (req, res) =>{
