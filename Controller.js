@@ -2823,8 +2823,8 @@ app.get('/api/v1/notificationToBarb/:barbeariaId/:professional_id', Authenticate
     }else{
       if(result.length > 0){
         return res.status(200).json({ Success: "true"});
-      }else{
-        return res.status(200).json({ Success: "false"});
+      }if(result.length === 0){
+        return res.status(404).json({ Success: "false"});
       }
     }
   })
