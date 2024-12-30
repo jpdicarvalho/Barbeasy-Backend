@@ -1072,7 +1072,6 @@ app.get('/api/v1/bookingsOfUser/:userId', AuthenticateJWT, (req, res) =>{
             //obtendo o mês e o ano do agandamento
             const yearBookingA = Number (a.bookingDate.substring(17).replace(/[^0-9]/g, ''));
             const monthBookingA = a.bookingDate.match(/(Jan|Fev|Mar|Abr|Mai|Jun|Jul|Ago|Set|Out|Nov|Dez)/g, '');
-            const monthAndYearBookingsA = Number (`${numbersMonth[monthBookingA]}` + `${yearBookingA}`);
             //obtendo o dia do agendamento
             const bookingDayA = Number (a.bookingDate.split(', ')[1].split(' ')[0]);
             //Obtendo o horário inicial do agendamento
@@ -1082,7 +1081,6 @@ app.get('/api/v1/bookingsOfUser/:userId', AuthenticateJWT, (req, res) =>{
             //obtendo o mês e o ano do agandamento
             const yearBookingB = Number (b.bookingDate.substring(17).replace(/[^0-9]/g, ''));
             const monthBookingB = b.bookingDate.match(/(Jan|Fev|Mar|Abr|Mai|Jun|Jul|Ago|Set|Out|Nov|Dez)/g, '');
-            const monthAndYearBookingsB = Number (`${numbersMonth[monthBookingB]}` + `${yearBookingB}`);
             //obtendo o dia do agendamento
             const bookingDayB = Number (b.bookingDate.split(', ')[1].split(' ')[0]);
             //Obtendo o horário inicial do agendamento
