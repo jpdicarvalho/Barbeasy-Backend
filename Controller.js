@@ -1088,24 +1088,29 @@ app.get('/api/v1/bookingsOfUser/:userId', AuthenticateJWT, (req, res) =>{
             //Obtendo o horário inicial do agendamento
             const bookingTimesB = Number (b.bookingTime.split(',')[b.bookingTime.split(',').length-1].replace(/[^0-9]/g, ''));
 
-            
-            if(monthAndYearBookingsA === monthAndYearBookingsB){
+            if(yearBookingA === yearBookingB){
+              if(numbersMonth[monthBookingA] === numbersMonth[monthBookingB]){
                 if(bookingDayA === bookingDayB){
-                    if(bookingTimesA < bookingTimesB){
-                        return 1
+                  if(bookingTimesA > bookingTimesB){
+                      return 1
                     }else{
-                        return -1
+                      return -1
                     }
-                }else if(bookingDayA < bookingDayB){
-                        return 1
-                    }else{
-                        return -1
-                    }
-            }else if(monthAndYearBookingsA < monthAndYearBookingsB){
+                }else if(bookingDayA > bookingDayB){
                     return 1
-            }else{
-                    return -1
-            }
+                  }else{
+                      return -1
+                  }
+                }else if(numbersMonth[monthBookingA] > numbersMonth[monthBookingB]){
+                    return 1
+                  }else{
+                      return -1
+                  }
+                }else if(yearBookingA > yearBookingB){
+                    return 1
+                  }else{
+                      return -1
+                  }
         }) 
     }
       orderBookings(result);
