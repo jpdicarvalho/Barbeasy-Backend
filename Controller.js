@@ -3695,6 +3695,32 @@ app.put('/api/v1/updateBookingPoliceis', AuthenticateJWT, async (req, res) =>{
   })
 })
 
+//Route to barbearia update your bookings policies
+app.put('/api/v1/updateTimeToRescheduling', AuthenticateJWT, async (req, res) =>{
+  const barbeariaId = req.body.barbeariaId;
+  const confirmPassword = req.body.confirmPassword;
+  const timeToRescheduling = req.body.timeToRescheduling;
+
+  // Verifica se a senha é compatível 
+  const isPasswordValided = await comparePasswordBarbearia(barbeariaId, confirmPassword);
+
+  if (!isPasswordValided) { // Senha incorreta
+    return res.status(401).json({ message: 'Verifique a senha informada e tente novamente.' });
+  }
+ 
+  //Atualiza as políticas de agendamento
+  const sqlUpdateTimeToRescheduling = 'UPDATE bookingPolicies SET time_rescheduling = ? WHERE barbearia_id = ?';
+  db.query(sqlUpdateTimeToRescheduling, [timeToRescheduling, barbeariaId], (error, result) =>{
+    if(error){
+      console.error("Erro ao atualizar o tempo de reagendamento.", error);
+      return res.status(500).json({ message: "Erro ao atualizar o tempo de reagendamento." });
+    }
+    if(result){
+      return res.status(200).json({ message: "Política de reagendamento atualizada com sucesso."});
+    }
+  })
+})
+
 app.get('/api/v1/bookingPoliceis/:barbeariaId', (req, res) =>{
   const barbeariaId = req.params.barbeariaId;
 
