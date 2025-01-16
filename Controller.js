@@ -1023,6 +1023,7 @@ app.get('/api/v1/bookingsOfUser/:userId', AuthenticateJWT, (req, res) =>{
                     bookings.booking_time AS bookingTime,
                     bookings.date_created AS dateMakedBooking,
                     bookings.payment_id AS payment_id,
+                    barbearia.id AS barbeariaId,
                     barbearia.name AS barbeariaName,
                     barbearia.banner_main AS bannerBarbearia,
                     barbearia.rua AS ruaBarbearia,
