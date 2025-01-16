@@ -1031,6 +1031,7 @@ app.get('/api/v1/bookingsOfUser/:userId', AuthenticateJWT, (req, res) =>{
                     barbearia.bairro AS bairroBarbearia,
                     barbearia.cidade AS cidadeBarbearia,
                     barbearia.celular AS celularBarbearia,
+                    professional.id AS professionalId,
                     professional.name AS professionalName,
                     professional.cell_phone AS professionalPhone,
                     professional.user_image AS userImageProfessional,
