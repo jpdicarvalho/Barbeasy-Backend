@@ -3647,7 +3647,7 @@ app.delete('/api/v1/unlinkBarbearia/:barbeariaId/:professionalId/:confirmPasswor
 app.get('/api/v1/bookingPoliceis/:barbeariaId', (req, res) =>{
   const barbeariaId = req.params.barbeariaId;
 
-  const sql = 'SELECT booking_with_payment, service_percentage FROM bookingPolicies WHERE barbearia_id = ?';
+  const sql = 'SELECT booking_with_payment, service_percentage, time_rescheduling, qnt_rescheduling FROM bookingPolicies WHERE barbearia_id = ?';
   db.query(sql, [barbeariaId], (err, resu) =>{
     if(err){
       console.error("Erro ao buscar as políticas de agendamento", err);
