@@ -3643,8 +3643,24 @@ app.delete('/api/v1/unlinkBarbearia/:barbeariaId/:professionalId/:confirmPasswor
   })
 })
 
+//Route to get settings of booking Policeis
+app.get('/api/v1/bookingPoliceis/:barbeariaId', (req, res) =>{
+  const barbeariaId = req.params.barbeariaId;
+
+  const sql = 'SELECT booking_with_payment, service_percentage FROM bookingPolicies WHERE barbearia_id = ?';
+  db.query(sql, [barbeariaId], (err, resu) =>{
+    if(err){
+      console.error("Erro ao buscar as políticas de agendamento", err);
+      return res.status(500).json({ Error: "Internal Server Error" });
+    }
+    if(resu.length > 0){
+      return res.status(200).json({ bookingPoliceis: resu[0]})
+    }
+  })
+})
+
 //Route to barbearia update your bookings policies
-app.put('/api/v1/updateBookingPoliceis', AuthenticateJWT, async (req, res) =>{
+app.put('/api/v1/bookingPoliceis', AuthenticateJWT, async (req, res) =>{
   const barbeariaId = req.body.barbeariaId;
   const confirmPassword = req.body.confirmPassword;
   const bookingWithPayment = req.body.bookingWithPayment;
@@ -3695,8 +3711,8 @@ app.put('/api/v1/updateBookingPoliceis', AuthenticateJWT, async (req, res) =>{
   })
 })
 
-//Route to barbearia update your bookings policies
-app.put('/api/v1/updateTimeToRescheduling', AuthenticateJWT, async (req, res) =>{
+//Route to barbearia update your time to rescheduling
+app.put('/api/v1/timeToRescheduling', AuthenticateJWT, async (req, res) =>{
   const barbeariaId = req.body.barbeariaId;
   const confirmPassword = req.body.confirmPassword;
   const timeToRescheduling = req.body.timeToRescheduling;
@@ -3721,17 +3737,28 @@ app.put('/api/v1/updateTimeToRescheduling', AuthenticateJWT, async (req, res) =>
   })
 })
 
-app.get('/api/v1/bookingPoliceis/:barbeariaId', (req, res) =>{
-  const barbeariaId = req.params.barbeariaId;
+//Route to barbearia update your qnt to rescheduling
+app.put('/api/v1/qntToRescheduling', AuthenticateJWT, async (req, res) =>{
+  const barbeariaId = req.body.barbeariaId;
+  const confirmPassword = req.body.confirmPassword;
+  const qntToRescheduling = req.body.qntToRescheduling;
 
-  const sql = 'SELECT booking_with_payment, service_percentage FROM bookingPolicies WHERE barbearia_id = ?';
-  db.query(sql, [barbeariaId], (err, resu) =>{
-    if(err){
-      console.error("Erro ao buscar as políticas de agendamento", err);
-      return res.status(500).json({ Error: "Internal Server Error" });
+  // Verifica se a senha é compatível 
+  const isPasswordValided = await comparePasswordBarbearia(barbeariaId, confirmPassword);
+
+  if (!isPasswordValided) { // Senha incorreta
+    return res.status(401).json({ message: 'Verifique a senha informada e tente novamente.' });
+  }
+ 
+  //Atualiza as políticas de agendamento
+  const sqlUpdateQqntToRescheduling = 'UPDATE bookingPolicies SET qnt_rescheduling = ? WHERE barbearia_id = ?';
+  db.query(sqlUpdateQqntToRescheduling, [qntToRescheduling, barbeariaId], (error, result) =>{
+    if(error){
+      console.error("Erro ao atualizar a quantidade de reagendamento por cliente.", error);
+      return res.status(500).json({ message: "Erro ao atualizar a quantidade de reagendamento por cliente." });
     }
-    if(resu.length > 0){
-      return res.status(200).json({ bookingPoliceis: resu[0]})
+    if(result){
+      return res.status(200).json({ message: "Política de reagendamento atualizada com sucesso."});
     }
   })
 })
