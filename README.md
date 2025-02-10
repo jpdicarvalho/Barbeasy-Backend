@@ -6,8 +6,8 @@ Para entender como a arquitetura do Barbeasy está construída, desenvolvi um di
 
 ![DC](https://github.com/user-attachments/assets/3f4dc03a-73ab-4b68-a365-3338996bf413)
 
-## Modelo Entidade-Relacionamento
-
+## Diagrama Entidade-Relacionamento - DER
+Para representar de maneira clara e estruturada as entidades e os relacionamentos presentes no sistema, condtruí o DER abaixo. Outrossim, a modelagem de banco de dados é uma etapa fundamental no processo de desenvolvimento de software, responsável por estruturar o armazenamento de dados de maneira eficiente e organizada.
 
 ![er](https://github.com/user-attachments/assets/6205c7c9-7cfc-4ceb-9a0c-ae5281c14e7c)
 
