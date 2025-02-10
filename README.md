@@ -1,5 +1,5 @@
 # Barbeasy-Backend
-O Barbeasy dispõe de uma API RESTfull com mais de 3950 linhas de código e 150 endpoints. Além disso, ela possuí integração com diversos serviços, o que torna aplicação ainda mais robusta e completa. Nesse repositório você irá encontrar informações referente a arquitetura do sistema e modelo de dados ultilizado.
+O Barbeasy dispõe de uma API RESTfull com mais de 3950 linhas de código e 150 endpoints. Além disso, ela possuí integração com diversos serviços, o que torna aplicação ainda mais robusta e completa. Nesse repositório você irá encontrar informações referente a arquitetura do sistema e como está organizado o Banco de Dados ultilizado.
 
 ## Diagrama de Componentes
 Para entender como a arquitetura do Barbeasy está construída, desenvolvi um diagrama de componenstes que mostra como os principais recursos do sistema estão conectados e como é feita a comunicação entre eles.
@@ -11,3 +11,6 @@ Para representar de maneira clara e estruturada as entidades e os relacionamento
 
 ![er](https://github.com/user-attachments/assets/6205c7c9-7cfc-4ceb-9a0c-ae5281c14e7c)
 
+## Esses dois recursos essencias, presente na principal fase de construção de um software, o planejamento, trasem uma visão geral de como o Backend do Barbeasy está construído.
+
+# Isso é tudo pessoal! Obrigado!
