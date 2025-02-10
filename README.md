@@ -11,6 +11,6 @@ Para representar de maneira clara e estruturada as entidades e os relacionamento
 
 ![er](https://github.com/user-attachments/assets/6205c7c9-7cfc-4ceb-9a0c-ae5281c14e7c)
 
-## Esses dois recursos essencias, presente na principal fase de construção de um software, o planejamento, trasem uma visão geral de como o Backend do Barbeasy está construído.
+## Esses dois recursos essencias, presente na principal fase de construção de um software, o planejamento, trazem uma visão geral de como o Backend do Barbeasy está construído.
 
 # Isso é tudo pessoal! Obrigado!
