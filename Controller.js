@@ -175,6 +175,27 @@ app.post("/api/v1/ping-db", (req, res) =>{
     }
 });
 })
+
+app.get("/", (req, res) => {
+  const email = req.query.email;
+  const id = req.query.id;
+
+  if (!email || !id) {
+    console.log("Requisição recebida sem email ou id!");
+    return res.status(400).json({ error: "Parâmetros email e id são obrigatórios" });
+  }
+
+  console.log(`Webhook recebido! Email: ${email}, ID: ${id}`);
+
+  // Aqui você pode adicionar lógica para salvar no banco de dados, se necessário
+
+  return res.status(200).json({
+    message: "Webhook recebido com sucesso!",
+    email,
+    id
+  });
+});
+
 //==================== VERIFY TOKEN FROM FRONTEND ===============
 async function verifyTokenFromFrontend(token) {
   try {
