@@ -797,30 +797,28 @@ app.get('/api/v1/getAllBarbearias', AuthenticateJWT, async (req, res) => {
   try {
       // Query to get barbearias and their aggregated data
       const barbeariasSql = `
-          SELECT 
-              b.id AS barbearia_id,
-              b.name AS nameBarbearia,
-              b.status AS statusBarbearia,
-              b.banner_main AS bannerBarbearia,
-              b.rua AS ruaBarbearia,
-              b.N AS NruaBarbearia,
-              b.bairro AS bairroBarbearia,
-              b.cidade AS cidadeBarbearia,
-              MAX(a.totalAvaliations) AS totalAvaliationsBarbearia,
-              MAX(a.average) AS averageAvaliationsBarbearia
-          FROM 
-              barbearia b
-          INNER JOIN 
-              servico s ON s.barbearia_id = b.id
-          LEFT JOIN 
-              averageAvaliations a ON a.barbearia_id = b.id
-          WHERE 
-              a.average IS NOT NULL
-          GROUP BY 
-              b.id, b.name, b.status, b.banner_main, b.rua, b.N, b.bairro, b.cidade
-          ORDER BY 
-              MAX(a.average) DESC, MAX(a.totalAvaliations) DESC
-          LIMIT 15
+      SELECT 
+          b.id AS barbearia_id,
+          b.name AS nameBarbearia,
+          b.status AS statusBarbearia,
+          b.banner_main AS bannerBarbearia,
+          b.rua AS ruaBarbearia,
+          b.N AS NruaBarbearia,
+          b.bairro AS bairroBarbearia,
+          b.cidade AS cidadeBarbearia,
+          MAX(a.totalAvaliations) AS totalAvaliationsBarbearia,
+          MAX(a.average) AS averageAvaliationsBarbearia
+      FROM 
+          barbearia b
+      INNER JOIN 
+          servico s ON s.barbearia_id = b.id
+      LEFT JOIN 
+          averageAvaliations a ON a.barbearia_id = b.id
+      GROUP BY 
+          b.id, b.name, b.status, b.banner_main, b.rua, b.N, b.bairro, b.cidade
+      ORDER BY 
+          MAX(a.average) DESC NULLS LAST, MAX(a.totalAvaliations) DESC
+      LIMIT 15
       `;
 
       // Execute query to get barbearias
