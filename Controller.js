@@ -814,11 +814,6 @@ app.get('/api/v1/getAllBarbearias', AuthenticateJWT, async (req, res) => {
             servico s ON s.barbearia_id = b.id
         LEFT JOIN 
             averageAvaliations a ON a.barbearia_id = b.id
-        GROUP BY 
-            b.id, b.name, b.status, b.banner_main, b.rua, b.N, b.bairro, b.cidade
-        ORDER BY 
-            (a.average IS NULL), MAX(a.average) DESC, MAX(a.totalAvaliations) DESC
-        LIMIT 15
       `;
 
 
