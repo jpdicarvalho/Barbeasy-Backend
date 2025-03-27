@@ -815,7 +815,7 @@ app.get('/api/v1/getAllBarbearias', AuthenticateJWT, async (req, res) => {
           LEFT JOIN 
               averageAvaliations a ON a.barbearia_id = b.id
           WHERE 
-              a.average IS NOT NULL -- Optional: ignore barbearias without evaluations
+              a.average IS NOT NULL
           GROUP BY 
               b.id, b.name, b.status, b.banner_main, b.rua, b.N, b.bairro, b.cidade
           ORDER BY 
