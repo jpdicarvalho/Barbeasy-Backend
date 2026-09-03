@@ -122,6 +122,45 @@ db.connect((error) => {
   }
 });
 
+// Add comprehensive logging
+app.use((req, res, next) => {
+  console.log(`\n[-> REQUEST] ${req.method} ${req.originalUrl}`);
+  if (Object.keys(req.body).length) console.log(`[BODY]:`, req.body);
+  
+  const originalSend = res.send;
+  res.send = function (body) {
+    if (res.statusCode >= 400) {
+      console.log(`[<- ERROR ${res.statusCode}] ${req.method} ${req.originalUrl} - RESPONSE:`, body);
+    } else {
+      console.log(`[<- SUCCESS ${res.statusCode}] ${req.method} ${req.originalUrl}`);
+    }
+    return originalSend.call(this, body);
+  };
+  next();
+});
+
+const originalQuery = db.query;
+db.query = function() {
+  const sql = arguments[0];
+  const params = typeof arguments[1] !== 'function' ? arguments[1] : undefined;
+  console.log(`[DB QUERY]: ${sql.replace(/\\n/g, ' ')}`);
+  if (params) console.log(`[DB PARAMS]:`, params);
+  
+  const lastArgIndex = arguments.length - 1;
+  const originalCallback = typeof arguments[lastArgIndex] === 'function' ? arguments[lastArgIndex] : null;
+  
+  if (originalCallback) {
+    arguments[lastArgIndex] = function(error, results, fields) {
+      if (error) {
+        console.log(`[DB ERROR]:`, error.message);
+      }
+      return originalCallback.apply(this, arguments);
+    };
+  }
+  
+  return originalQuery.apply(this, arguments);
+};
+
 //regex to valided values of input
 const isNameValided = (input) => /^[a-zA-Z\sçéúíóáõãèòìàêôâ]+$/.test(input);
 const isOnlyNumberValided = (input) => /^[0-9]*$/.test(input);
@@ -452,7 +491,7 @@ app.post("/api/v1/SignUp", (req, res) => {
           senha: senha_hash, // Salvar o hash no campo de senha
           celular,
           user_image: 'default.jpg',
-          isVerified: 'false',
+          isVerified: 'true',
         };
 
         db.query('INSERT INTO user SET ?', user, (error, results) => {
@@ -555,7 +594,7 @@ app.get('/api/v1/userImage', AuthenticateJWT, (req, res) =>{
       return res.status(500).json({ error: 'Internal Server Error' });
     }else{
       if(result.length > 0) {
-          const url = "https://d15o6h0uxpz56g.cloudfront.net/" + result[0].user_image;
+          const url = "" + result[0].user_image;
           return res.json({url});
       }
     }
@@ -1062,7 +1101,7 @@ app.get('/api/v1/bookingsOfUser/:userId', AuthenticateJWT, (req, res) =>{
               INNER JOIN barbearia ON barbearia.id = bookings.barbearia_id
               INNER JOIN professional ON professional.id = bookings.professional_id
               INNER JOIN servico ON servico.id = bookings.service_id
-              LEFT JOIN payments ON payments.id = bookings.payment_id
+              LEFT JOIN payments ON payments.payment_id = bookings.payment_id
               WHERE bookings.user_id = ?
                 AND (payments.status = 'approved' OR bookings.payment_id = 0)`;
 
@@ -1463,7 +1502,7 @@ app.post("/api/v1/SignUpBarbearia", (req, res) => {
         cidade: city,
         amountVisibility: 'visible',
         celular: celular,
-        isVerified: 'false'
+        isVerified: 'true'
       };
 
       db.query('INSERT INTO barbearia SET ?', barbearia, (error, results) => {
@@ -1783,7 +1822,7 @@ app.get('/api/v1/userImageProfessional', AuthenticateJWT, (req, res) =>{
       return res.status(500).json({ error: 'Internal Server Error' });
     }else{
       if(result.length > 0) {
-        const url = "https://d15o6h0uxpz56g.cloudfront.net/" + result[0].user_image;
+        const url = "" + result[0].user_image;
         return res.json({url});
         }
     }
@@ -1934,7 +1973,7 @@ app.get('/api/v1/bannerImages', AuthenticateJWT, (req, res) => {
 
       for (let i = 0; i < bannerImagesArray.length; i++) {
         const imageName = bannerImagesArray[i];//Pegando o nome de cada imagem salva no array anterior
-        const url = "https://d15o6h0uxpz56g.cloudfront.net/" + imageName;// Salvando a URL da imagem obtida pelo Cloud Front AWS-S3
+        const url = "" + imageName;// Salvando a URL da imagem obtida pelo Cloud Front AWS-S3
         urls.push(url);//Adicionando a nova imagem no Array de URLs
       }      
       return res.json({ urls });
@@ -2524,6 +2563,8 @@ app.get('/api/v1/agenda/:barbeariaId/:professionalId', (req, res) => {
         agenda.push(result[0].qnt_dias);
 
         return res.status(200).json({ Agenda: agenda});
+      } else {
+        return res.status(200).json({ Agenda: []});
       }
     }
   })
@@ -2568,6 +2609,8 @@ app.get('/api/v1/allProfessionalAgenda/:barbeariaId/:professionalId', Authentica
         };
         const filteredFullAgenda = filterDaysWithTimes(result);
         return res.status(200).json({ Agenda: filteredFullAgenda});
+      } else {
+        return res.status(200).json({ Agenda: []});
       }
     }
   })
@@ -2643,6 +2686,8 @@ app.get('/api/v1/agendaDiaSelecionado/:barbeariaId/:professionalId', (req, res) 
         Sáb: result[0].sab
       }
       return res.status(200).json({ Success: "Success", TimesDays: timesDays});
+    } else {
+      return res.status(200).json({ Success: "Success", TimesDays: {} });
     }
   })
 });
@@ -3227,7 +3272,7 @@ app.get('/api/v1/bookingsTimes/:barbeariaId/:professionalId/:selectedDate', (req
   const sql = `SELECT bookings.booking_time AS timesLocked
               FROM bookings
               LEFT JOIN payments 
-                  ON payments.id = bookings.payment_id 
+                  ON payments.payment_id = bookings.payment_id 
               WHERE bookings.barbearia_id = ?
                 AND bookings.professional_id = ?
                 AND bookings.booking_date = ?
@@ -3326,7 +3371,7 @@ app.get('/api/v1/bookings/:barbeariaId/:selectedDate', AuthenticateJWT, (req, re
               INNER JOIN user ON user.id = bookings.user_id
               INNER JOIN professional ON professional.id = bookings.professional_id
               INNER JOIN servico ON servico.id = bookings.service_id
-              LEFT JOIN payments ON payments.id = bookings.payment_id
+              LEFT JOIN payments ON payments.payment_id = bookings.payment_id
               WHERE bookings.barbearia_id = ? AND bookings.booking_date = ?
                         AND (payments.status = 'approved' OR bookings.payment_id = 0)`;
 
@@ -3400,7 +3445,7 @@ app.get('/api/v1/getAmountOfMonth/:barbeariaId/:monthAndYear', AuthenticateJWT, 
                 INNER JOIN professional 
                     ON professional.id = bookings.professional_id
                 LEFT JOIN payments
-                    ON payments.id = bookings.payment_id
+                    ON payments.payment_id = bookings.payment_id
                     AND (payments.status = 'approved' OR bookings.payment_id = 0)
                 WHERE bookings.barbearia_id = ?
                     AND booking_date LIKE '%${CurrentMonthAndYear}%'`;
@@ -3456,7 +3501,7 @@ app.get('/api/v1/getAmountOfMonthProfessional/:professionalId', AuthenticateJWT,
   const sql=`SELECT servico.commission_fee AS commission_fee
                 FROM servico
                 INNER JOIN bookings ON bookings.professional_id = ? AND bookings.service_id = servico.id AND booking_date LIKE '%${CurrentMonthAndYear}%'
-                INNER JOIN payments ON payments.id = bookings.payment_id AND payments.status = 'approved'`;
+                INNER JOIN payments ON payments.payment_id = bookings.payment_id AND payments.status = 'approved'`;
 
   db.query(sql, [professionalId], (err, resul) =>{
     if(err){
@@ -3546,7 +3591,7 @@ app.get('/api/v1/professionalBookings/:professionalId/:selectedDate', Authentica
       INNER JOIN user ON user.id = bookings.user_id
       INNER JOIN barbearia ON barbearia.id = bookings.barbearia_id
       INNER JOIN servico ON servico.id = bookings.service_id
-      INNER JOIN payments ON payments.id = bookings.payment_id AND payments.status = 'approved'
+      INNER JOIN payments ON payments.payment_id = bookings.payment_id AND payments.status = 'approved'
       WHERE bookings.professional_id = ? AND bookings.booking_date = ?`;
 
       db.query(sql, [professionalId, selectedDate], (err, result) =>{
@@ -3852,7 +3897,7 @@ app.get('/api/v1/bookingsByMonth/:barbeariaId/:monthAndYear', AuthenticateJWT, (
                   INNER JOIN user ON user.id = bookings.user_id
                   INNER JOIN professional ON professional.id = bookings.professional_id
                   INNER JOIN servico ON servico.id = bookings.service_id
-                  LEFT JOIN payments ON payments.id = bookings.payment_id
+                  LEFT JOIN payments ON payments.payment_id = bookings.payment_id
                   WHERE bookings.barbearia_id = ? 
                         AND booking_date LIKE '%${monthAndYear}%'
                         AND (payments.status = 'approved' OR bookings.payment_id = 0)`;
